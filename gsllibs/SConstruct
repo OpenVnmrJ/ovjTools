@@ -1,0 +1,63 @@
+import os
+import shutil
+
+supportLibList = [ 'libgsl.so.0.6.0',
+                   'libgslcblas.so.0.0.0' ]
+
+DERIVED_FROM_libgsl = [ 'libsgl.so.0' ]
+DERIVED_FROM_libgslcblas = [ 'libgslcblas.so.0' ]
+
+# we need to specify an absolute path so this SConstruct file
+# can be called from any other SConstruct file
+cwd = os.getcwd()
+
+def copyFilesThere(path, fileList):
+   for i in fileList:
+      try:
+         shutil.copy(i, os.path.join(path, i))
+      except:
+         print "Error copying %s." % i
+
+# define with absolute path where built files will be copied
+vnmrLibPath = os.path.join(cwd, os.pardir, os.pardir, os.pardir, os.pardir,
+				'vnmr', 'lib')
+
+##
+## make sure the path(s) exist
+##
+if not os.path.exists(vnmrLibPath):
+   os.makedirs(vnmrLibPath)
+
+for i in supportLibList:
+   dest = os.path.join(vnmrLibPath,i)
+   Execute(Copy(dest,i))
+   Execute(Chmod(dest,0755))
+
+Execute(Action('ln -sf libgsl.so.0.6.0 libgsl.so.0', chdir=vnmrLibPath))
+Execute(Action('ln -sf libgslcblas.so.0.0.0 libgslcblas.so.0', chdir=vnmrLibPath))
+
+##
+## Copy to vnmr/lib
+##
+copyFilesThere(vnmrLibPath,supportLibList)
+
+##
+## Builder for creating symbolic links
+##
+#tclLibEnv = Environment( )
+#tclLibSymLinkBld    = Builder(action = 'cd ' + vnmrLibPath + ' && ' + \
+#                               'ln -sf $SOURCE.file $TARGET.file')
+
+#tclLibEnv.Append(BUILDERS = {'makeSymlink'   : tclLibSymLinkBld})
+##
+## create symbolic links in vnmr/maclib
+##
+#vnmrLibDerived = []
+#for i in DERIVED_FROM_libgsl:
+#    vnmrLibDerived.append(tclLibEnv.makeSymlink(
+#				target = [i], source = 'libgsl.so.0.6.0'))
+#
+#for i in DERIVED_FROM_libgslcblas:
+#    vnmrLibDerived.append(tclLibEnv.makeSymlink(
+#				target = [i], source = 'libgslcblas.so.0.0.0'))
+

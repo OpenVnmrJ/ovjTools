@@ -1,0 +1,34 @@
+This directory contains the files needed to build Xrecon for Imaging_Sense
+
+The original files are in /sw/LinuxTools/fftw, 
+
+This directory contains the software for the fftw3.
+It is used to build Xrecon, a standalone fft routine.
+It is subject to the general GNU license.
+
+fftw-3.1.2.tar.gz is the original file available from  http://www.fftw.org/
+                  please use 'gunzip -c' to preserve the .gz file.
+
+fftw-3.1.2        is the directory that holds the code, after gunzip -c 
+                  and tar -xvf
+
+Inside fftw-3.1.2, I executed the following command to create the 
+libfftw3.a library:
+
+prompt> ./configure
+prompt> make
+prompt> libtool --mode=install /usr/bin/install -c -s libfftw3.la `pwd`
+
+Note the backquotes around pwd, it is the installation directory, it
+needs to be a full path. This creates the library in the current directory. 
+'make install' places it in /usr/local/lib.
+
+The first two commands are quite verbose and take as much as a minute
+on a Dell 370N. The third command takes about 15 seconds.
+
+Frits Vosman
+December 11, 2007
+
+NB: to make a shared library version, replace ./configure with "./configure --enable=shared"
+M. Kritzer 6/4/2012
+
