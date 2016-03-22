@@ -1,0 +1,7 @@
+You will need to install the Java 6 SDK: 
+http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase6-419409.html#jdk-6u39-oth-JPR
+
+Other java might work, but have not been tested. If you use a newer Java, and *tested* the resulting OpenVnmrJ,
+please file an issue at:  
+https://github.com/OpenVnmrJ/ovjTools/issues
+
