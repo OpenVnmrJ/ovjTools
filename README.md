@@ -6,23 +6,33 @@ Tools and libraries to build OpenVnmrJ.
 ### Ubuntu and RHEL/CentOS
 You will need to install the Java 6 SDK from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase6-419409.html#jdk-6u39-oth-JPR).  
 
+You must symlink java to jdk1.6.0_39 after downloading and expanding jdk-6u39-linux-x64.bin:  
+```
+cd ovjTools
+chmod a+x jdk-6u39-linux-x64.bin
+./jdk-6u39-linux-x64.bin
+rm java; ln -s jdk1.6.0_39 java
+```
+
 The only tested version is the Java SE Development Kit 6u39. If you want to use Java 8, please try building and **testing** on a spectrometer.   
 
 If you've tested and there are no problems with a newer Java, please file an (issue)[https://github.com/OpenVnmrJ/ovjTools/issues].
 
 ### OS X
-You will need Java 6 for OS available from [Apple](https://support.apple.com/kb/dl1572?locale=en_US).  
+The OS X build ignores the java link and uses the system Java. Java 8u92 was found to work.  
+Downaload and install the Java JDK from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+See OSX.md for more information.
 
 ## BUILD REQUIREMENTS
 
-Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libraries intalled.  
+Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libraries installed.  
 *A 64-bit build needs to be tested.*
 
 ### EL6 (RHEL/CentOS 6)
 
 The minimum package requirement for EL6 assumes that your system was installed with the
 "Software Development Workstation" package selection as required by VnmrJ.  This build
-configuration has been tested on CentOS 6.6 but should work for any RHEL or CentOS 6.x.  
+configuration has been tested on CentOS 6.7 but should work for any RHEL or CentOS 6.x.  
 ```
 yum install compat-gcc-34-g77 glibc-devel.i686 libstdc++.i686 libX11-devel.i686 libXt-devel.i686 openmotif-devel.i686 scons
 ```
@@ -49,7 +59,7 @@ this document.
 
 ### OS X
 
-TBD
+See OSX.md
 
 ## INSTALLATION & COMPILATION
 
