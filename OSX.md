@@ -2,12 +2,21 @@
 
 Follow these instructions for building OpenVnmrJ on OS X. If you just want to use OpenVnmrJ on OS X, just download a [release](https://github.com/OpenVnmrJ/OpenVnmrJ/releases).  
 
+*Important: the source code must be downloaded to a __case sensitive__ file system.* The default OS X HFS+ is case insensitive.   
+- C++ files are designated using .C and will conflict with some C files (ending in .c)
+- Some pulse sequences and macros only differ in case  
+
+Use the Disk Utility to make a new "Blank Image" about 2 GB in size or use a USB stick, formatting case sensitive journaled HFS+.  
+
+## Download and install
+
 You will need to download and install:  
 - A modern C compiler (clang 7.3.0 is latest, for OS X 10.11 El Capitan) See below for installing the Xcode command line tools or GCC 5.8.
-  - You liekly need to install Xcode command line tools even if usinng GCC because system headers, make, ld, and other utilities need to be installed.  
-- A Java JDK, You must install the JDK, not JRE. Java 8 works OK in testing
+  - You likely need to install Xcode command line tools even if using GCC because system headers, make, ld, and other utilities need to be installed.  
+- A Java JDK, You must install the __JDK__, not JRE
+  - Java 8 works OK in testing
   - The java link in ovjTools is ignored and the system Java is used for the OS X build 
-  - Java 6 from [Apple](https://support.apple.com/kb/dl1572?locale=en_US) OR  
+  - Use Java 6 from [Apple](https://support.apple.com/kb/dl1572?locale=en_US) OR  
   - Java 8 JDK from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 - Sconstruct from [SourceForge](http://iweb.dl.sourceforge.net/project/scons/scons/2.4.1/scons-2.4.1.tar.gz)
 - PostgreSQL 8.4.11 from [
@@ -15,8 +24,8 @@ You will need to download and install:
 - OpenVnmrJ source from [GitHub](https://github.com/OpenVnmrJ/OpenVnmrJ)
 
 If you want to build all source files, then you need
-- gcc and gfortran from [GitHub](https://github.com/timburrow/gcc-5.2-OSX/releases/download/1.0/gcc5.2-osx-usrlocal.tar.bz2)
-- Object files are provided for FORTRAN code
+- gfortran from [GitHub](https://github.com/timburrow/gcc-5.2-OSX/releases/download/1.0/gcc5.2-osx-usrlocal.tar.bz2)
+- Object files are provided for FORTRAN code, so FORTRAN compiling is not necessary
 
 ## Install Xcode command line tools
 Install system headers and clang (C compiler) and check it is installed.
@@ -37,6 +46,7 @@ gfortran can be used to build the FORTRAN components for DOSY.
 curl -Os https://github.com/timburrow/gcc-5.2-OSX/releases/download/1.0/gcc5.2-osx-usrlocal.tar.bz2
 sudo tar xf gcc5.2-osx-usrlocal.tar.bz2 -C /
 ```
+*Note that gcc compilation will usually fail, so remove or rename gcc*
 
 ## Install Java 6
 Install Java 6 from the installer from Apple. After doing this, make Java 6 the default JDK, then check the version  
@@ -64,11 +74,13 @@ javac -version
 
 Download and then build:
 ```
-curl -Os http://iweb.dl.sourceforge.net/project/scons/scons/2.4.1/scons-2.4.1.tar.gz
+curl -Os http://pilotfiber.dl.sourceforge.net/project/scons/scons/2.5.0/scons-2.5.0.tar.gz
 tar -xzvf scons-2.4.0.tar.gz
-cd scons-2.4.0
+cd scons-2.5.0
 sudo python setup.py install
 ```
+*Scons 2.5 requires Python version 2.7 or 3. OS X El Capitan has python 2.7.10*  
+
 ## Install PostgreSQL
 
 For compatibility, PostgreSQL 8.4.22 was used from [http://www.postgresql.org](http://www.postgresql.org/ftp/source/v8.4.22/)  
@@ -82,7 +94,7 @@ make -j2
 make install
 ```
 
-## gcc v clang
+## gcc v clang; 32 v 64 bit
 
 The build has been tested with a 32-bit build using clang, gcc, and gfortran.  
 
@@ -90,25 +102,24 @@ If you can build using 64-bit gcc or clang; please file a bug report and make a 
 
 ## Java 8
 
-If is possible to build using eithe Java 6 or Java 8. 
+If is possible to build using either Java 6 or Java 8. 
 
 If you notice any bugs under Java 8; please file a bug report and make a pull request!
 
 ## Caveats
 
-### Datastation only
+### Data station only
 
-OS X is a datastation only and cannot control a spectrometer host.  
+OS X is a data station only and cannot control a spectrometer host.  
 
-### No example FIDs
+### Not included
 
-There are no example FIDs in the OpenVnmrJ distribution. You need to get them from VnmrJ 4.2. They may be available from the University of Oregon in the future.  
-
-### Also Missing
-
-NMRPipe and ChemPack are not included in this distribution.  
+- There are no example FIDs in the OpenVnmrJ distribution
+   - You need to get them from VnmrJ 4.2
+   - They may be available from the University of Oregon in the future.  
+- NMRPipe and ChemPack are not included in this distribution
  - ChemPack can be downloaded from [Spinsights](https://spinsights.chem.agilent.com/docs/DOC-12566)
  - NMRPipe can be downloaded from [Spinsights](https://spinsights.chem.agilent.com/docs/DOC-6044)
- - Craft is not available
+- Craft is not available (talk to Krish?)
  
  These packages have not been tested with OpenVnmrJ on OS X.
