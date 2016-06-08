@@ -16,17 +16,17 @@ rm java; ln -s jdk1.6.0_39 java
 
 The only tested version is the Java SE Development Kit 6u39. If you want to use Java 8, please try building and **testing** on a spectrometer.   
 
-If you've tested and there are no problems with a newer Java, please file an (issue)[https://github.com/OpenVnmrJ/ovjTools/issues].
+If you've tested and there are no problems with a newer Java, please file an [issue](https://github.com/OpenVnmrJ/ovjTools/issues).
 
 ### OS X
 The OS X build ignores the java link and uses the system Java. Java 8u92 was found to work.  
-Downaload and install the Java JDK from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+Download and install the Java JDK from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)  
 See OSX.md for more information.
 
 ## BUILD REQUIREMENTS
 
 Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libraries installed.  
-*A 64-bit build needs to be tested. All components should be build 64-bit and tested.*  
+*A 64-bit build needs to be tested. All components should be built 64-bit and tested.*  
 
 ### EL6 (RHEL/CentOS 6)
 
@@ -38,6 +38,7 @@ yum install compat-gcc-34-g77 glibc-devel.i686 libstdc++.i686 libX11-devel.i686 
 ```
 Optionally, you can also install gsl-devel and libtiff-devel if you wish to compile using the GNU
 scientific library.  Code compiled with the GSL will be subject to license restrictions.  
+*TODO. Configure using Vagrant.*  
 
 ### Ubuntu Trusty Tahr 14.04 LTS
 
@@ -62,6 +63,8 @@ this document.
 See OSX.md
 
 ## INSTALLATION & COMPILATION
+
+These instructions work for Ubuntu and CentOS (RHEL).  
 
 Make a directory. Lets call it ovjbuild.  Check out the OpenVnmrJ repository from GitHub:  
 ```
@@ -136,11 +139,13 @@ The vnmr directory will contain files that are generic. The options directory co
 optional software and code that may be optionally installed.  If the buildOVJ and / or
 buildOVJMI parameters are set to yes in the buildovj script, additional directories will
 be build that are an image of the DVD installer. A log of the build process will be
-placed in a logs direcory. In summary, before running the buildovj script, your build
+placed in a logs direcory.  
+In summary, before running the buildovj script, your build
 directory will have bin, git-repo, and ovjTools directories.  If you have previously
 run the buildovj script, there will also be console, logs, options, and vnmr directories.
 Depending on your selections in the buildovj script, the default DVD images dvdimageOVJ
-and dvdimageOVJMI may also be present. When the buildovj script is executed, one of the
+and dvdimageOVJMI may also be present.  
+When the buildovj script is executed, one of the
 first things it does is remove any preexisting console, options, vnmr, and dvd image
 directories.  
 
@@ -175,6 +180,7 @@ used to build a MacOS installer. Instructions for building the installer are in
 git-repo/src/macos/readme_packagemaker. If a prior VJ42 install is present (/vnmr
 is a symbolic link to the VJ42 installation), then the OpenVnmrJ installation will
 collect various files from the VJ42 install so that the OpenVnmrJ install should be complete.  
+*TODO: A single draggable VnmrJ.app.*  
 
 #### Directories
 The src directory has a number of subdirectories. In general, each subdirectory corresponds
