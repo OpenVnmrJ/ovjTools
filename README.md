@@ -6,28 +6,39 @@ Tools and libraries to build OpenVnmrJ.
 ### Ubuntu and RHEL/CentOS
 You will need to install the Java 6 SDK from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase6-419409.html#jdk-6u39-oth-JPR).  
 
+You must symlink java to jdk1.6.0_39 after downloading and expanding jdk-6u39-linux-x64.bin:  
+```
+cd ovjTools
+chmod a+x jdk-6u39-linux-x64.bin
+./jdk-6u39-linux-x64.bin
+rm java; ln -s jdk1.6.0_39 java
+```
+
 The only tested version is the Java SE Development Kit 6u39. If you want to use Java 8, please try building and **testing** on a spectrometer.   
 
-If you've tested and there are no problems with a newer Java, please file an (issue)[https://github.com/OpenVnmrJ/ovjTools/issues].
+If you've tested and there are no problems with a newer Java, please file an [issue](https://github.com/OpenVnmrJ/ovjTools/issues).
 
 ### OS X
-You will need Java 6 for OS available from [Apple](https://support.apple.com/kb/dl1572?locale=en_US).  
+The OS X build ignores the java link and uses the system Java. Java 8u92 was found to work.  
+Download and install the Java JDK from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)  
+See OSX.md for more information.
 
 ## BUILD REQUIREMENTS
 
-Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libraries intalled.  
-*A 64-bit build needs to be tested.*
+Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libraries installed.  
+*A 64-bit build needs to be tested. All components should be built 64-bit and tested.*  
 
 ### EL6 (RHEL/CentOS 6)
 
 The minimum package requirement for EL6 assumes that your system was installed with the
 "Software Development Workstation" package selection as required by VnmrJ.  This build
-configuration has been tested on CentOS 6.6 but should work for any RHEL or CentOS 6.x.  
+configuration has been tested on CentOS 6.7 but should work for any RHEL or CentOS 6.x.  
 ```
 yum install compat-gcc-34-g77 glibc-devel.i686 libstdc++.i686 libX11-devel.i686 libXt-devel.i686 openmotif-devel.i686 scons
 ```
 Optionally, you can also install gsl-devel and libtiff-devel if you wish to compile using the GNU
 scientific library.  Code compiled with the GSL will be subject to license restrictions.  
+*TODO. Configure using Vagrant.*  
 
 ### Ubuntu Trusty Tahr 14.04 LTS
 
@@ -49,13 +60,19 @@ this document.
 
 ### OS X
 
-TBD
+See OSX.md
 
 ## INSTALLATION & COMPILATION
 
-Make a directory. Lets call it ovjbuild.  unzip the source code file inside that directory.
-It will add a git-repo. The git-repo directory contains the following directories and files.
-These files may be open-sourced.  
+These instructions work for Ubuntu and CentOS (RHEL).  
+
+Make a directory. Lets call it ovjbuild.  Check out the OpenVnmrJ repository from GitHub:  
+```
+git clone https://github.com/OpenVnmrJ/OpenVnmrJ.git
+```
+
+The OpenVnmrJ directory contains the following directories and files.
+These files are open-sourced, read the LICENSE file.  
 ```
 SConstruct   This is the definition file used by scons. It is similar to Makefile used by
              the make command.  
@@ -64,11 +81,12 @@ src          This contains the source code for OpenVnmrJ. Some of these director
              contain a SConstruct file that is used to build / compile that specific  
              program.  
 ```             
-The ovjTools can be unzipped in the ovjbuild directory or anyplace that you want to put it.
-The ovjTools directory contains code from external sources. This code should not be
-open-sourced by OpenVnmrJ. It contains the following directories. (In earlier edition,
-this was the 3rdParty directory.  
 
+Check out the ovjTools repository from GitHub:  
+```
+git clone https://github.com/OpenVnmrJ/ovjTools.git
+```
+The ovjTools directory contains the following diretories and files.   
 ```
 fftw           Used by xrecon (imaging program)
 fftw_mac       Used by xrecon MacOS version (imaging program)
@@ -85,14 +103,14 @@ tcl            This contains headers and libraries for compiling programs that
 ```
 
 We compile VnmrJ java programs with jdk1.6.0_39_64. The java in ovjTools should be a soft link
-to the actual java JDK.  
+to the actual java JDK. (On Linux).   
 
-At the same level as the git-repo directory, do the following  
+At the same level as the OpenVnmrJ directory, do the following  
 
 ```
   mkdir bin
-  cp git-repo/src/scripts/buildovj bin
-  cp git-repo/src/scripts/makeovj bin
+  cp OpenVnmrJ/src/scripts/buildovj bin
+  cp OpenVnmrJ/src/scripts/makeovj bin
   cd bin
 ```
 
@@ -121,11 +139,13 @@ The vnmr directory will contain files that are generic. The options directory co
 optional software and code that may be optionally installed.  If the buildOVJ and / or
 buildOVJMI parameters are set to yes in the buildovj script, additional directories will
 be build that are an image of the DVD installer. A log of the build process will be
-placed in a logs direcory. In summary, before running the buildovj script, your build
+placed in a logs direcory.  
+In summary, before running the buildovj script, your build
 directory will have bin, git-repo, and ovjTools directories.  If you have previously
 run the buildovj script, there will also be console, logs, options, and vnmr directories.
 Depending on your selections in the buildovj script, the default DVD images dvdimageOVJ
-and dvdimageOVJMI may also be present. When the buildovj script is executed, one of the
+and dvdimageOVJMI may also be present.  
+When the buildovj script is executed, one of the
 first things it does is remove any preexisting console, options, vnmr, and dvd image
 directories.  
 
@@ -160,6 +180,7 @@ used to build a MacOS installer. Instructions for building the installer are in
 git-repo/src/macos/readme_packagemaker. If a prior VJ42 install is present (/vnmr
 is a symbolic link to the VJ42 installation), then the OpenVnmrJ installation will
 collect various files from the VJ42 install so that the OpenVnmrJ install should be complete.  
+*TODO: A single draggable VnmrJ.app.*  
 
 #### Directories
 The src directory has a number of subdirectories. In general, each subdirectory corresponds
