@@ -26,7 +26,7 @@ See OSX.md for more information.
 ## BUILD REQUIREMENTS
 
 Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libraries installed.  
-*A 64-bit build needs to be tested.*
+*A 64-bit build needs to be tested. All components should be build 64-bit and tested.*  
 
 ### EL6 (RHEL/CentOS 6)
 
@@ -63,9 +63,13 @@ See OSX.md
 
 ## INSTALLATION & COMPILATION
 
-Make a directory. Lets call it ovjbuild.  unzip the source code file inside that directory.
-It will add a git-repo. The git-repo directory contains the following directories and files.
-These files may be open-sourced.  
+Make a directory. Lets call it ovjbuild.  Check out the OpenVnmrJ repository from GitHub:  
+```
+git clone https://github.com/OpenVnmrJ/OpenVnmrJ.git
+```
+
+The OpenVnmrJ directory contains the following directories and files.
+These files are open-sourced, read the LICENSE file.  
 ```
 SConstruct   This is the definition file used by scons. It is similar to Makefile used by
              the make command.  
@@ -74,11 +78,12 @@ src          This contains the source code for OpenVnmrJ. Some of these director
              contain a SConstruct file that is used to build / compile that specific  
              program.  
 ```             
-The ovjTools can be unzipped in the ovjbuild directory or anyplace that you want to put it.
-The ovjTools directory contains code from external sources. This code should not be
-open-sourced by OpenVnmrJ. It contains the following directories. (In earlier edition,
-this was the 3rdParty directory.  
 
+Check out the ovjTools repository from GitHub:  
+```
+git clone https://github.com/OpenVnmrJ/ovjTools.git
+```
+The ovjTools directory contains the following diretories and files.   
 ```
 fftw           Used by xrecon (imaging program)
 fftw_mac       Used by xrecon MacOS version (imaging program)
@@ -95,14 +100,14 @@ tcl            This contains headers and libraries for compiling programs that
 ```
 
 We compile VnmrJ java programs with jdk1.6.0_39_64. The java in ovjTools should be a soft link
-to the actual java JDK.  
+to the actual java JDK. (On Linux).   
 
-At the same level as the git-repo directory, do the following  
+At the same level as the OpenVnmrJ directory, do the following  
 
 ```
   mkdir bin
-  cp git-repo/src/scripts/buildovj bin
-  cp git-repo/src/scripts/makeovj bin
+  cp OpenVnmrJ/src/scripts/buildovj bin
+  cp OpenVnmrJ/src/scripts/makeovj bin
   cd bin
 ```
 
