@@ -92,8 +92,8 @@ to the actual java JDK. (On Linux).
 At the same level as the ovjTools directory, do the following  
 
 ```
-  cp -r ovjTools/bin .
-  cd bin
+cp -r ovjTools/bin .
+cd bin
 ```
 
 The bin directory contains three scripts. The buildovj script controls the overall build
@@ -123,7 +123,7 @@ src          This contains the source code for OpenVnmrJ. Some of these director
 Run the command
 
 ```
-   ./buildovj
+./buildovj
 ```
 
 This command will compile the entire OVJ package. It will use the OpenVnmrJ/SConstruct file
@@ -147,10 +147,12 @@ preexisting console, options, vnmr, and dvd image directories.
 You can also change into specific directories in src and run scons. That will build that
 specific program. To compile the java programs, the OVJ_TOOLS env parameter must be set
 to point to the ovjTools directory. In a bash shell, the command would be  
-```  export OVJ_TOOLS=<path>
+```
+export OVJ_TOOLS=<path>
 ```
 In a csh, the command would be  
-```  setenv OVJ_TOOLS <path>
+```
+setenv OVJ_TOOLS <path>
 ```
 
 Then, for example,  
