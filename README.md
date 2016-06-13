@@ -35,7 +35,7 @@ scientific library.  Code compiled with the GSL will be subject to license restr
 The minimum package requirement for Ubuntu Trusty Tahr 14.04 LTS assumes that you have
 installed the standard desktop edition of Ubuntu.  A minimal install may require additional
 packages including but not limited to make, unzip and zip.  This build configuration has been
-tested on Ubuntu but should work for any *buntu Trusty Tahr 14.04 LTS distribution.  
+tested on Ubuntu but should work for any buntu Trusty Tahr 14.04 LTS distribution.  
 
 ```
 sudo apt-get install fort77 g++ lib32stdc++-4.8-dev libc6-dev-i386 libglu1-mesa-dev libmotif-dev:i386 libx11-dev:i386 libxt-dev:i386 scons
@@ -57,18 +57,6 @@ See OSX.md
 These instructions work for Ubuntu and CentOS (RHEL).  
 
 Make a directory. Lets call it ovjbuild and change into that directory.
-`
-The OpenVnmrJ directory contains the following directories and files.
-These files are open-sourced, read the LICENSE file.  
-```
-SConstruct   This is the definition file used by scons. It is similar to Makefile used by
-             the make command.  
-scripts      This contains tools used by scons.  
-src          This contains the source code for OpenVnmrJ. Some of these directories also  
-             contain a SConstruct file that is used to build / compile that specific  
-             program.  
-```             
-
 Check out the ovjTools repository from GitHub with  
 ```
 git clone https://github.com/OpenVnmrJ/ovjTools.git
@@ -116,15 +104,29 @@ The buildovj script is commented to descibe various options.
 
 Other options are described in that file but the defaults should be okay. The buildovj
 script collects all the options and the makeovj script does all the work. In general,
-the makeovj script does three things. The first is to update or clone the sources from git.
+the makeovj script does three things. The first is to update or clone OpenVnmrJ from git.
 The second part compiles everything (doScons=yes). The third part collects files into the DVD images
 (buildOVJ=yes).  
 
+The OpenVnmrJ directory contains the following directories and files.
+These files are open-sourced, read the LICENSE file.  
+
+```
+SConstruct   This is the definition file used by scons. It is similar to Makefile used by
+             the make command.
+scripts      This contains tools used by scons.
+src          This contains the source code for OpenVnmrJ. Some of these directories also
+             contain a SConstruct file that is used to build / compile that specific
+             program.
+```
+
 Run the command
 
-```  ./buildovj```
+```
+   ./buildovj
+```
 
-This command will compile the entire OVJ package. It will use the SConstruct file
+This command will compile the entire OVJ package. It will use the OpenVnmrJ/SConstruct file
 to  compile the programs in src and place the results in directories at the same level
 as the OpenVnmrJ level. The console directory will contain console-specific files.
 The vnmr directory will contain files that are generic. The options directory contains
