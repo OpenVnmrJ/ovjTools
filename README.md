@@ -4,16 +4,6 @@ Tools and libraries to build OpenVnmrJ.
 ## Java
 
 ### Ubuntu and RHEL/CentOS
-You will need to install the Java 6 SDK from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase6-419409.html#jdk-6u39-oth-JPR).  
-
-You must symlink java to jdk1.6.0_39 after downloading and expanding jdk-6u39-linux-x64.bin:  
-```
-cd ovjTools
-chmod a+x jdk-6u39-linux-x64.bin
-./jdk-6u39-linux-x64.bin
-rm java; ln -s jdk1.6.0_39 java
-```
-
 The only tested version is the Java SE Development Kit 6u39. If you want to use Java 8, please try building and **testing** on a spectrometer.   
 
 If you've tested and there are no problems with a newer Java, please file an [issue](https://github.com/OpenVnmrJ/ovjTools/issues).
@@ -66,28 +56,22 @@ See OSX.md
 
 These instructions work for Ubuntu and CentOS (RHEL).  
 
-Make a directory. Lets call it ovjbuild.  Check out the OpenVnmrJ repository from GitHub:  
-```
-git clone https://github.com/OpenVnmrJ/OpenVnmrJ.git
-```
-
-The OpenVnmrJ directory contains the following directories and files.
-These files are open-sourced, read the LICENSE file.  
-```
-SConstruct   This is the definition file used by scons. It is similar to Makefile used by
-             the make command.  
-scripts      This contains tools used by scons.  
-src          This contains the source code for OpenVnmrJ. Some of these directories also  
-             contain a SConstruct file that is used to build / compile that specific  
-             program.  
-```             
-
-Check out the ovjTools repository from GitHub:  
+Make a directory. Lets call it ovjbuild and change into that directory.
+Check out the ovjTools repository from GitHub with  
 ```
 git clone https://github.com/OpenVnmrJ/ovjTools.git
 ```
+or Download it from the GitHub web site. If you download it, move it to the ovjbuild directory
+and unzip it with the commands
+```
+mv ~/Downloads/ovjTools-master.zip .
+unzip ovjTools-master.zip
+rm ovjTools-master.zip
+```
+
 The ovjTools directory contains the following diretories and files.   
 ```
+bin            Scripts to build the OpenVnmrJ package
 fftw           Used by xrecon (imaging program)
 fftw_mac       Used by xrecon MacOS version (imaging program)
 gsllibs        Used by programs in bin_image
@@ -105,60 +89,75 @@ tcl            This contains headers and libraries for compiling programs that
 We compile VnmrJ java programs with jdk1.6.0_39_64. The java in ovjTools should be a soft link
 to the actual java JDK. (On Linux).   
 
-At the same level as the OpenVnmrJ directory, do the following  
+At the same level as the ovjTools directory, do the following  
 
 ```
-  mkdir bin
-  cp OpenVnmrJ/src/scripts/buildovj bin
-  cp OpenVnmrJ/src/scripts/makeovj bin
-  cd bin
+cp -r ovjTools/bin .
+cd bin
 ```
 
-Edit the buildovj script and set the ovjBuildDir and OVJ_TOOLS parameters for your
-environment. The OVJ_TOOLS parameter should point to the ovjTools directory. The ovjTools
-directory does not necessarily need to be in the same directory as the git-repo directory,
-although that may be a convenient place.  
+The bin directory contains three scripts. The buildovj script controls the overall build
+process. By default, it should work correctly. However, if you wish to customize the build
+process, edit this script.  For example, you may decide not to build the Mercury / Inova
+version. Or you may decide to move the ovjTools directory to a different location.
+The buildovj script is commented to descibe various options.
 
 Other options are described in that file but the defaults should be okay. The buildovj
 script collects all the options and the makeovj script does all the work. In general,
-the makeovj script does three things. The first is to update the sources from git.
-Since we are not yet actually using git, this part is turned off (doGitClone=no).
-The second part compiles everything. This step is equivalent to what was done in the previous
-two versions of OVJ (doScons=yes). The third part collects files into the DVD images
+the makeovj script does three things. The first is to update or clone OpenVnmrJ from git.
+The second part compiles everything (doScons=yes). The third part collects files into the DVD images
 (buildOVJ=yes).  
 
+The OpenVnmrJ directory contains the following directories and files.
+These files are open-sourced, read the LICENSE file.  
+
 ```
-Run the command
-  ./buildovj
+SConstruct   This is the definition file used by scons. It is similar to Makefile used by
+             the make command.
+scripts      This contains tools used by scons.
+src          This contains the source code for OpenVnmrJ. Some of these directories also
+             contain a SConstruct file that is used to build / compile that specific
+             program.
 ```
 
-This command will compile the entire OVJ package. It will use the SConstruct file
+Run the command
+
+```
+./buildovj
+```
+
+This command will compile the entire OVJ package. It will use the OpenVnmrJ/SConstruct file
 to  compile the programs in src and place the results in directories at the same level
-as the git-repo level. The console directory will contain console-specific files.
+as the OpenVnmrJ level. The console directory will contain console-specific files.
 The vnmr directory will contain files that are generic. The options directory contains
 optional software and code that may be optionally installed.  If the buildOVJ and / or
 buildOVJMI parameters are set to yes in the buildovj script, additional directories will
 be build that are an image of the DVD installer. A log of the build process will be
-placed in a logs direcory.  
-In summary, before running the buildovj script, your build
-directory will have bin, git-repo, and ovjTools directories.  If you have previously
+placed in a logs direcory.  The script whatsin in the bin directory will produce a
+summary of the content of the build log file.
+
+In summary, before running the buildovj script, your build directory will have bin
+and ovjTools directories and optionally, an OpenVnmrJ directory.  If you have previously
 run the buildovj script, there will also be console, logs, options, and vnmr directories.
 Depending on your selections in the buildovj script, the default DVD images dvdimageOVJ
 and dvdimageOVJMI may also be present.  
-When the buildovj script is executed, one of the
-first things it does is remove any preexisting console, options, vnmr, and dvd image
-directories.  
+When the buildovj script is executed, one of the first things it does is remove any
+preexisting console, options, vnmr, and dvd image directories.  
 
 You can also change into specific directories in src and run scons. That will build that
 specific program. To compile the java programs, the OVJ_TOOLS env parameter must be set
 to point to the ovjTools directory. In a bash shell, the command would be  
-```  export OVJ_TOOLS=<path>```
-In a csh, the command would be  
-```  setenv OVJ_TOOLS <path>```
-
-For example,  
 ```
-cd git-repo/src/vnmrbg
+export OVJ_TOOLS=<path>
+```
+In a csh, the command would be  
+```
+setenv OVJ_TOOLS <path>
+```
+
+Then, for example,  
+```
+cd OpenVnmrJ/src/vnmrbg
 scons
 ```
 will build only the Vnmrbg program.  
@@ -177,7 +176,7 @@ is "su acqproc" to start the OVJ version of the procs.
 Once the buildovj script is complete, and you had selected the buildOVJ parameter, you 
 will have a dvd image that is constructed so that the MacOS utility PackageMaker can be
 used to build a MacOS installer. Instructions for building the installer are in
-git-repo/src/macos/readme_packagemaker. If a prior VJ42 install is present (/vnmr
+OpenVnmrJ/src/macos/readme_packagemaker. If a prior VJ42 install is present (/vnmr
 is a symbolic link to the VJ42 installation), then the OpenVnmrJ installation will
 collect various files from the VJ42 install so that the OpenVnmrJ install should be complete.  
 *TODO: A single draggable VnmrJ.app.*  
@@ -188,7 +187,7 @@ to one or more programs that need to be compiled. Some of the subdirectories con
 that is shared by several programs. Some directories also contain a special sconsPostAction
 file. These typically are a shell script with symbolic link commands. For example,
 src/common/maclib has a sconsPostAction files which creates aliases of some of the macros.
-The SConstuct must explicitly execute the sconsPostAction. See the git-repo/SConstruct file
+The SConstuct must explicitly execute the sconsPostAction. See the OpenVnmrJ/SConstruct file
 for an example.   
 
 The src directory contains the following subdirectories.  
@@ -447,3 +446,4 @@ libtiff5-dev
 libtiffxx5
 zlib1g-dev
 ```
+
