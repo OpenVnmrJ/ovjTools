@@ -71,7 +71,7 @@ gitSSH=''
 # If you plan to commit changes to the OpenVnmrJ project,
 # use should use the ssh protocol on your fork of the OpenVnmrJ project.
 # Replace the two userName strings in gitSSH with your github account name.
-# gitSSH='ssh://userName@github.com:userName/OpenVnmrJ.git'
+# gitSSH='ssh://userName@github.com/userName/OpenVnmrJ.git'
 
 doScons=yes
 buildOVJ=yes    # Build for Direct-Drive (VnmrS/DD2/ProPulse)

@@ -35,7 +35,7 @@ scientific library.  Code compiled with the GSL will be subject to license restr
 The minimum package requirement for Ubuntu Trusty Tahr 14.04 LTS assumes that you have
 installed the standard desktop edition of Ubuntu.  A minimal install may require additional
 packages including but not limited to make, unzip and zip.  This build configuration has been
-tested on Ubuntu but should work for any buntu Trusty Tahr 14.04 LTS distribution.  
+tested on Ubuntu but should work for any *buntu Trusty Tahr 14.04 LTS distribution.  
 
 ```
 sudo apt-get install fort77 g++ lib32stdc++-4.8-dev libc6-dev-i386 libglu1-mesa-dev libmotif-dev:i386 libx11-dev:i386 libxt-dev:i386 scons
@@ -147,11 +147,13 @@ preexisting console, options, vnmr, and dvd image directories.
 You can also change into specific directories in src and run scons. That will build that
 specific program. To compile the java programs, the OVJ_TOOLS env parameter must be set
 to point to the ovjTools directory. In a bash shell, the command would be  
-```  export OVJ_TOOLS=<path>```
+```  export OVJ_TOOLS=<path>
+```
 In a csh, the command would be  
-```  setenv OVJ_TOOLS <path>```
+```  setenv OVJ_TOOLS <path>
+```
 
-For example,  
+Then, for example,  
 ```
 cd OpenVnmrJ/src/vnmrbg
 scons
