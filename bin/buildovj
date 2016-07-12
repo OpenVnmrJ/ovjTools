@@ -70,14 +70,14 @@ then
 fi
 
 gitURL='https://github.com/OpenVnmrJ/OpenVnmrJ.git'
-gitSSH='git@github.com:OpenVnmrJ/OpenVnmrJ.git'
-#gitSSH=''
+gitSSH='git@github.com:userName/OpenVnmrJ.git'
+gitSSH=''
 # If gitSSH is an empty string, the gitURL is used
 # If you plan to commit changes to the OpenVnmrJ project,
 # use should use the ssh protocol on your fork of the OpenVnmrJ project.
 # Replace the two userName strings in gitSSH with your github account name.
 # gitSSH='ssh://userName@github.com/userName/OpenVnmrJ.git'
-# or using SSH keys, comment out the second gitSSH line
+# or using SSH keys, replace the userName string and comment out the second gitSSH line
 
 doScons=yes
 buildOVJ=yes    # Build for Direct-Drive (VnmrS/DD2/ProPulse)
