@@ -50,9 +50,9 @@ dvdBuildName2=dvdimageOVJMI
 dvdCopyName1=OVJ_$shortDate
 dvdCopyName2=OVJ_MI_$shortDate
 ovjAppName=OpenVnmrJ_1.1.app
-if [ "$(uname -s)" == "Darwin" ]; then
+if [ "$(uname -s)" = "Darwin" ]; then
   nprocs=$(sysctl -n hw.ncpu)
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; then
   nprocs=$(nproc)   
 fi
 sconsJoption=$(( nprocs + 1 ))
