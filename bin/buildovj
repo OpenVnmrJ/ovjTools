@@ -70,8 +70,13 @@ gitSSH=''
 # If gitSSH is an empty string, the gitURL is used
 # If you plan to commit changes to the OpenVnmrJ project,
 # use should use the ssh protocol on your fork of the OpenVnmrJ project.
-# Replace the two userName strings in gitSSH with your github account name.
-# gitSSH='ssh://userName@github.com/userName/OpenVnmrJ.git'
+# Replace the userName string in gitSSH with your github account name.
+# gitSSH='ssh://git@github.com/userName/OpenVnmrJ.git'
+
+gitBranch='master'
+# If you plan to commit changes, you should commit them to the development branch.
+# If you just want to build the latest official release, build from the master branch.
+# gitBranch='development'
 
 doScons=yes
 buildOVJ=yes    # Build for Direct-Drive (VnmrS/DD2/ProPulse)
@@ -96,6 +101,6 @@ then
 fi
 ovjLogFile=$ovjBuildDir/logs/makeovj.$date
 cd $ovjBuildDir
-export ovjBuildDir workspacedir OVJ_TOOLS dvdCopyDir1 dvdCopyDir2 dvdBuildName1 dvdBuildName2 dvdCopyName1 dvdCopyName2 ovjLogFile doScons doGitClone mail_list gitURL gitSSH ovjAppName buildOVJ buildOVJMI sconsJoption osxflags
+export ovjBuildDir workspacedir OVJ_TOOLS dvdCopyDir1 dvdCopyDir2 dvdBuildName1 dvdBuildName2 dvdCopyName1 dvdCopyName2 ovjLogFile doScons doGitClone mail_list gitURL gitSSH gitBranch ovjAppName buildOVJ buildOVJMI sconsJoption osxflags
 $ovjBuildDir/bin/makeovj > $ovjLogFile 2>&1
 
