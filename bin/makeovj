@@ -50,10 +50,11 @@ then
        echo "===>>> $date Clone OpenVnmrJ (ssh) <<<==="
        git clone ${gitSSH}
     fi
-# To build from a branch, uncomment the next three lines, altering branch as needed
-#   cd $buildDir/OpenVnmrJ
-#   git branch --track VnmrJ_3.1 origin/VnmrJ_3.1
-#   git checkout VnmrJ_3.1
+    if [ x$gitBranch != "x" -a x$gitBranch != "xmaster" ]
+    then
+       cd $buildDir/OpenVnmrJ
+       git checkout $gitBranch
+    fi
   fi
   if [ x$doGitClone = "xpull" ]
   then
