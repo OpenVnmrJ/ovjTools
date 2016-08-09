@@ -36,8 +36,12 @@
 #
 # set -x
 
-ovjBuildDir=`dirname "$(readlink -f $0))"`
-ovjBuildDir=`dirname $ovjBuildDir`
+if [ "$(uname -s)" == "Darwin" ]; then
+  ovjBuildDir="$(pwd)"
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+  ovjBuildDir=`dirname "$(readlink -f $0))"`
+fi
+ovjBuildDir=`dirname "${ovjBuildDir}"`
 workspacedir=$ovjBuildDir
 OVJ_TOOLS=$ovjBuildDir/ovjTools
 
@@ -60,12 +64,13 @@ osxSDK='/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Dev
 osxflags="-mmacosx-version-min=10.9 -isysroot ${osxSDK}"
 
 doGitClone=pull
-if [ ! -d $ovjBuildDir/OpenVnmrJ ]
+if [ ! -d "${ovjBuildDir}/OpenVnmrJ" ]
 then
    doGitClone=yes
 fi
 
 gitURL='https://github.com/OpenVnmrJ/OpenVnmrJ.git'
+gitSSH='git@github.com:userName/OpenVnmrJ.git'
 gitSSH=''
 # If gitSSH is an empty string, the gitURL is used
 # If you plan to commit changes to the OpenVnmrJ project,
@@ -95,12 +100,12 @@ buildOVJMI=yes  # Build for Mercury/Inova
 # sconsJoption=5
 
 date=`date +%F_%T`
-if [ ! -d $ovjBuildDir/logs ]
+if [ ! -d "${ovjBuildDir}/logs" ]
 then
-   mkdir -p $ovjBuildDir/logs
+   mkdir -p "${ovjBuildDir}/logs"
 fi
-ovjLogFile=$ovjBuildDir/logs/makeovj.$date
-cd $ovjBuildDir
+ovjLogFile="${ovjBuildDir}/logs/makeovj.$date"
+cd "${ovjBuildDir}"
 export ovjBuildDir workspacedir OVJ_TOOLS dvdCopyDir1 dvdCopyDir2 dvdBuildName1 dvdBuildName2 dvdCopyName1 dvdCopyName2 ovjLogFile doScons doGitClone mail_list gitURL gitSSH gitBranch ovjAppName buildOVJ buildOVJMI sconsJoption osxflags
-$ovjBuildDir/bin/makeovj > $ovjLogFile 2>&1
+"${ovjBuildDir}/bin/makeovj" > "${ovjLogFile}" 2>&1
 
