@@ -36,9 +36,10 @@
 #
 # set -x
 
-if [ "$(uname -s)" == "Darwin" ]; then
-  ovjBuildDir="$(pwd)"
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+if [ "$(uname -s)" = "Darwin" ]; then
+  filename=`perl -e 'use Cwd "abs_path";print abs_path(shift)' $0`
+  ovjBuildDir=`dirname "${filename}"`
+else
   ovjBuildDir=`dirname "$(readlink -f $0))"`
 fi
 ovjBuildDir=`dirname "${ovjBuildDir}"`
@@ -70,13 +71,13 @@ then
 fi
 
 gitURL='https://github.com/OpenVnmrJ/OpenVnmrJ.git'
-gitSSH='git@github.com:userName/OpenVnmrJ.git'
+gitSSH='ssh://git@github.com/userName/OpenVnmrJ.git'
 gitSSH=''
 # If gitSSH is an empty string, the gitURL is used
 # If you plan to commit changes to the OpenVnmrJ project,
 # use should use the ssh protocol on your fork of the OpenVnmrJ project.
 # Replace the userName string in gitSSH with your github account name.
-# gitSSH='ssh://git@github.com/userName/OpenVnmrJ.git'
+# and comment out the second gitSSH line (gitSSH='')
 
 gitBranch='master'
 # If you plan to commit changes, you should commit them to the development branch.
