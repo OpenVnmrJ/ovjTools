@@ -39,6 +39,18 @@
 if [ "$(uname -s)" = "Darwin" ]; then
   filename=`perl -e 'use Cwd "abs_path";print abs_path(shift)' $0`
   ovjBuildDir=`dirname "${filename}"`
+  timestamp=`date +%s`
+  if [ -d "${ovjBuildDir}" ]; then
+    touch "${ovjBuildDir}"/TESTFILE-$timestamp "${ovjBuildDir}"/testfile-$timestamp
+    rm "${ovjBuildDir}"/TESTFILE-$timestamp
+    if [ -f "${ovjBuildDir}"/testfile-$timestamp ]; then
+      echo "Case sensitive file system"
+      rm "${ovjBuildDir}"/testfile-$timestamp
+    else 
+      echo "Case insensitive file system. Aborting..."
+      exit 1
+    fi
+  fi
 else
   ovjBuildDir=`dirname "$(readlink -f $0))"`
 fi
