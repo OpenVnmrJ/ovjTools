@@ -60,12 +60,11 @@ then
   then
     cd $buildDir/OpenVnmrJ
     rm -rf src/* # src is mixed with copied files and build artifacts
-#   git checkout src
-    echo "git fetch origin master"
-#   git pull src
-    git fetch origin master
-    git checkout origin/master -- src
-    git pull origin master # on CentOS's older git above doesn't work
+    git checkout src
+    git pull 
+#   git fetch origin master
+#    git checkout origin/master -- src
+#    git pull origin master # on CentOS's older git above doesn't work
   fi
   if [ x$doGitClone = "xrebuild" ]
   then
