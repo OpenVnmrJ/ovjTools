@@ -18,6 +18,17 @@ See OSX.md for more information.
 Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libraries installed.  
 *A 64-bit build needs to be tested. All components should be built 64-bit and tested.*  
 
+### Virtual Machine
+
+OpenVnmrJ can most easily be built in a virtual machine for one of the supported operating
+systems.  There are pre-configured VM descriptions (using [vagrant](https://www.vagrantup.com/) )
+for CentOS 6/7 and Ubuntu 14.04.  The Vagrant files live in the [vms](vms/) directory.
+
+To build using one of these machine descriptions, simply run the script in ojvTools/bin/build_vm.sh:
+`cd ovjTools/bin && ./build_vm.sh centos6` or `cd ovjTools/bin && ./build_vm.sh trusty64`
+The build_vm.sh script is not very sophisticated, in that it defaults to just building the
+master branch from the OpenVnmrJ github repository.
+
 ### EL6 (RHEL/CentOS 6)
 
 The minimum package requirement for EL6 assumes that your system was installed with the
@@ -169,7 +180,7 @@ will build only the Vnmrbg program.
 
 #### For Linux systems:  
 Once the buildovj script is complete, and you had selected the buildOVJ and / or buildOVJMI
-parameters, you can cd dvdimageOVJ or dvdimageOVJMI and run ./load.nmr to install a complete
+parameters, you can `cd dvdimageOVJ` or `cd dvdimageOVJMI` and run `./load.nmr` to install a complete
 OpenVnmrJ package. If a prior VJ42 install is present (/vnmr is a symbolic link to the VJ42
 installation), then the OpenVnmrJ installation will collect various files from the VJ42 install
 so that the OpenVnmrJ install should be complete.  See the src/scripts/update_OpenVnmrJ.sh
@@ -180,20 +191,21 @@ is "su acqproc" to start the OVJ version of the procs.
 #### For MacOS systems:  
 Once the buildovj script is complete, and you had selected the buildOVJ parameter, you 
 will have a dvd image that is constructed so that the MacOS utility PackageMaker can be
-used to build a MacOS installer. Instructions for building the installer are in
-OpenVnmrJ/src/macos/readme_packagemaker. If a prior VJ42 install is present (/vnmr
-is a symbolic link to the VJ42 installation), then the OpenVnmrJ installation will
-collect various files from the VJ42 install so that the OpenVnmrJ install should be complete.  
-*TODO: A single draggable VnmrJ.app.*  
+used to build a MacOS installer. Instructions for building the installer are 
+[OpenVnmrJ/src/macos/readme_packagemaker](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master/src/macos/readme_packagemaker).
+If a prior VJ42 install is present (/vnmr is a symbolic link to the VJ42 installation), then the
+OpenVnmrJ installation will collect various files from the VJ42 install so that the OpenVnmrJ
+install should be complete.  *TODO: A single draggable VnmrJ.app.*  
 
 #### Directories
 The src directory has a number of subdirectories. In general, each subdirectory corresponds
 to one or more programs that need to be compiled. Some of the subdirectories contain code
 that is shared by several programs. Some directories also contain a special sconsPostAction
 file. These typically are a shell script with symbolic link commands. For example,
-src/common/maclib has a sconsPostAction files which creates aliases of some of the macros.
-The SConstuct must explicitly execute the sconsPostAction. See the OpenVnmrJ/SConstruct file
-for an example.   
+[src/common/maclib](src/common/maclib) has a sconsPostAction files which creates aliases of
+some of the macros.  The SConstuct must explicitly execute the sconsPostAction. See the
+[OpenVnmrJ/SConstruct](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master/OpenVnmrJ/SConstruct)
+file for an example.   
 
 The src directory contains the following subdirectories.  
 

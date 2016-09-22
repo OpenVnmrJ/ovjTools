@@ -8,7 +8,7 @@ set -e
 TARGET_OS=$1
 
 function usage {
-    echo "usage: $0 <centos7|ubuntu14|trusty64>"
+    echo "usage: $0 < centos6 | centos7 | ubuntu14 | trusty64 >"
     exit 1
 }
 
@@ -34,6 +34,8 @@ export OVJ_TOOLS=$ovjBuildDir/ovjTools
 
 # validate the target OS
 case $TARGET_OS in
+    centos6)
+        ;;
     centos7)
         ;;
     ubuntu14|trusty64)
@@ -51,15 +53,16 @@ fi
 
 # build the VM, and copy the source to it
 cd $OVJ_TOOLS/vms/$TARGET_OS
-vagrant up
+vagrant up --provider virtualbox
 
 # setup the environment
-vagrant ssh -c 'echo "export OVJ_TOOLS=$HOME/ovjbuild/ovjTools" >> ~/.profile'
-vagrant ssh -c 'echo "export ovjBuildDir=$HOME/ovjbuild" >> ~/.profile'
+vagrant ssh -c 'echo "export OVJ_TOOLS=$HOME/ovjbuild/ovjTools" >> ~/.bashrc'
+vagrant ssh -c 'echo "export ovjBuildDir=$HOME/ovjbuild" >> ~/.bashrc'
 
 # build OpenVnmrJ
+set -x
 vagrant ssh -c 'mkdir -p $ovjBuildDir'
-vagrant ssh -c 'cd $ovjBuildDir && git checkout https://github.com/OpenVnmrJ/OpenVnmrJ.git'
-vagrant ssh -c 'cd $ovjBuildDir && git checkout https://github.com/OpenVnmrJ/ovjTools.git'
+vagrant ssh -c 'cd $ovjBuildDir && git clone https://github.com/OpenVnmrJ/OpenVnmrJ.git'
+vagrant ssh -c 'cd $ovjBuildDir && git clone https://github.com/OpenVnmrJ/ovjTools.git'
 vagrant ssh -c 'cd $ovjBuildDir && cp -r ovjTools/bin .'
 vagrant ssh -c 'cd $ovjBuildDir/bin && ./buildovj'
