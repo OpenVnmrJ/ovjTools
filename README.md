@@ -28,7 +28,9 @@ yum install compat-gcc-34-g77 glibc-devel.i686 libstdc++.i686 libX11-devel.i686 
 ```
 Optionally, you can also install gsl-devel and libtiff-devel if you wish to compile using the GNU
 scientific library.  Code compiled with the GSL will be subject to license restrictions.  
-*TODO. Configure using Vagrant.*  
+
+There are virtual machine definitions for [vagrant](https://www.vagrantup.com/) in ovjTools/vms/.
+These can be built using the commands `~/bin/make_vm.sh centos7` and `~/bin/make_vm.sh trusty64`
 
 ### Ubuntu Trusty Tahr 14.04 LTS
 
@@ -59,7 +61,10 @@ These instructions work for Ubuntu and CentOS (RHEL).
 Make a directory. Lets call it ovjbuild and change into that directory.
 Check out the ovjTools repository from GitHub with  
 ```
+mkdir ovjbuild && cd ovjbuild
 git clone https://github.com/OpenVnmrJ/ovjTools.git
+export ovjBuildDir=`pwd`
+export OVJ_TOOLS=$ovjBuildDir/ovjTools
 ```
 or Download it from the GitHub web site. If you download it, move it to the ovjbuild directory
 and unzip it with the commands
