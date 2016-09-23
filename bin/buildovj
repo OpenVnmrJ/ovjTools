@@ -80,10 +80,8 @@ gitSSH=''
 # and comment out the second gitSSH line (gitSSH='')
 
 gitBranch='master'
-# If you plan to commit changes, you should commit them to the
-# development branch.
-# If you just want to build the latest official release, build
-# from the master branch.
+# If you plan to commit changes, you should commit them to the development branch.
+# If you just want to build the latest official release, build from the master branch.
 # gitBranch='development'
 
 doScons=yes
