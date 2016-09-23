@@ -75,8 +75,8 @@ gitSSH='ssh://git@github.com/userName/OpenVnmrJ.git'
 gitSSH=''
 # If gitSSH is an empty string, the gitURL is used
 # If you plan to commit changes to the OpenVnmrJ project,
-# use should use the ssh protocol on your fork of the OpenVnmrJ project.
-# Replace the userName string in gitSSH with your github account name.
+# you should use the ssh protocol on your fork of the OpenVnmrJ project.
+# Replace the userName string in gitSSH with your github account name
 # and comment out the second gitSSH line (gitSSH='')
 
 gitBranch='master'
