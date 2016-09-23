@@ -20,8 +20,8 @@ Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libr
 
 ### Virtual Machine
 
-OpenVnmrJ can most easily be built in a virtual machine for one of the supported operating
-systems.  There are pre-configured VM descriptions (using [vagrant](https://www.vagrantup.com/) )
+OpenVnmrJ can easily be built in a virtual machine to isolate the build from your systems.
+There are pre-configured VM descriptions (using [vagrant](https://www.vagrantup.com/) )
 for CentOS 6/7 and Ubuntu 14.04.  The Vagrant files live in the [vms](vms/) directory.
 
 To build using one of these machine descriptions, simply run the script in ojvTools/bin/build_vm.sh:

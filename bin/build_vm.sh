@@ -56,13 +56,20 @@ cd $OVJ_TOOLS/vms/$TARGET_OS
 vagrant up --provider virtualbox
 
 # setup the environment
-vagrant ssh -c 'echo "export OVJ_TOOLS=$HOME/ovjbuild/ovjTools" >> ~/.bashrc'
-vagrant ssh -c 'echo "export ovjBuildDir=$HOME/ovjbuild" >> ~/.bashrc'
+set -x
+if [[ $TARGET_OS == centos* ]]; then
+    vagrant ssh -c 'echo "export OVJ_TOOLS=$HOME/ovjbuild/ovjTools" >> ~/.bashrc'
+    vagrant ssh -c 'echo "export ovjBuildDir=$HOME/ovjbuild" >> ~/.bashrc'
+else
+    vagrant ssh -c 'echo "export OVJ_TOOLS=$HOME/ovjbuild/ovjTools" >> ~/.profile'
+    vagrant ssh -c 'echo "export ovjBuildDir=$HOME/ovjbuild" >> ~/.profile'
+fi    
 
 # build OpenVnmrJ
-set -x
 vagrant ssh -c 'mkdir -p $ovjBuildDir'
 vagrant ssh -c 'cd $ovjBuildDir && git clone https://github.com/OpenVnmrJ/OpenVnmrJ.git'
 vagrant ssh -c 'cd $ovjBuildDir && git clone https://github.com/OpenVnmrJ/ovjTools.git'
 vagrant ssh -c 'cd $ovjBuildDir && cp -r ovjTools/bin .'
 vagrant ssh -c 'cd $ovjBuildDir/bin && ./buildovj'
+
+vagrant ssh -c 'cd $ovjBuildDir/dvdimageOVJ && sudo ./load.nmr'
