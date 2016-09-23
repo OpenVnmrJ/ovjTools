@@ -18,31 +18,14 @@ See [OSX.md](OSX.md) for more information.
 Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libraries installed.  
 *A 64-bit build needs to be tested. All components should be built 64-bit and tested.*  
 
-### Virtual Machine
+### Building in a Virtual Machine
 
 OpenVnmrJ can easily be built in a virtual machine to isolate the build from your host system.
 There are pre-configured VM descriptions (using [Vagrant](https://www.vagrantup.com/) )
 for CentOS 6/7 and Ubuntu 14.04.  These will automatically create an appropriate VM for
 building and running OpenVnmrJ.  The Vagrant files and live in the [vms/](vms/) directory.
 
-To build OpenVnmrJ using one of these machine descriptions, you will need to install
-[Vagrant](https://www.vagrantup.com/), then just checkout the ovjTools repository and
-run the script [build_vm.sh](bin/build_vm.sh):
-
-```
-git clone git@github.com:OpenVnmrJ/ovjTools.git
-cd ovjTools/bin && ./build_vm.sh centos6
-````
-
-or (for Ubuntu)
-
-```
-git clone git@github.com:OpenVnmrJ/ovjTools.git
-cd ovjTools/bin && ./build_vm.sh trusty64
-```
-
-The build_vm.sh script is not yet very sophisticated, in that it defaults to just building the
-master branch from the OpenVnmrJ github repository.
+The only requirement is to have Vagrant and VirtualBox insalled on your machine.
 
 ### EL6 (RHEL/CentOS 6)
 
@@ -78,6 +61,30 @@ this document.
 [See OSX.md](OSX.md)
 
 ## BUILDING
+
+### In a Virtual Machine
+To build OpenVnmrJ using one of these machine descriptions, you will need to install
+[Vagrant](https://www.vagrantup.com/), then just checkout the ovjTools repository and
+run the script [build_vm.sh](bin/build_vm.sh):
+
+```
+git clone git@github.com:OpenVnmrJ/ovjTools.git
+cd ovjTools/bin && ./build_vm.sh centos6
+````
+
+or (for Ubuntu)
+
+```
+git clone git@github.com:OpenVnmrJ/ovjTools.git
+cd ovjTools/bin && ./build_vm.sh trusty64
+```
+
+The build_vm.sh script is not yet very sophisticated, in that it defaults to just building the
+master branch from the OpenVnmrJ github repository.
+
+The final dvdimageOVJ will be copied to the VM's directory, ie ovjTools/vms/centos6/ .
+
+### Ubuntu and CentOS
 
 These instructions work for Ubuntu and CentOS (RHEL).  
 
