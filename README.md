@@ -1,5 +1,5 @@
 # ovjTools
-Tools and libraries to build [OpenVnmrJ](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master). 
+Tools and libraries to build [OpenVnmrJ](http://openvnmrj.org).
 
 ## Java
 
@@ -21,12 +21,26 @@ Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libr
 ### Virtual Machine
 
 OpenVnmrJ can easily be built in a virtual machine to isolate the build from your host system.
-There are pre-configured VM descriptions (using [vagrant](https://www.vagrantup.com/) )
+There are pre-configured VM descriptions (using [Vagrant](https://www.vagrantup.com/) )
 for CentOS 6/7 and Ubuntu 14.04.  These will automatically create an appropriate VM for
 building and running OpenVnmrJ.  The Vagrant files and live in the [vms/](vms/) directory.
 
-To build OpenVnmrJ using one of these machine descriptions, run the script [build_vm.sh](bin/build_vm.sh):
-`cd ovjTools/bin && ./build_vm.sh centos6` or `cd ovjTools/bin && ./build_vm.sh trusty64`
+To build OpenVnmrJ using one of these machine descriptions, you will need to install
+[Vagrant](https://www.vagrantup.com/), then just checkout the ovjTools repository and
+run the script [build_vm.sh](bin/build_vm.sh):
+
+```
+git clone git@github.com:OpenVnmrJ/ovjTools.git
+cd ovjTools/bin && ./build_vm.sh centos6
+````
+
+or (for Ubuntu)
+
+```
+git clone git@github.com:OpenVnmrJ/ovjTools.git
+cd ovjTools/bin && ./build_vm.sh trusty64
+```
+
 The build_vm.sh script is not yet very sophisticated, in that it defaults to just building the
 master branch from the OpenVnmrJ github repository.
 
@@ -40,10 +54,6 @@ yum install compat-gcc-34-g77 glibc-devel.i686 libstdc++.i686 libX11-devel.i686 
 ```
 Optionally, you can also install gsl-devel and libtiff-devel if you wish to compile using the GNU
 scientific library.
-
-There are virtual machine definitions for [Vagrant](https://www.vagrantup.com/) in ovjTools/vms/.
-These can be built using the commands `$OVJ_TOOLS/bin/make_vm.sh centos6` and
-`$OVJ_TOOLS/bin/make_vm.sh trusty64`.
 
 ### Ubuntu Trusty Tahr 14.04 LTS
 
