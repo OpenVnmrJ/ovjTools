@@ -1,5 +1,5 @@
 # ovjTools
-Tools and libraries to build OpenVnmrJ. 
+Tools and libraries to build [OpenVnmrJ](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master). 
 
 ## Java
 
@@ -11,7 +11,7 @@ If you've tested and there are no problems with a newer Java, please file an [is
 ### OS X
 The OS X build ignores the java link and uses the system Java. Java 8u92 was found to work.  
 Download and install the Java JDK from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)  
-See OSX.md for more information.
+See [OSX.md](OSX.md) for more information.
 
 ## BUILD REQUIREMENTS
 
@@ -22,11 +22,12 @@ Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libr
 
 OpenVnmrJ can easily be built in a virtual machine to isolate the build from your host system.
 There are pre-configured VM descriptions (using [vagrant](https://www.vagrantup.com/) )
-for CentOS 6/7 and Ubuntu 14.04.  The Vagrant files and live in the [vms/](vms/) directory.
+for CentOS 6/7 and Ubuntu 14.04.  These will automatically create an appropriate VM for
+building and running OpenVnmrJ.  The Vagrant files and live in the [vms/](vms/) directory.
 
-To build using one of these machine descriptions, run the script [build_vm.sh](bin/build_vm.sh):
+To build OpenVnmrJ using one of these machine descriptions, run the script [build_vm.sh](bin/build_vm.sh):
 `cd ovjTools/bin && ./build_vm.sh centos6` or `cd ovjTools/bin && ./build_vm.sh trusty64`
-The build_vm.sh script is not very sophisticated, in that it defaults to just building the
+The build_vm.sh script is not yet very sophisticated, in that it defaults to just building the
 master branch from the OpenVnmrJ github repository.
 
 ### EL6 (RHEL/CentOS 6)
@@ -38,9 +39,9 @@ configuration has been tested on CentOS 6.7 but should work for any RHEL or Cent
 yum install compat-gcc-34-g77 glibc-devel.i686 libstdc++.i686 libX11-devel.i686 libXt-devel.i686 openmotif-devel.i686 scons
 ```
 Optionally, you can also install gsl-devel and libtiff-devel if you wish to compile using the GNU
-scientific library.  Code compiled with the GSL will be subject to license restrictions.  
+scientific library.
 
-There are virtual machine definitions for [vagrant](https://www.vagrantup.com/) in ovjTools/vms/.
+There are virtual machine definitions for [Vagrant](https://www.vagrantup.com/) in ovjTools/vms/.
 These can be built using the commands `$OVJ_TOOLS/bin/make_vm.sh centos6` and
 `$OVJ_TOOLS/bin/make_vm.sh trusty64`.
 
@@ -64,9 +65,9 @@ this document.
 
 ### OS X
 
-See OSX.md
+[See OSX.md](OSX.md)
 
-## INSTALLATION & COMPILATION
+## BUILDING
 
 These instructions work for Ubuntu and CentOS (RHEL).  
 
@@ -179,6 +180,10 @@ scons
 ```
 will build only the Vnmrbg program.  
 
+
+## INSTALLATION
+
+
 #### For Linux systems:  
 Once the buildovj script is complete, and you had selected the buildOVJ and / or buildOVJMI
 parameters, you can `cd dvdimageOVJ` or `cd dvdimageOVJMI` and run `./load.nmr` to install a complete
@@ -198,12 +203,16 @@ If a prior VJ42 install is present (/vnmr is a symbolic link to the VJ42 install
 OpenVnmrJ installation will collect various files from the VJ42 install so that the OpenVnmrJ
 install should be complete.  *TODO: A single draggable VnmrJ.app.*  
 
+## CODE ORGANIZATION
+
 #### Directories
-The src directory has a number of subdirectories. In general, each subdirectory corresponds
+The [OpenVnmrJ/src](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master/src) directory has a
+number of subdirectories. In general, each subdirectory corresponds
 to one or more programs that need to be compiled. Some of the subdirectories contain code
 that is shared by several programs. Some directories also contain a special sconsPostAction
 file. These typically are a shell script with symbolic link commands. For example,
-[src/common/maclib](src/common/maclib) has a sconsPostAction files which creates aliases of
+[src/common/maclib](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master/src/common/maclib) has a
+sconsPostAction files which creates aliases of
 some of the macros.  The SConstuct must explicitly execute the sconsPostAction. See the
 [OpenVnmrJ/SConstruct](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master/OpenVnmrJ/SConstruct)
 file for an example.   
