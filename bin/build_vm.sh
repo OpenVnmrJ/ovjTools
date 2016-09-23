@@ -13,24 +13,16 @@ function usage {
 }
 
 # check correctness of ovjBuildDir, and set OVJ_TOOLS if necessary
-if [ x$ovjBuildDir = "x" ] ; then
-   echo "ERROR: set ovjBuildDir environment variable to the directory containing ovjTools/ and OpenVnmrJ/"
-   echo "ie: export ovjBuildDir=$HOME/src/OpenVnmrJBuild/"
+if [ "x$OVJ_TOOLS" = "x" ] ; then
+   echo "ERROR: set OVJ_TOOLS environment variable to the ovjTools directory"
+   echo "ie: export OVJ_TOOLS=$HOME/src/OpenVnmrJBuild/ovjTools"
    exit 1
 fi
 
-if [ ! -d "$ovjBuildDir/ovjTools" ]; then
-    echo 'ERROR: directory configuration not correct, missing ovjTools from $ovjBuildDir/ovjTools'
+if [ ! -f "$OVJ_TOOLS/OSX.md" ]; then
+    echo 'ERROR: directory configuration not correct, missing OSX.md from \$OVJ_TOOLS/'
     exit 1
 fi
-
-if [ ! -d "$ovjBuildDir/OpenVnmrJ" ]; then
-    echo 'ERROR: directory configuration not correct, missing ovjTools from $ovjBuildDir/ovjTools'
-    exit 1
-fi
-
-# standard export
-export OVJ_TOOLS=$ovjBuildDir/ovjTools
 
 # validate the target OS
 case $TARGET_OS in
@@ -45,24 +37,18 @@ case $TARGET_OS in
         usage
 esac
 
-# setup the odd bin dir, if not yet done
-if [ ! -d "$ovjBuildDir/bin" ]; then
-    echo "copying $ovjBuildDir/ovjTools/bin to $ovjBuildDir/bin"
-    cp -a $ovjBuildDir/ovjTools/bin $ovjBuildDir/bin
-fi
-
 # build the VM, and copy the source to it
 cd $OVJ_TOOLS/vms/$TARGET_OS
 vagrant up --provider virtualbox
 
-# setup the environment
+# setup the environment in the VM
 set -x
 if [[ $TARGET_OS == centos* ]]; then
-    vagrant ssh -c 'echo "export OVJ_TOOLS=$HOME/ovjbuild/ovjTools" >> ~/.bashrc'
     vagrant ssh -c 'echo "export ovjBuildDir=$HOME/ovjbuild" >> ~/.bashrc'
+    vagrant ssh -c 'echo "export OVJ_TOOLS=$ovjBuildDir/ovjTools" >> ~/.bashrc'
 else
-    vagrant ssh -c 'echo "export OVJ_TOOLS=$HOME/ovjbuild/ovjTools" >> ~/.profile'
     vagrant ssh -c 'echo "export ovjBuildDir=$HOME/ovjbuild" >> ~/.profile'
+    vagrant ssh -c 'echo "export OVJ_TOOLS=$ovjBuildDir/ovjTools" >> ~/.profile'
 fi    
 
 # build OpenVnmrJ

@@ -20,8 +20,8 @@ Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libr
 
 ### Virtual Machine Container
 
-The only requirement is to have the free tools [Vagrant](https://www.vagrantup.com/) and
-[VirtualBox](https://www.virtualbox.org/) installed on your build machine.  This method will
+The only requirement to build in a VM is to have the free tools [Vagrant](https://www.vagrantup.com/)
+and [VirtualBox](https://www.virtualbox.org/) installed on your build machine.  This method will
 save you the trouble of installing and configuring an operating system.
 
 ### EL6 (RHEL/CentOS 6)
@@ -62,23 +62,27 @@ this document.
 ### In a Virtual Machine
 
 There are ready-to-use VM descriptions (using [Vagrant](https://www.vagrantup.com/) )
-for CentOS 6/7 and Ubuntu 14.04.  These will automatically create an appropriate VM for
+for CentOS 6/7 and Ubuntu 14.04.  These automatically create and configure an OS in a VM for
 building and running OpenVnmrJ.  The Vagrant files and live in the [vms/](vms/) directory.
 
-To build OpenVnmrJ using one of these machine descriptions, you will need to install
-, then just checkout the ovjTools repository and
-run the script [build_vm.sh](bin/build_vm.sh):
+To build OpenVnmrJ using one of these machine descriptions, (after installing Vagrant)
+just checkout the ovjTools repository, set the ovjBuildDir environment variable,
+and then run the script [build_vm.sh](bin/build_vm.sh):
 
 ```
 git clone git@github.com:OpenVnmrJ/ovjTools.git
-cd ovjTools/bin && ./build_vm.sh centos6
+export OVJ_TOOLS=`pwd`/ovjTools
+cd ovjTools/bin
+./build_vm.sh centos6
 ````
 
 or (for Ubuntu)
 
 ```
 git clone git@github.com:OpenVnmrJ/ovjTools.git
-cd ovjTools/bin && ./build_vm.sh trusty64
+export OVJ_TOOLS=`pwd`/ovjTools
+cd ovjTools/bin
+./build_vm.sh trusty64
 ```
 
 The build_vm.sh script is not yet very sophisticated, in that it defaults to just building the
