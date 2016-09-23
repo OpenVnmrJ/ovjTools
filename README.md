@@ -20,11 +20,11 @@ Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libr
 
 ### Virtual Machine
 
-OpenVnmrJ can easily be built in a virtual machine to isolate the build from your systems.
+OpenVnmrJ can easily be built in a virtual machine to isolate the build from your host system.
 There are pre-configured VM descriptions (using [vagrant](https://www.vagrantup.com/) )
-for CentOS 6/7 and Ubuntu 14.04.  The Vagrant files live in the [vms](vms/) directory.
+for CentOS 6/7 and Ubuntu 14.04.  The Vagrant files and live in the [vms/](vms/) directory.
 
-To build using one of these machine descriptions, simply run the script in ojvTools/bin/build_vm.sh:
+To build using one of these machine descriptions, run the script [build_vm.sh](bin/build_vm.sh):
 `cd ovjTools/bin && ./build_vm.sh centos6` or `cd ovjTools/bin && ./build_vm.sh trusty64`
 The build_vm.sh script is not very sophisticated, in that it defaults to just building the
 master branch from the OpenVnmrJ github repository.
@@ -41,7 +41,8 @@ Optionally, you can also install gsl-devel and libtiff-devel if you wish to comp
 scientific library.  Code compiled with the GSL will be subject to license restrictions.  
 
 There are virtual machine definitions for [vagrant](https://www.vagrantup.com/) in ovjTools/vms/.
-These can be built using the commands `~/bin/make_vm.sh centos7` and `~/bin/make_vm.sh trusty64`
+These can be built using the commands `$OVJ_TOOLS/bin/make_vm.sh centos6` and
+`$OVJ_TOOLS/bin/make_vm.sh trusty64`.
 
 ### Ubuntu Trusty Tahr 14.04 LTS
 
