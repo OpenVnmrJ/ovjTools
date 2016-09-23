@@ -14,9 +14,9 @@ function usage {
 
 # check correctness of ovjBuildDir, and set OVJ_TOOLS if necessary
 if [ "x$OVJ_TOOLS" = "x" ] ; then
-   echo "ERROR: set OVJ_TOOLS environment variable to the ovjTools directory"
-   echo "ie: export OVJ_TOOLS=$HOME/src/OpenVnmrJBuild/ovjTools"
-   exit 1
+    echo "ERROR: set OVJ_TOOLS environment variable to the ovjTools directory"
+    echo "ie: export OVJ_TOOLS=$HOME/src/OpenVnmrJBuild/ovjTools"
+    exit 1
 fi
 
 if [ ! -f "$OVJ_TOOLS/OSX.md" ]; then
