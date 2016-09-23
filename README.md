@@ -18,14 +18,11 @@ See [OSX.md](OSX.md) for more information.
 Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libraries installed.  
 *A 64-bit build needs to be tested. All components should be built 64-bit and tested.*  
 
-### Building in a Virtual Machine
+### Virtual Machine Container
 
-OpenVnmrJ can easily be built in a virtual machine to isolate the build from your host system.
-There are pre-configured VM descriptions (using [Vagrant](https://www.vagrantup.com/) )
-for CentOS 6/7 and Ubuntu 14.04.  These will automatically create an appropriate VM for
-building and running OpenVnmrJ.  The Vagrant files and live in the [vms/](vms/) directory.
-
-The only requirement is to have Vagrant and VirtualBox insalled on your machine.
+The only requirement is to have the free tools [Vagrant](https://www.vagrantup.com/) and
+[VirtualBox](https://www.virtualbox.org/) installed on your build machine.  This method will
+save you the trouble of installing and configuring an operating system.
 
 ### EL6 (RHEL/CentOS 6)
 
@@ -63,8 +60,13 @@ this document.
 ## BUILDING
 
 ### In a Virtual Machine
+
+There are ready-to-use VM descriptions (using [Vagrant](https://www.vagrantup.com/) )
+for CentOS 6/7 and Ubuntu 14.04.  These will automatically create an appropriate VM for
+building and running OpenVnmrJ.  The Vagrant files and live in the [vms/](vms/) directory.
+
 To build OpenVnmrJ using one of these machine descriptions, you will need to install
-[Vagrant](https://www.vagrantup.com/), then just checkout the ovjTools repository and
+, then just checkout the ovjTools repository and
 run the script [build_vm.sh](bin/build_vm.sh):
 
 ```
