@@ -20,35 +20,25 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "centos/7"
-  #config.vm.box_version = "?"
-
-  config.ssh.insert_key = false # only needed for vagrant 1.8.5 #7610
+  config.vm.box = "ubuntu/trusty64"
+  #config.vm.box_version = "v20160919.0.0"
+  #config.vm.box = "chad-thompson/ubuntu-trusty64-gui"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
   # config.vm.box_check_update = false
 
-  # Create a forwarded port mapping which allows access to a specific port
-  # within the machine from a port on the host machine. In the example below,
-  # accessing "localhost:8080" will access port 80 on the guest machine.
-  # config.vm.network "forwarded_port", guest: 80, host: 8080
-
-  # Create a private network, which allows host-only access to the machine
-  # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
-
-  # Create a public network, which generally matched to bridged network.
-  # Bridged networks make the machine appear as another physical device on
-  # your network.
-  # config.vm.network "public_network"
-
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
+
+  # Disable the sync'd folder because often the VB guest additions are inoperable.
+  # And so far nothing in the OpenVnmrJ build requires the cross-mount.
+  # If your VirtualBox guest additions are correct, you can re-enable this.
+  config.vm.synced_folder '.', '/vagrant', disabled: true
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -59,32 +49,45 @@ Vagrant.configure("2") do |config|
     #vb.gui = true
     
     # Customize the amount of memory on the VM:
-    vb.memory = "4096"
+    vb.memory = "2048"
   end
-
-  # View the documentation for the provider you are using for more
-  # information on available options.
-
-  # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
-  # such as FTP and Heroku are also available. See the documentation at
-  # https://docs.vagrantup.com/v2/push/atlas.html for more information.
-  # config.push.define "atlas" do |push|
-  #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
-  # end
 
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-
   config.vm.provision "shell", inline: <<-SHELL
-    yum install -y epel-release
-    yum install -y git scons gcc-gfortran gcc-c++
-    yum install -y glibc-devel.i686 libstdc++.i686 libX11-devel.i686 libXt-devel.i686 lesstif-devel.i686
-    ln -s /usr/bin/gfortran /usr/bin/g77
+    export DEBIAN_FRONTEND=noninteractive
+    dpkg --add-architecture i386
+    apt-get -qq update
+    apt-get -qq -y dist-upgrade
 
-    #yum -y groupinstall "Desktop"
-    #sudo systemctl set-default graphical.target
-    #sudo systemctl start graphical.target
+    # these are needed to build
+    apt-get install -y git scons
+    apt-get install -y fort77 g++
+    apt-get install -y lib32stdc++-4.8-dev libc6-dev-i386 libglu1-mesa-dev
+    apt-get install -y libmotif-dev:i386 libx11-dev:i386 libxt-dev:i386
+
+    # these are needed to install
+    apt-get install -y openjdk-6-jre csh expect tcl8.4-dev tk8.4-dev
+    apt-get install -y rsh-server tftpd mutt sharutils gnome-power-manager k3b kdiff3 rarpd
+
+    #debconf-set-selections <<< "postfix postfix/mailname string your.hostname.com"
+    #debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
+    apt-get install -y ghostscript imagemagick postgresql
+    apt-get install -y sendmail-cf
+    chmod a+rw /var/run/postgresql
+
+    apt-get install -y gdm
+    #dpkg-reconfigure gdm
+
+    #add-apt-repository -y ppa:webupd8team/java
+    #apt-get -qq update
+    #apt-get install -y debconf-utils
+    #debconf-set-selections <<< "oracle-java6-installer shared/accepted-oracle-license-v1-1 select true"
+    #apt-get install -y oracle-java6-installer
+    #apt-get install -y oracle-java6-set-default
+    #update-java-alternatives -s java-6-oracle
+    #java -version
   SHELL
 
   #config.vm.provision "file", source: "~/.gitconfig", destination: ".gitconfig"

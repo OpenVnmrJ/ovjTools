@@ -22,7 +22,9 @@ Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libr
 
 The only requirement to build in a VM is to have the free tools [Vagrant](https://www.vagrantup.com/)
 and [VirtualBox](https://www.virtualbox.org/) installed on your build machine.  This method will
-save you the trouble of installing and configuring an operating system.
+save you the trouble of installing and configuring an operating system.  You may also want to 
+install the Vagrant [vbguest plugin](https://github.com/dotless-de/vagrant-vbguest) but it's not
+strictly necessary.
 
 ### EL6 (RHEL/CentOS 6)
 
@@ -69,6 +71,7 @@ To build OpenVnmrJ using one of these machine descriptions, (after installing Va
 just checkout the ovjTools repository, set the ovjBuildDir environment variable,
 and then run the script [build_vm.sh](bin/build_vm.sh):
 
+(for CentOS 6)
 ```
 git clone git@github.com:OpenVnmrJ/ovjTools.git
 export OVJ_TOOLS=`pwd`/ovjTools
@@ -79,16 +82,16 @@ cd ovjTools/bin
 or (for Ubuntu)
 
 ```
-git clone git@github.com:OpenVnmrJ/ovjTools.git
-export OVJ_TOOLS=`pwd`/ovjTools
-cd ovjTools/bin
 ./build_vm.sh trusty64
 ```
 
-The build_vm.sh script is not yet very sophisticated, in that it defaults to just building the
-master branch from the OpenVnmrJ github repository.
-
 The final dvdimageOVJ will be copied to the VM's directory, ie ovjTools/vms/centos6/ .
+The [build_vm.sh](bin/build_vm.sh) script also takes branch and developer arguments,
+so it's possible to, say, build the development branch from a particular github user
+like this:
+```
+./build_vm.sh trusty64 --gitname aGitHubUsername --branch development 
+```
 
 ### Ubuntu and CentOS
 
