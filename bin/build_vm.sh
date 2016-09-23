@@ -1,4 +1,12 @@
 #!/bin/bash
+#
+# Copyright (C) 2016  Michael Tesch
+#
+# You may distribute under the terms of either the GNU General Public
+# License or the Apache License, as specified in the LICENSE file.
+#
+# For more information, see the LICENSE file.
+#
 
 #
 # build OVJ locally in a virtual machine
@@ -55,7 +63,7 @@ fi
 vagrant ssh -c 'mkdir -p $ovjBuildDir'
 vagrant ssh -c 'cd $ovjBuildDir && git clone https://github.com/OpenVnmrJ/OpenVnmrJ.git'
 vagrant ssh -c 'cd $ovjBuildDir && git clone https://github.com/OpenVnmrJ/ovjTools.git'
-vagrant ssh -c 'cd $ovjBuildDir && cp -r ovjTools/bin .'
+vagrant ssh -c 'cd $ovjBuildDir && cp -r ovjTools/bin . '
 vagrant ssh -c 'cd $ovjBuildDir/bin && ./buildovj'
 
 vagrant ssh -c 'cd $ovjBuildDir/dvdimageOVJ && sudo ./load.nmr'

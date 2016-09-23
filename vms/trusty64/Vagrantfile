@@ -1,5 +1,13 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+#
+# Copyright (C) 2016  Michael Tesch
+#
+# You may distribute under the terms of either the GNU General Public
+# License or the Apache License, as specified in the LICENSE file.
+#
+# For more information, see the LICENSE file.
+#
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -73,6 +81,12 @@ Vagrant.configure("2") do |config|
     apt-get install -y fort77 g++
     apt-get install -y lib32stdc++-4.8-dev libc6-dev-i386 libglu1-mesa-dev
     apt-get install -y libmotif-dev:i386 libx11-dev:i386 libxt-dev:i386
+
+    apt-get install -y openjdk-6-jre ia32-libs csh lesstif2-dev expect tcl8.4-dev tk8.4-dev
+    apt-get install -y rsh-server tftpd mutt sharutils gnome-power-manager k3b kdiff3 rarpd
+    apt-get install -y ghostscript imagemagick
+    apt-get install -y sendmail-cf
+
     #echo oracle-java6-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
     #apt-get install -y oracle-java6-installer
     #apt-get install -y oracle-java6-set-default
