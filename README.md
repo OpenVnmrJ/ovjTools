@@ -79,19 +79,18 @@ cd ovjTools/bin
 ./build_vm.sh centos6
 ````
 
-or (for Ubuntu)
+to build for multiple OS targets at the same time, just add to the list, currently 
+supported targets are `centos6`, `centos7`, `ubuntu14`, and , `ubuntu16`.
 
+The [build_vm.sh](bin/build_vm.sh) script also takes branch and developer arguments.
+To build the development branch from a particular github user ("aGitHubUsername" in
+this example) on centos6 and ubuntu14 :
 ```
-./build_vm.sh trusty64
+./build_vm.sh centos6 ubuntu14 --gitname aGitHubUsername --branch development 
 ```
 
-The final dvdimageOVJ will be copied to the VM's directory, ie ovjTools/vms/centos6/ .
-The [build_vm.sh](bin/build_vm.sh) script also takes branch and developer arguments,
-so it's possible to, say, build the development branch from a particular github user
-like this:
-```
-./build_vm.sh trusty64 --gitname aGitHubUsername --branch development 
-```
+The install requires user interaction, so to actually install OpenVnmrJ, you have to
+boot the VM with the GUI enabled and run the installer there.
 
 ### Ubuntu and CentOS
 
