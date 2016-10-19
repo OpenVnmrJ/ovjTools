@@ -16,14 +16,14 @@ def gui_enabled?
 end
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "OpenVnmrJ/centos6"
-  #config.vm.box_version = "?"
-  config.ssh.insert_key = false # only needed for vagrant 1.8.5 #7610
+  config.vm.box = "OpenVnmrJ/ubuntu14"
+  # only update vbguest on the box_defs/ boxes
   config.vbguest.auto_update = false
   config.vm.provider "virtualbox" do |vb|
+    # Display the VirtualBox GUI when booting the machine
     vb.gui = gui_enabled?
     vb.linked_clone = true
-    vb.memory = "4096"
+    #vb.memory = "4096"
     #vb.cpus = 2
   end
   config.vm.provision "shell", inline: <<-SHELL

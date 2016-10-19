@@ -1,0 +1,57 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+#
+# Copyright (C) 2016  Michael Tesch
+#
+# You may distribute under the terms of either the GNU General Public
+# License or the Apache License, as specified in the LICENSE file.
+#
+# For more information, see the LICENSE file.
+#
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/trusty64"
+  #config.vm.box_version = "v20160919.0.0"
+  #config.vm.box = "chad-thompson/ubuntu-trusty64-gui"
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+  config.vm.provider "virtualbox" do |vb|
+    #vb.gui = true
+    vb.linked_clone = true
+    vb.memory = "2048"
+    vb.cpus = 2
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+    export DEBIAN_FRONTEND=noninteractive
+    dpkg --add-architecture i386
+    apt-get -qq update
+    apt-get -qq -y dist-upgrade
+
+    # these are needed to build
+    apt-get install -y git scons
+    apt-get install -y fort77 g++
+    apt-get install -y lib32stdc++-4.8-dev libc6-dev-i386 libglu1-mesa-dev
+    apt-get install -y libmotif-dev:i386 libx11-dev:i386 libxt-dev:i386
+
+    # these are needed to install
+    apt-get install -y openjdk-6-jre csh expect tcl8.4-dev tk8.4-dev
+    apt-get install -y rsh-server tftpd mutt sharutils gnome-power-manager k3b kdiff3 rarpd
+
+    #debconf-set-selections <<< "postfix postfix/mailname string your.hostname.com"
+    #debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
+    apt-get install -y ghostscript imagemagick postgresql
+    apt-get install -y sendmail-cf
+    chmod a+rw /var/run/postgresql
+
+    apt-get install -y gdm
+    #dpkg-reconfigure gdm
+
+    #add-apt-repository -y ppa:webupd8team/java
+    #apt-get -qq update
+    #apt-get install -y debconf-utils
+    #debconf-set-selections <<< "oracle-java6-installer shared/accepted-oracle-license-v1-1 select true"
+    #apt-get install -y oracle-java6-installer
+    #apt-get install -y oracle-java6-set-default
+    #update-java-alternatives -s java-6-oracle
+    #java -version
+  SHELL
+end
