@@ -88,6 +88,39 @@ if [ ${OVJ_VERBOSE} -ge 2 ]; then
     set -x
 fi
 
+# process flag args
+while [ $# -gt 0 ]; do
+    key="$1"
+    case $key in
+        -u|--gitname)           OVJ_DEVELOPER="$2"; shift     ;;
+        -b|--branch)
+            OVJ_GITBRANCH="$2"
+            OVJT_GITBRANCH="$2"
+            shift
+            ;;
+        -b|--branch)            OVJ_GITBRANCH="$2"; shift     ;;
+        --tbranch)              OVJT_GITBRANCH="$2"; shift    ;;
+        -h|--help)              usage                         ;;
+        -v|--verbose)           OVJ_VERBOSE=$(( ${OVJ_VERBOSE} + 1 )) ;;
+        -q|--quiet)             OVJ_VERBOSE=0                 ;;
+        all)
+            TARGETS="ubuntu14 ubuntu16 centos6 macos10.10 centos7 "
+            ;;
+        ubuntu14|ubuntu16|centos6|centos7|macos10.10)
+            TARGETS="$TARGETS $key"
+            ;;
+        clean|distclean)
+            ACTION=$key
+            ;;
+        *)
+            # unknown option
+            echo "unrecognized arg: $key"
+            usage
+            ;;
+    esac
+    shift
+done
+
 # check correctness of ovjBuildDir, and set OVJ_TOOLS if necessary
 if [ "x${OVJ_TOOLS}" = "x" ] ; then
     echo "ERROR: set OVJ_TOOLS environment variable to the ovjTools directory"
