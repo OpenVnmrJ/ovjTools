@@ -15,7 +15,7 @@ then
   logdir=$1
 else
   echo""
-  echo "Log file must to provided as an argument."
+  echo "$0: Log file must be provided as lone argument."
   exit
 fi
 

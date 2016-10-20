@@ -16,18 +16,19 @@ def gui_enabled?
 end
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "OpenVnmrJ/ubuntu14"
+  config.vm.box = "OpenVnmrJ/macos10.10"
   # only update vbguest on the box_defs/ boxes
   config.vbguest.auto_update = false
+  config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.provider "virtualbox" do |vb|
     # Display the VirtualBox GUI when booting the machine
     vb.gui = gui_enabled?
+    # the mac disk images are YUUUGE
     vb.linked_clone = true
+    # Customize the amount of memory on the VM:
     #vb.memory = "4096"
-    #vb.cpus = 2
   end
   config.vm.provision "shell", inline: <<-SHELL
-    echo "127.0.0.1 $(hostname)" >> /etc/hosts
     echo "do nothing"
   SHELL
 end

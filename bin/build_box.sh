@@ -12,9 +12,14 @@
 # build a virtual machine suitable for building / installing OpenVnmrJ
 # and make it available to vagrant
 #
-set -e
+SCRIPT=$(basename "$0")
+TARGET_OS="$1"
 
-TARGET_OS=$1
+onerror() {
+    echo "$SCRIPT: Error on line ${BASH_LINENO[0]}, exiting."
+    exit 1
+}
+trap onerror ERR
 
 function usage {
     echo "usage: $0 <centos6 | centos7 | ubuntu14 | ubuntu16 | macos10.10>"

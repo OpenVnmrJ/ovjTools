@@ -1,0 +1,44 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+#
+# Copyright (C) 2016  Michael Tesch
+#
+# You may distribute under the terms of either the GNU General Public
+# License or the Apache License, as specified in the LICENSE file.
+#
+# For more information, see the LICENSE file.
+#
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "AndrewDryga/vagrant-box-osx"
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+  config.vm.provider "virtualbox" do |vb|
+    # Display the VirtualBox GUI when booting the machine
+    #vb.gui = true
+    # Customize the amount of memory on the VM:
+    vb.linked_clone = true
+    vb.memory = "4096"
+    #vb.cpus = 2
+
+    unless File.exist?('tmp2.vmdk')
+      vb.customize ['createhd', '--filename', 'tmp2.vmdk', '--size', 20*1024, '--format', 'vmdk' ]
+    end
+    vb.customize ['storageattach', :id,
+                  '--storagectl', 'SATA',
+                  '--port', 4,
+                  '--device', 0,
+                  '--type', 'hdd',
+                  '--medium', 'tmp2.vmdk']
+
+  end
+
+  # create a case-sensitive filesystem on the vmdk from above
+  config.vm.provision "shell", inline: <<-SHELL
+    diskutil eraseDisk jhfsx Vagrant1 /dev/disk1
+  SHELL
+
+  # brew runs as a user
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+    brew install scons postgres
+  SHELL
+end
