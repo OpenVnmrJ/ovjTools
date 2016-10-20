@@ -41,7 +41,7 @@ numcpus() {
 : ${OVJ_PACK_MINOVA=yes}
 : ${OVJ_SCONSFLAGS="-j $(( $(numcpus) + 1 ))"}
 : ${OVJ_MACOS_APPNAME=OpenVnmrJ_1.1.app}
-: ${OVJ_VERBOSE=1}
+: ${OVJ_VERBOSE=2}
 
 : ${OVJ_DVDDIR_DDR=dvdimageOVJ}
 : ${OVJ_DVDDIR_MINOVA=dvdimageOVJMI}
@@ -76,7 +76,7 @@ where [options...] are:
       -s scons_options               - flags to pass to scons [${OVJ_SCONSFLAGS}]
       -a|--macos_appname name        - macOS App name [${OVJ_MACOS_APPNAME}]
       -v|--verbose                   - be more verbose (can add multiple times)
-      -q|--quiet                     - be extra quiet to the console
+      -q|--quiet                     - be more quiet   (can add multiple times)
 
 EOF
     exit 1
@@ -87,7 +87,7 @@ while [ $# -gt 0 ]; do
     key="$1"
     case $key in
         checkout)               OVJ_DO_CHECKOUT=yes           ;;
-        build)                  OVJ_DO_BUILD=yes            ;;
+        build)                  OVJ_DO_BUILD=yes              ;;
         package)                OVJ_DO_PACKAGE=yes            ;;
         -u|--gitname)
             OVJ_DEVELOPER="$2"
@@ -105,7 +105,7 @@ while [ $# -gt 0 ]; do
         --inova)                OVJ_PACK_MINOVA="$2"; shift   ;;
         -h|--help)              usage                         ;;
         -v|--verbose)           OVJ_VERBOSE=$(( ${OVJ_VERBOSE} + 1 )) ;;
-        -q|--quiet)             OVJ_VERBOSE=0                 ;;
+        -q|--quiet)             OVJ_VERBOSE=$(( ${OVJ_VERBOSE} - 1 )) ;;
         *)
             # unknown option
             echo "unrecognized arg: $key"
@@ -154,7 +154,6 @@ log_msg () {
     fi
 }
 log_error () {
-    echo "BASH_LINENO: ${BASH_LINENO[*]}"
     log_msg 0 "$@"
 }
 onerror() {
@@ -243,7 +242,7 @@ do_checkout () {
     # check if the OpenVnmrJ directory already exists in ${OVJ_BUILDDIR}
     if [ -d "${OVJ_BUILDDIR}/OpenVnmrJ" ]; then
         log_info "checkout: OpenVnmrJ source directory: ${OVJ_BUILDDIR}/OpenVnmrJ already exists."
-        log_info "checkout: checking out requested branch ${OVJ_GITBRANCH}."
+        log_info "checkout: checking out requested branch '${OVJ_GITBRANCH}'"
         log_cmd cd "${OVJ_BUILDDIR}/OpenVnmrJ"
         log_cmd git checkout "${OVJ_GITBRANCH}"
         log_cmd cd "${OVJ_BUILDDIR}"
@@ -379,7 +378,7 @@ touch "${OVJ_BUILDDIR}/CaSeSeNsItIvE"
 touch "${OVJ_BUILDDIR}/casesensitive"
 rm "${OVJ_BUILDDIR}/casesensitive"
 if [ -f "${OVJ_BUILDDIR}/CaSeSeNsItIvE" ]; then
-    log_info "Filesystem appears to be case sensitive.  good."
+    log_debug "Filesystem appears to be case sensitive.  good."
     rm "${OVJ_BUILDDIR}/CaSeSeNsItIvE"
 else
     log_warn "FILESYSTEM APPEARS TO BE CASE-INSENSITIVE! this probably wont work!!!"

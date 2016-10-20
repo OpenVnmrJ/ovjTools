@@ -65,7 +65,7 @@ while [ $# -gt 0 ]; do
         --tbranch)              OVJT_GITBRANCH="$2"; shift    ;;
         -h|--help)              usage                         ;;
         -v|--verbose)           OVJ_VERBOSE=$(( ${OVJ_VERBOSE} + 1 )) ;;
-        -q|--quiet)             OVJ_VERBOSE=0                 ;;
+        -q|--quiet)             OVJ_VERBOSE=$(( ${OVJ_VERBOSE} - 1 )) ;;
         all)
             TARGETS="ubuntu14 ubuntu16 centos6 centos7 macos10.10 "
             ;;
@@ -205,8 +205,8 @@ build_target() {
     #fi
 
     scp -F vagrant.ssh.config ${OVJ_TOOLS}/bin/build_release.sh default:
-    #BUILD_CMD="./build_release.sh -v package"
-    BUILD_CMD="./build_release.sh -v checkout build package"
+    #BUILD_CMD="./build_release.sh package"
+    BUILD_CMD="./build_release.sh checkout build package"
     BUILD_CMD=" ${BUILD_CMD} --gitname ${OVJ_DEVELOPER} --branch ${OVJ_GITBRANCH} "
     echo "running build on VM ${TARGET_OS}"
     if (time vagrant ssh -c "${BUILD_CMD}") ; then
