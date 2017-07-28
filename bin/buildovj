@@ -39,6 +39,16 @@
 if [ "$(uname -s)" = "Darwin" ]; then
   filename=`perl -e 'use Cwd "abs_path";print abs_path(shift)' $0`
   ovjBuildDir=`dirname "${filename}"`
+  timestamp=`date +%s`
+  if [ -d "${ovjBuildDir}" ]; then
+    touch "${ovjBuildDir}"/TESTFILE-$timestamp "${ovjBuildDir}"/testfile-$timestamp
+    rm "${ovjBuildDir}"/TESTFILE-$timestamp
+    if [ -f "${ovjBuildDir}"/testfile-$timestamp ]; then
+      rm "${ovjBuildDir}"/testfile-$timestamp
+    else 
+      echo "Case insensitive file system. Watch out for biosolidspack experiments"
+    fi
+  fi
 else
   ovjBuildDir=`dirname "$(readlink -f $0))"`
 fi
@@ -61,7 +71,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; then
   nprocs=$(nproc)   
 fi
 sconsJoption=$(( nprocs + 1 ))
-osxSDK='/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk'
+osxSDK='/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk'
 osxflags="-mmacosx-version-min=10.9 -isysroot ${osxSDK}"
 
 doGitClone=pull
