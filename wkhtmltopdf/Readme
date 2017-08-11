@@ -1,0 +1,40 @@
+From:	DELAGLIO,FRANK (A-USA,ex1)
+Sent:	Thursday, August 22, 2013 5:10 PM
+To:	ALLEN,KAREN (Non-A-SantaClara,ex1); IVERSON,DAN (A-SantaClara,ex1); 
+BOWYER,PAUL (A-SantaClara,ex1)
+Subject:	RE: PDF Updated to Letter Size
+Attachments:	wkhtmltopdf-0.9.9-static-i386.tar.bz2; test.pdf
+
+
+Hi Guys,
+
+FYI, attached is a linux command-line application that converts html to PDF, comments follow.
+
+Cheers f
+
+*	Attached is a statically linked linux i386 version 0.9.9 of the program “wkhtml2pdf”. Unpack with:
+*	
+*	   tar xvjf wkhtmltopdf-0.9.9-static-i386.tar.bz2 
+
+
+I tried it on a Fedora 12 system, and was able to generate the “test.pdf” attached.  Karen and I also tried 
+it successfully on the applab400 running RHEL 6.1. Note that the more recent version wkhtmltopdf 
+0.11.0 did *not* work in my hands.  I used a simple invocation with no extra command-line options:
+
+   ./wkhtmltopdf-i386 veriPulse_Portrait/veriPulse4.html test.pdf
+
+1.	Karen noted that the margins need adjustment, this can be done from command-line.
+
+2.	Resolution for rendering (e.g. Agilent logo image) might need adjustment if possible, 
+probably just be replacing the logo image with a higher-res one (I couldn’t see a 
+command-line argument that would help).
+
+3.	The “trebuchet” font specified in the HTML wasn’t used, a fall-back sans-serif font was 
+used instead. It might be possible to install trebuchet font on linux, don’t know hard 
+hard it is.
+
+Project page and manual page:
+
+   http://code.google.com/p/wkhtmltopdf/ 
+   http://madalgo.au.dk/~jakobt/wkhtmltoxdoc/wkhtmltopdf-0.9.9-doc.html
+
