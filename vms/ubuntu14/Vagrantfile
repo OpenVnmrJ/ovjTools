@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+#
+# Copyright (C) 2016  Michael Tesch
+#
+# You may distribute under the terms of either the GNU General Public
+# License or the Apache License, as specified in the LICENSE file.
+#
+# For more information, see the LICENSE file.
+#
+
+# Returns true if `VMGUI` environment variable is set to a non-empty value.
+# Defaults to false
+def gui_enabled?
+  !ENV.fetch('VMGUI', '').empty?
+end
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "OpenVnmrJ/ubuntu14"
+  # only update vbguest on the box_defs/ boxes
+  config.vbguest.auto_update = false
+  config.vm.provider "virtualbox" do |vb|
+    # Display the VirtualBox GUI when booting the machine
+    vb.gui = gui_enabled?
+    vb.linked_clone = true
+    #vb.memory = "4096"
+    #vb.cpus = 2
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+    echo "127.0.0.1 $(hostname)" >> /etc/hosts
+    echo "do nothing"
+  SHELL
+end

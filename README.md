@@ -1,5 +1,5 @@
 # ovjTools
-Tools and libraries to build OpenVnmrJ. 
+Tools and libraries to build [OpenVnmrJ](http://openvnmrj.org).
 
 ## Java
 
@@ -11,12 +11,20 @@ If you've tested and there are no problems with a newer Java, please file an [is
 ### OS X
 The OS X build ignores the java link and uses the system Java. Java 8u92 was found to work.  
 Download and install the Java JDK from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)  
-See OSX.md for more information.
+See [OSX.md](OSX.md) for more information.
 
 ## BUILD REQUIREMENTS
 
 Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libraries installed.  
 *A 64-bit build needs to be tested. All components should be built 64-bit and tested.*  
+
+### Virtual Machine Container
+
+The only requirement to build in a VM is to have the free tools [Vagrant](https://www.vagrantup.com/)
+and [VirtualBox](https://www.virtualbox.org/) installed on your build machine.  This will
+save you the trouble of installing and configuring an operating system.  You may also want to 
+install the Vagrant [vbguest plugin](https://github.com/dotless-de/vagrant-vbguest) but it's not
+strictly necessary.
 
 ### EL6 (RHEL/CentOS 6)
 
@@ -27,8 +35,7 @@ configuration has been tested on CentOS 6.7 but should work for any RHEL or Cent
 yum install compat-gcc-34-g77 glibc-devel.i686 libstdc++.i686 libX11-devel.i686 libXt-devel.i686 openmotif-devel.i686 scons
 ```
 Optionally, you can also install gsl-devel and libtiff-devel if you wish to compile using the GNU
-scientific library.  Code compiled with the GSL will be subject to license restrictions.  
-*TODO. Configure using Vagrant.*  
+scientific library.
 
 ### Ubuntu Trusty Tahr 14.04 LTS
 
@@ -50,16 +57,53 @@ this document.
 
 ### OS X
 
-See OSX.md
+[See OSX.md](OSX.md)
 
-## INSTALLATION & COMPILATION
+## BUILDING
+
+### In a Virtual Machine
+
+There are ready-to-use VM descriptions (using [Vagrant](https://www.vagrantup.com/) )
+for CentOS 6/7 and Ubuntu 14.04 and 16..  These automatically create and configure an OS in a VM for
+building and running OpenVnmrJ.  The Vagrant files and machines live in the [vms/](vms/) directory.
+
+To build OpenVnmrJ using one of these machine descriptions, (after installing Vagrant)
+just checkout the ovjTools repository, set the ovjBuildDir environment variable,
+and then run the script [build_vm.sh](bin/build_vm.sh):
+
+(for CentOS 6)
+```
+git clone git@github.com:OpenVnmrJ/ovjTools.git
+export OVJ_TOOLS=`pwd`/ovjTools
+${OVJ_TOOLS}/bin/build_vm.sh centos6   # do the actual build, will take ~1 h the first time
+cd ${OVJ_TOOLS}/vms/centos6
+VMGUI=y vagrant reload                 # this will reboot the VM in graphical mode
+````
+
+to build for multiple OS targets at the same time, just add to the list, currently 
+supported targets are `centos6`, `centos7`, `ubuntu14`, and , `ubuntu16`.
+
+The [build_vm.sh](bin/build_vm.sh) script also takes branch and developer arguments.
+To build the development branch from a particular github user ("aGitHubUsername" in
+this example) on centos6 and ubuntu14 :
+```
+./build_vm.sh centos6 ubuntu14 --gitname aGitHubUsername --branch development 
+```
+
+The install requires user interaction, so to actually install OpenVnmrJ, you have to
+boot the VM with the GUI enabled and run the installer there.
+
+### Ubuntu and CentOS
 
 These instructions work for Ubuntu and CentOS (RHEL).  
 
 Make a directory. Lets call it ovjbuild and change into that directory.
 Check out the ovjTools repository from GitHub with  
 ```
+mkdir ovjbuild && cd ovjbuild
 git clone https://github.com/OpenVnmrJ/ovjTools.git
+export ovjBuildDir=`pwd`
+export OVJ_TOOLS=$ovjBuildDir/ovjTools
 ```
 or Download it from the GitHub web site. If you download it, move it to the ovjbuild directory
 and unzip it with the commands
@@ -162,9 +206,13 @@ scons
 ```
 will build only the Vnmrbg program.  
 
+
+## INSTALLATION
+
+
 #### For Linux systems:  
 Once the buildovj script is complete, and you had selected the buildOVJ and / or buildOVJMI
-parameters, you can cd dvdimageOVJ or dvdimageOVJMI and run ./load.nmr to install a complete
+parameters, you can `cd dvdimageOVJ` or `cd dvdimageOVJMI` and run `./load.nmr` to install a complete
 OpenVnmrJ package. If a prior VJ42 install is present (/vnmr is a symbolic link to the VJ42
 installation), then the OpenVnmrJ installation will collect various files from the VJ42 install
 so that the OpenVnmrJ install should be complete.  See the src/scripts/update_OpenVnmrJ.sh
@@ -175,20 +223,25 @@ is "su acqproc" to start the OVJ version of the procs.
 #### For MacOS systems:  
 Once the buildovj script is complete, and you had selected the buildOVJ parameter, you 
 will have a dvd image that is constructed so that the MacOS utility PackageMaker can be
-used to build a MacOS installer. Instructions for building the installer are in
-OpenVnmrJ/src/macos/readme_packagemaker. If a prior VJ42 install is present (/vnmr
-is a symbolic link to the VJ42 installation), then the OpenVnmrJ installation will
-collect various files from the VJ42 install so that the OpenVnmrJ install should be complete.  
-*TODO: A single draggable VnmrJ.app.*  
+used to build a MacOS installer. Instructions for building the installer are 
+[OpenVnmrJ/src/macos/readme_packagemaker](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master/src/macos/readme_packagemaker).
+If a prior VJ42 install is present (/vnmr is a symbolic link to the VJ42 installation), then the
+OpenVnmrJ installation will collect various files from the VJ42 install so that the OpenVnmrJ
+install should be complete.  *TODO: A single draggable VnmrJ.app.*  
+
+## CODE ORGANIZATION
 
 #### Directories
-The src directory has a number of subdirectories. In general, each subdirectory corresponds
+The [OpenVnmrJ/src](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master/src) directory has a
+number of subdirectories. In general, each subdirectory corresponds
 to one or more programs that need to be compiled. Some of the subdirectories contain code
 that is shared by several programs. Some directories also contain a special sconsPostAction
 file. These typically are a shell script with symbolic link commands. For example,
-src/common/maclib has a sconsPostAction files which creates aliases of some of the macros.
-The SConstuct must explicitly execute the sconsPostAction. See the OpenVnmrJ/SConstruct file
-for an example.   
+[src/common/maclib](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master/src/common/maclib) has a
+sconsPostAction files which creates aliases of
+some of the macros.  The SConstuct must explicitly execute the sconsPostAction. See the
+[OpenVnmrJ/SConstruct](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master/OpenVnmrJ/SConstruct)
+file for an example.   
 
 The src directory contains the following subdirectories.  
 

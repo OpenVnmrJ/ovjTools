@@ -1,0 +1,47 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+#
+# Copyright (C) 2016  Michael Tesch
+#
+# You may distribute under the terms of either the GNU General Public
+# License or the Apache License, as specified in the LICENSE file.
+#
+# For more information, see the LICENSE file.
+#
+
+Vagrant.configure("2") do |config|
+  #config.vm.box = "ubuntu/xenial64"
+  #config.vm.box_version = "v20160930.0.0"
+  config.vm.box = "bento/ubuntu-16.04"
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+  config.vm.provider "virtualbox" do |vb|
+    #vb.gui = true
+    vb.memory = "2048"
+    vb.cpus = 2
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+    export DEBIAN_FRONTEND=noninteractive
+    dpkg --add-architecture i386
+    apt-get -qq update
+    apt-get -qq -y dist-upgrade
+
+    # these are needed to build
+    apt-get install -y git scons
+    apt-get install -y fort77 g++
+    apt-get install -y lib32stdc++-5-dev libc6-dev-i386 libglu1-mesa-dev
+    apt-get install -y libmotif-dev:i386 libx11-dev:i386 libxt-dev:i386
+
+    # these are needed to install
+    apt-get install -y csh expect tcl8.4-dev tk8.4-dev bc
+    apt-get install -y openjdk-8-jre
+    apt-get install -y rsh-server tftpd mutt sharutils gnome-power-manager k3b kdiff3 rarpd
+    #debconf-set-selections <<< "postfix postfix/mailname string your.hostname.com"
+    #debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
+    apt-get install -y ghostscript imagemagick postgresql
+    apt-get install -y sendmail-cf
+    chmod a+rw /var/run/postgresql
+
+    apt-get install -y gdm
+    #dpkg-reconfigure gdm
+  SHELL
+end

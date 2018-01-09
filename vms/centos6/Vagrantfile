@@ -1,0 +1,32 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+#
+# Copyright (C) 2016  Michael Tesch
+#
+# You may distribute under the terms of either the GNU General Public
+# License or the Apache License, as specified in the LICENSE file.
+#
+# For more information, see the LICENSE file.
+#
+
+# Returns true if `VMGUI` environment variable is set to a non-empty value.
+# Defaults to false
+def gui_enabled?
+  !ENV.fetch('VMGUI', '').empty?
+end
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "OpenVnmrJ/centos6"
+  #config.vm.box_version = "?"
+  config.ssh.insert_key = false # only needed for vagrant 1.8.5 #7610
+  config.vbguest.auto_update = false
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = gui_enabled?
+    vb.linked_clone = true
+    vb.memory = "4096"
+    #vb.cpus = 2
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+    echo "do nothing"
+  SHELL
+end

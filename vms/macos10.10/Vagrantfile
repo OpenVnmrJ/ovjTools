@@ -1,0 +1,34 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+#
+# Copyright (C) 2016  Michael Tesch
+#
+# You may distribute under the terms of either the GNU General Public
+# License or the Apache License, as specified in the LICENSE file.
+#
+# For more information, see the LICENSE file.
+#
+
+# Returns true if `VMGUI` environment variable is set to a non-empty value.
+# Defaults to false
+def gui_enabled?
+  !ENV.fetch('VMGUI', '').empty?
+end
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "OpenVnmrJ/macos10.10"
+  # only update vbguest on the box_defs/ boxes
+  config.vbguest.auto_update = false
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+  config.vm.provider "virtualbox" do |vb|
+    # Display the VirtualBox GUI when booting the machine
+    vb.gui = gui_enabled?
+    # the mac disk images are YUUUGE
+    vb.linked_clone = true
+    # Customize the amount of memory on the VM:
+    #vb.memory = "4096"
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+    echo "do nothing"
+  SHELL
+end
