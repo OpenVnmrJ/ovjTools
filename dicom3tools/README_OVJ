@@ -1,0 +1,30 @@
+
+Newer gcc compilers want the libraries to be compiled with the -fPIC
+flag. To rebuild
+
+cd libsrc
+rm lib/lib*
+cd src
+cd dctool
+Modify attrmxrd.cpp:
+   add #include <stdio.h> otherwise it fails to compile because EOF is
+   not defined.
+Modify Makefile
+   Change line 95 to
+   CPLUSPLUS_OPTIONS = -fPIC
+make
+
+cd ../generic
+Modify Makefile
+   Change line 95 to
+   CPLUSPLUS_OPTIONS = -fPIC
+make
+
+cd ../locale
+Modify Makefile
+   Change line 95 to
+   CPLUSPLUS_OPTIONS = -fPIC
+make
+
+The three libraries will now be in libsrc/lib
+
