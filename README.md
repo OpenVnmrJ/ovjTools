@@ -334,7 +334,8 @@ yacc        Original yacc tool for helping to make Magical (no longer used)
 ```
 
 ## APPENDIX
-###EL6 (RHEL/CentOS 6)  
+### EL6 (RHEL/CentOS 6)
+
 Full list of required packages for EL 6 starting from a "Software Development Workstation"  
 configuration:  
 ```

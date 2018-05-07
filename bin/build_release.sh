@@ -19,7 +19,7 @@ numcpus() {
     if [ "$(uname -s)" = "Darwin" ]; then
         ncpu=$(sysctl -n hw.ncpu)
     else
-        ncpu=$(nproc)   
+        ncpu=$(nproc)
     fi
     echo $ncpu
 }
@@ -181,15 +181,18 @@ cmdspin () {
         sp=${sp#?}${sp%???}
         if [ -t 3 ]; then printf '\b%.1s' "$sp" >&3 ; fi
     done &
-    #Die with parent if we die prematurely
-    trap "kill $!" EXIT
+    SPINNER_PID=$!
+    # Kill the spinner if we die prematurely
+    trap "kill $SPINNER_PID" EXIT
     # command here
     eval "$@"
-    # Kill the loop and unset the trap or else the pid might get 
-    # reassigned and we might end up killing a completely different process
-    kill $! && trap " " EXIT
+    CMDRET=$?
+    # Kill the loop and unset the EXIT trap
+    kill $SPINNER_PID
+    trap " " EXIT
     if [ -t 3 ]; then echo "" >&3 ; fi
     log_info $(date)
+    return $CMDRET
 }
 # call this before calling any log commands
 setup_logfile () {
@@ -291,7 +294,7 @@ do_build () {
     fi
 
     # run scons
-    cmdspin time scons ${OVJ_SCONSFLAGS}
+    cmdspin time scons ${OVJ_SCONSFLAGS} || return $?
     log_info "build done."
 }
 
@@ -331,7 +334,7 @@ do_package () {
 
     # export vars used by the ovj???out.sh scripts
     export workspacedir dvdBuildName1 dvdBuildName2 ovjAppName OVJ_TOOLS
-    cmdspin ./${PACK_SCRIPT}
+    cmdspin ./${PACK_SCRIPT} || return $?
 
     # make a second copy? make an iso? todo...
     dvdCopyName1=OVJ_$shortDate
@@ -391,7 +394,7 @@ fi
 
 # do the requested actions... (in their own subshells)
 if [ "${OVJ_DO_CHECKOUT}" = yes ]; then
-    (do_checkout)
+    do_checkout
 fi
 
 # make sure the checkout is ok
@@ -401,20 +404,20 @@ if [ ! -f "${OVJ_TOOLS}/OSX.md" ]; then
 fi
 
 if [ "${OVJ_DO_BUILD}" = yes ]; then
-    (do_build)
+    do_build
 fi
 if [ "${OVJ_DO_PACKAGE}" = yes ]; then
     if [ "${OVJ_PACK_DDR}" = yes ]; then
         log_info "Packaging DDR/DDR2"
         if [ $xUNAMEs = "xDarwin" ]; then
-            (do_package ovjmacout.sh dvdimageOVJ)
+            do_package ovjmacout.sh dvdimageOVJ
         else
-            (do_package ovjddrout.sh dvdimageOVJ)
+            do_package ovjddrout.sh dvdimageOVJ
         fi
     fi
     if [ "${OVJ_PACK_MINOVA}" = yes ]; then
         log_info "Packaging MERCURY/INOVA"
-        (do_package ovjmiout.sh dvdimageOVJMI)
+        do_package ovjmiout.sh dvdimageOVJMI
     fi
     log_info "Packaging done."
 fi
