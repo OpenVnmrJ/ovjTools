@@ -20,18 +20,19 @@ Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libr
 
 ### Virtual Machine Container
 
-The only requirement to build in a VM is to have the free tools [Vagrant](https://www.vagrantup.com/)
-and [VirtualBox](https://www.virtualbox.org/) installed on your build machine.  This will
-save you the trouble of installing and configuring an operating system.  You may also want to 
-install the Vagrant [vbguest plugin](https://github.com/dotless-de/vagrant-vbguest) but it's not
-strictly necessary.
+The only requirement to build in a VM is to have the free tools
+[VirtualBox](https://www.virtualbox.org/) and
+[Vagrant](https://www.vagrantup.com/) installed on your build machine.
+This will save you the trouble of installing and configuring an
+operating system.  Build instructions for VM containers are
+[below](#in-a-virtual-machine).
 
 ### EL6 (RHEL/CentOS 6)
 
 The minimum package requirement for EL6 assumes that your system was installed with the
 "Software Development Workstation" package selection as required by VnmrJ.  This build
 configuration has been tested on CentOS 6.7 but should work for any RHEL or CentOS 6.x.  
-```
+```sh
 yum install compat-gcc-34-g77 glibc-devel.i686 libstdc++.i686 libX11-devel.i686 libXt-devel.i686 openmotif-devel.i686 scons
 ```
 Optionally, you can also install gsl-devel and libtiff-devel if you wish to compile using the GNU
@@ -44,7 +45,7 @@ installed the standard desktop edition of Ubuntu.  A minimal install may require
 packages including but not limited to make, unzip and zip.  This build configuration has been
 tested on Ubuntu but should work for any *buntu Trusty Tahr 14.04 LTS distribution.  
 
-```
+```sh
 sudo apt-get install fort77 g++ lib32stdc++-4.8-dev libc6-dev-i386 libglu1-mesa-dev libmotif-dev:i386 libx11-dev:i386 libxt-dev:i386 scons
 ```
 
@@ -63,35 +64,65 @@ this document.
 
 ### In a Virtual Machine
 
-There are ready-to-use VM descriptions (using [Vagrant](https://www.vagrantup.com/) )
-for CentOS 6/7 and Ubuntu 14.04 and 16..  These automatically create and configure an OS in a VM for
-building and running OpenVnmrJ.  The Vagrant files and machines live in the [vms/](vms/) directory.
+There are several ready-to-use VM descriptions (using
+[Vagrant](https://www.vagrantup.com/) ) for CentOS 6/7 and Ubuntu
+14.04 16.04, and 18.04.  These automatically create and configure the
+OS in a VM for building and running OpenVnmrJ.  The Vagrant files and
+machines live in the [vms/](vms/) directory.
 
-To build OpenVnmrJ using one of these machine descriptions, (after installing Vagrant)
-just checkout the ovjTools repository, set the ovjBuildDir environment variable,
-and then run the script [build_vm.sh](bin/build_vm.sh):
+To build OpenVnmrJ using one of these machine descriptions, after
+installing Vagrant and the [vbguest
+plugin](https://github.com/dotless-de/vagrant-vbguest), just checkout
+this ovjTools repository and then run the VM build script
+[build_vm.sh](bin/build_vm.sh):
 
-(for CentOS 6)
-```
+(in this example CentOS 6)
+
+```sh
 git clone git@github.com:OpenVnmrJ/ovjTools.git
 export OVJ_TOOLS=`pwd`/ovjTools
 ${OVJ_TOOLS}/bin/build_vm.sh centos6   # do the actual build, will take ~1 h the first time
+...
 cd ${OVJ_TOOLS}/vms/centos6
 VMGUI=y vagrant reload                 # this will reboot the VM in graphical mode
-````
-
-to build for multiple OS targets at the same time, just add to the list, currently 
-supported targets are `centos6`, `centos7`, `ubuntu14`, and , `ubuntu16`.
-
-The [build_vm.sh](bin/build_vm.sh) script also takes branch and developer arguments.
-To build the development branch from a particular github user ("aGitHubUsername" in
-this example) on centos6 and ubuntu14 :
-```
-./build_vm.sh centos6 ubuntu14 --gitname aGitHubUsername --branch development 
 ```
 
-The install requires user interaction, so to actually install OpenVnmrJ, you have to
-boot the VM with the GUI enabled and run the installer there.
+to build for multiple OS targets at the same time, just add the target
+name to the command line, currently tested targets are `centos6`,
+`centos7`, `ubuntu14`, `ubuntu16`, and `ubuntu18`.
+
+The [build_vm.sh](bin/build_vm.sh) script lets you specify the git
+branch and github username.  To build the "development" branch from a
+github user "ghuser" on both centos6 and ubuntu14 :
+
+```sh
+./bin/build_vm.sh centos6 ubuntu14 --gitname ghuser --branch development 
+```
+
+If there are any build errors, you can log into the VM locally through
+ssh and inspect the build.log:
+
+```sh
+cd ${OVJ_TOOLS}/vms/centos6
+vagrant up
+vagrant ssh
+[now logged into the VM...]
+cd $ovjBuildDir/logs/
+more build*
+```
+
+The actual install of OpenVnmrJ (currently) requires graphical user
+interaction with the java gui, so to complete the install of
+OpenVnmrJ, you have to boot the VM with the GUI enabled and run the
+installer manually:
+
+```sh
+cd ${OVJ_TOOLS}/vms/centos6
+VMGUI=y vagrant up
+[open a terminal in the VM]
+cd $ovjBuildDir/dvdimageOVJ_.../
+./load.nmr
+```
 
 ### Ubuntu and CentOS
 

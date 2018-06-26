@@ -1,0 +1,54 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+#
+# Copyright (C) 2016  Michael Tesch
+#
+# You may distribute under the terms of either the GNU General Public
+# License or the Apache License, as specified in the LICENSE file.
+#
+# For more information, see the LICENSE file.
+#
+
+# Returns true if `VMGUI` environment variable is set to a non-empty
+# value.  Defaults to false
+def gui_enabled?
+  !ENV.fetch('VMGUI', '').empty?
+end
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/ubuntu-18.04"
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+  config.vm.provider "virtualbox" do |vb|
+    #vb.gui = true
+    vb.memory = "2048"
+    vb.cpus = 2
+    # Display the VirtualBox GUI when booting the machine?
+    vb.gui = gui_enabled?
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+    export DEBIAN_FRONTEND=noninteractive
+    dpkg --add-architecture i386
+    apt -qq update
+    apt -qq -y dist-upgrade
+
+    # these are needed to build
+    apt install -y git scons
+    apt install -y g++ gfortran
+    apt install -y lib32stdc++-7-dev libc6-dev-i386 libglu1-mesa-dev
+    apt install -y libmotif-dev:i386 libx11-dev:i386 libxt-dev:i386
+
+    # these are needed to install
+    apt install -y csh expect tcl8.4-dev tk8.4-dev bc
+    apt install -y openjdk-8-jre
+    apt install -y rsh-server tftpd mutt sharutils gnome-power-manager k3b kdiff3 rarpd
+    #debconf-set-selections <<< "postfix postfix/mailname string your.hostname.com"
+    #debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
+    apt install -y ghostscript imagemagick postgresql
+    apt install -y sendmail-cf
+    chmod a+rw /var/run/postgresql
+
+    apt install -y gnome-session gdm3
+    # dpkg-reconfigure gdm
+    # echo "127.0.0.1 $(hostname)" >> /etc/hosts
+  SHELL
+end
