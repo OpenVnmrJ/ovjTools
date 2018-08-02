@@ -14,6 +14,9 @@
 def gui_enabled?
   !ENV.fetch('VMGUI', '').empty?
 end
+def ncpu
+  Integer(ENV.fetch('VMNCPU', '1'))
+end
 
 Vagrant.configure("2") do |config|
   config.vm.box = "OpenVnmrJ/centos7"
@@ -23,9 +26,10 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
     # Display the VirtualBox GUI when booting the machine
     #vb.gui = true
+    vb.gui = gui_enabled?
     vb.linked_clone = true
-    vb.memory = "4096"
-    vb.cpus = 2
+    vb.memory = "%d" % (ncpu * 1024)
+    vb.cpus = ncpu
   end
   config.vm.provision "shell", inline: <<-SHELL
     echo "do nothing"

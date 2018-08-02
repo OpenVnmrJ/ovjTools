@@ -16,30 +16,34 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.provider "virtualbox" do |vb|
     #vb.gui = true
-    vb.memory = "2048"
-    vb.cpus = 2
+    vb.cpus = 3
+    vb.memory = "%d" % (1024 * 3)
   end
   config.vm.provision "shell", inline: <<-SHELL
     export DEBIAN_FRONTEND=noninteractive
+    set -e
     dpkg --add-architecture i386
     apt-get -qq update
     apt-get -qq -y dist-upgrade
 
     # these are needed to build
-    apt-get install -y git scons
-    apt-get install -y g++ gfortran
-    apt-get install -y lib32stdc++-5-dev libc6-dev-i386 libglu1-mesa-dev
+    apt-get install -y git scons g++ gfortran \
+            lib32stdc++-5-dev libc6-dev-i386 libglu1-mesa-dev \
+            libgsl-dev libtiff5-dev
     apt-get install -y libmotif-dev:i386 libx11-dev:i386 libxt-dev:i386
 
     # these are needed to install
-    apt-get install -y csh expect bc
-    apt-get install -y openjdk-8-jre
-    apt-get install -y rsh-server tftpd mutt sharutils gnome-power-manager k3b kdiff3 rarpd
+    #apt-get install -y openjdk-8-jre
+    apt-get install -y csh expect bc rsh-server tftpd mutt sharutils \
+            gnome-power-manager k3b kdiff3 rarpd
     #debconf-set-selections <<< "postfix postfix/mailname string your.hostname.com"
     #debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
-    apt-get install -y ghostscript imagemagick postgresql
-    apt-get install -y sendmail-cf
+    apt-get install -y ghostscript imagemagick postgresql sendmail-cf
+
     chmod a+rw /var/run/postgresql
+
+    echo "dash dash/sh boolean false" | debconf-set-selections
+    dpkg-reconfigure dash
 
     apt-get install -y gdm
     #dpkg-reconfigure gdm

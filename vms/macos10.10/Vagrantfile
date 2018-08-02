@@ -16,9 +16,11 @@ def gui_enabled?
 end
 
 Vagrant.configure("2") do |config|
+  #config.vm.box = "AndrewDryga/vagrant-box-osx"
+
   config.vm.box = "OpenVnmrJ/macos10.10"
-  # only update vbguest on the box_defs/ boxes
-  config.vbguest.auto_update = false
+  #config.vbguest.auto_update = false
+
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.provider "virtualbox" do |vb|
     # Display the VirtualBox GUI when booting the machine
@@ -27,8 +29,31 @@ Vagrant.configure("2") do |config|
     vb.linked_clone = true
     # Customize the amount of memory on the VM:
     #vb.memory = "4096"
+
+    unless File.exist?('tmp2.vmdk')
+      vb.customize ['createhd', '--filename', 'tmp2.vmdk', '--size', 20*1024, '--format', 'vmdk' ]
+    end
+
+    vb.customize ['storageattach', :id,
+                  '--storagectl', 'SATA',
+                  '--port', 4,
+                  '--device', 0,
+                  '--type', 'hdd',
+                  '--medium', 'tmp2.vmdk']
+
   end
+
+  # create a case-sensitive filesystem on the vmdk from above
   config.vm.provision "shell", inline: <<-SHELL
-    echo "do nothing"
+    set -e
+    diskutil eraseDisk jhfsx Vagrant1 /dev/disk1
   SHELL
+
+  # brew runs as a user
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+    set -e
+    brew update
+    brew install scons postgres
+  SHELL
+
 end

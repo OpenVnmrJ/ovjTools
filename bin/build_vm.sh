@@ -2,18 +2,21 @@
 #
 # Copyright (C) 2016  Michael Tesch
 #
-# You may distribute under the terms of either the GNU General Public
-# License or the Apache License, as specified in the LICENSE file.
+# This file is a part of the OpenVnmrJ project.  You may distribute it
+# under the terms of either the GNU General Public License or the
+# Apache 2.0 License, as specified in the LICENSE file.
 #
-# For more information, see the LICENSE file.
+# For more information, see the OpenVnmrJ LICENSE file.
 #
 
 #
 # build OVJ locally in a virtual machine
 #
 
+CMDLINE="$0 $*"
 SCRIPT=$(basename "$0")
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ERRCOUNT=0
 onerror() {
     echo "$(tput setaf 1)$SCRIPT: Error on line ${BASH_LINENO[0]}, exiting.$(tput sgr0)"
     if [ -t 3 ]; then
@@ -24,21 +27,26 @@ onerror() {
 }
 trap onerror ERR
 
+DATESTRING="$(date +"%Y%m%d_%H%M%S")"
 TARGETS=
-ACTION=build
+ACTIONS=
 : "${OVJ_FRESHSRC=no}"
 : "${OVJ_GITBRANCH=master}"
 : "${OVJT_GITBRANCH=master}"
 : "${OVJ_DEVELOPER=OpenVnmrJ}"
-: "${OVJ_VERBOSE=2}"
-: "${OVJ_LOGFILE=buildvm.log}"
+: "${OVJ_VMNCPU=3}"
+: "${VERBOSE=3}"
+: "${OVJ_LOGFILE=build_vm-${DATESTRING}.log}"
 : "${OVJ_KEEPRUN=no}"
 : "${OVJ_KEEPBOX=no}"
+: "${OVJ_BR_FLAGS="--srcreset"}"
+: "${OVJ_TI_FLAGS="-f -v"}"
 
 # set OVJ_TOOLS if necessary
 if [ "x${OVJ_TOOLS}" = "x" ] ; then
-    if [ -d "$SCRIPTDIR/vms/box_defs" ]; then
-        OVJ_TOOLS="$SCRIPTDIR"
+    if [ -d "$SCRIPTDIR/../vms/box_defs" ]; then
+        cd "$SCRIPTDIR/../"
+        OVJ_TOOLS="$(pwd)"
         echo "Setting OVJ_TOOLS to '${OVJ_TOOLS}'"
         export OVJ_TOOLS
     elif [ -d "$(pwd)/vms/box_defs" ]; then
@@ -51,34 +59,46 @@ if [ "x${OVJ_TOOLS}" = "x" ] ; then
     fi
 fi
 
-if [ ! -f "${OVJ_TOOLS}/OSX.md" ]; then
-    log_error 'ERROR: OVJ_TOOLS incorrect: missing OSX.md from "${OVJ_TOOLS}/"'
-    usage
-fi
-
-function usage {
+function usage_msg {
     cat <<EOF
 usage:
-  $SCRIPT <targets...> [options...]
+  $SCRIPT <targets...> [action] [options...]
 
 targets:
   <centos6|centos7|macos10.10|ubuntu14|ubuntu16|...>
-                       - build OpenVnmrJ on the specified platform,
-                         building any necessary VM images on the way.
-  clean                - destroy all VMs used for all platforms
-  distclean            - destroy all VMs and all box templates
+
+actions:
+  build                  - build OpenVnmrJ on the specified platform,
+                           building any necessary VM images on the way (default).
+  package                - make OpenVnmrJ packages (rpm/deb) for the OS
+  install                - install OpenVnmrJ on the target VM
+  test                   - test OpenVnmrJ on the target VM using vjqa
+  uninstall              - uninstall OpenVnmrJ on the target VM
+  clean                  - destroy all VMs used for given platform
+  distclean              - destroy all VMs and all box templates
 
 options:
-  -f|--freshsrc             rebuild from scratch, checkout fresh repos [${OVJ_FRESHSRC}]
-  -k|--keeprunning          leave the VM running after building [${OVJ_KEEPRUN}]
-  --keepbox                 save the VM 'box' after building it [${OVJ_KEEPBOX}]
-  -b|--branch branch        branch to build [${OVJ_GITBRANCH}]
-  -u|--gitname developer    github account name to build [${OVJ_DEVELOPER}]
-  --tbranch branch_name     branch to clone for ovjTools [${OVJT_GITBRANCH}]
+  -f|--freshsrc          - remove build dir, clone fresh repos [${OVJ_FRESHSRC}]
+  -k|--keeprunning       - leave the VM running after building [${OVJ_KEEPRUN}]
+  --keepbox              - save the VM 'box' after building it [${OVJ_KEEPBOX}]
+  -b|--branch branch     - branch to build [${OVJ_GITBRANCH}]
+  -u|--gitname developer - github account name to build [${OVJ_DEVELOPER}]
+  --tbranch branch_name  - branch to clone for ovjTools [${OVJT_GITBRANCH}]
+  -B|--brflags           - flags to pass to build_release.sh [${OVJ_BR_FLAGS}]
+  -F|--tiflags           - flags to pass to test_install.sh [${OVJ_TI_FLAGS}]
+  -N|--ncpu              - how many cpus to give to each VM [${OVJ_VMNCPU}]
+  -v|--verbose           - be more verbose (can add multiple times)
+  -q|--quiet             - be more quiet   (can add multiple times)
+  -h|--help              - print this message and exit
 
 Environment Variables:
 OVJ_TOOLS     -> path to ovjTools, VM will be in \$OVJ_TOOLS/vms/<os>/
 EOF
+}
+
+function usage {
+    usage_msg
+    if [ -t 3 ]; then usage_msg >&3 ; fi
     exit 1
 }
 
@@ -95,14 +115,17 @@ while [ $# -gt 0 ]; do
         -u|--gitname)           OVJ_DEVELOPER="$2"; shift     ;;
         -b|--branch)            OVJ_GITBRANCH="$2"; shift     ;;
         --tbranch)              OVJT_GITBRANCH="$2"; shift    ;;
+        -B|--brflags)           OVJ_BR_FLAGS="$2"; shift      ;;
+        -F|--tiflags)           OVJ_TI_FLAGS="$2"; shift      ;;
+        -N|--ncpu)              OVJ_VMNCPU="$2"; shift      ;;
         -h|--help)              usage                         ;;
-        -v|--verbose)           OVJ_VERBOSE=$(( OVJ_VERBOSE + 1 )) ;;
-        -q|--quiet)             OVJ_VERBOSE=$(( OVJ_VERBOSE - 1 )) ;;
+        -v|--verbose)           VERBOSE=$(( VERBOSE + 1 )) ;;
+        -q|--quiet)             VERBOSE=$(( VERBOSE - 1 )) ;;
         all)
-            TARGETS="ubuntu14 ubuntu16 centos6 centos7 macos10.10 "
+            TARGETS="centos6 centos7 ubuntu14 ubuntu16 "
             ;;
-        clean|distclean)
-            ACTION=$key
+        build|package|install|test|uninstall|clean|distclean)
+            ACTIONS="${ACTIONS} $key"
             ;;
         *)
             if [ -f "${OVJ_TOOLS}/vms/$key/Vagrantfile" ]; then
@@ -118,7 +141,7 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-if [ ${OVJ_VERBOSE} -gt 2 ]; then
+if [ ${VERBOSE} -gt 4 ]; then
     set -x
 fi
 
@@ -127,123 +150,21 @@ fi
 # helper functions
 #
 
-# call this before calling any log commands
-log_setup () {
-    LOGFILE="$1"       # typically $(basename "$0")
-    local LOGDIR
-    LOGDIR="$(dirname "$2")"  # directory for log files, will try to mkdir -p if non-existant
+# import logging functions
+# shellcheck source=loglib.sh
+. "$SCRIPTDIR/loglib.sh"
 
-    # colors & names of the log levels
-    # check if stdout is a terminal...
-    if test -t 1; then
-        # see if it supports colors...
-        ncolors=$(tput colors)
-        if test -n "$ncolors" && test "$ncolors" -ge 8; then
-            normal="$(tput sgr0)"
-            red="$(tput setaf 1)"
-            green="$(tput setaf 2)"
-            yellow="$(tput setaf 3)"
-            cyan="$(tput setaf 6)"
-            white="$(tput setaf 7)"
-            magenta="$(tput setaf 5)"
-        fi
-    fi
-    LEVELNAMES=( ERROR WARN INFO DEBUG )
-    LEVELCOLOR=( "$red" "$yellow" "$green" "$cyan" )
-    #set -x
-
-    if [ ! -d "$LOGDIR" ]; then
-        echo "creating log directory '$LOGDIR'"
-        mkdir -p "$LOGDIR" || return $?
-    fi
-    if [ ! -d "$LOGDIR" ]; then
-        echo "${red}Unable to create log directory '$LOGDIR':${normal}"
-        echo "${red}  log messages will be printed to the terminal.${normal}"
-        return
-    fi
-    exec 3>&1 4>&2
-    trap 'exec 1>&3 2>&4' 0
-    trap 'exec 1>&3 2>&4; exit 1' 1 2 3
-    #trap 'onerror' 0 1 2 3
-    if [ ${OVJ_VERBOSE} -gt 2 ]; then
-        # at VERBOSE >= DEBUG level, also send cmd output to terminal
-        exec 1> >(tee -a "${LOGFILE}") 2>&1
-    else
-        exec 1> "$LOGFILE" 2>&1
-    fi
-    # how this script was called
-    log_debug "$CMDLINE"
-    log_info "Logfile: $LOGFILE"
-}
-log_msg () {
-    local level=$1
-    shift
-    #local datestring=$(date +"%Y-%m-%d %H:%M:%S")
-    local message="$*"
-    echo "${LEVELNAMES[level]}:$message"
-    if [ ${OVJ_VERBOSE} -ge "$level" ] && [ -t 3 ]; then
-        echo "${LEVELCOLOR[level]}${LEVELNAMES[level]}:${message}${normal}" >&3
-    fi
-}
-log_error () {
-    log_msg 0 "$*"
-}
-log_warn () {
-    log_msg 1 "$*"
-}
-log_info () {
-    log_msg 2 "$*"
-}
-log_debug () {
-    log_msg 3 "$*"
-}
-log_cmd () {
-    # log it, and send the cmd output to stdout
-    log_info "\$ $*"
-    # execute it
-    if [ -t 3 ]; then
-        eval "$@" >&3
-    else
-        eval "$@"
-    fi
-}
-cmdspin () {
-    #
-    # Run a command, spin a wheelie while it's running
-    #
-    log_info "Cmd started $(date)"
-    log_info "\$ $*"
-    # spinner
-    local sp='/-\|'
-    if [ -t 3 ]; then printf ' ' >&3 ; fi
-    while : ; do
-        sleep 1;
-        sp=${sp#?}${sp%???}
-        if [ -t 3 ]; then printf '\b%.1s' "$sp" >&3 ; fi
-    done &
-    SPINNER_PID=$!
-    # Kill the spinner if we die prematurely
-    trap "kill $SPINNER_PID" EXIT
-    # command here
-    eval "$@"
-    retval=$?
-    # Kill the loop and unset the EXIT trap
-    kill -PIPE $SPINNER_PID
-    trap " " EXIT
-    if [ -t 3 ]; then echo "" >&3 ; fi
-    log_info "Cmd finished $(date), returned: $retval"
-    return $retval
-}
 vrun () {
     #
     # Run a command on the VM, spin a wheelie while it's running
     #
     # only call this after `vagrant ssh-config` has initialized 'vagrant ssh'
     VCMD="$*"
+    local start=$SECONDS
     local retval
-    echo "${magenta}VM\$ $VCMD${normal}"
-    if [ -t 3 ] && [ $OVJ_VERBOSE -ge 1 ]; then
-        echo "${magenta}VM\$ $VCMD${normal}" >&3 ;
+    echo "${magenta}${TARGET}\$ $VCMD${normal}"
+    if [ $VERBOSE -le 3 ] && [ -t 3 ]; then
+        echo "${magenta}${TARGET}\$ $VCMD${normal}" >&3
     fi
     # spinner
     local sp='/-\|'
@@ -261,18 +182,22 @@ vrun () {
     retval=$?
     # Kill the spinner loop and unset the EXIT trap
     kill -PIPE $SPINNER_PID
+    if [ -t 3 ]; then printf '\b.' >&3 ; fi
     trap " " EXIT
+    local dur
+    dur=$(TZ=UTC0 printf '%(%H:%M:%S)T\n' "$(( SECONDS - start ))")
     if [ $retval = 0 ]; then
-        if [ $OVJ_VERBOSE -ge 1 ]; then
-            if [ -t 3 ]; then echo "${magenta}OK${normal}" >&3 ; fi
+        echo "${magenta}OK $dur${normal}"
+        if [ $VERBOSE -le 3 ] && [ -t 3 ]; then
+            echo "${magenta}OK$ $dur${normal}" >&3
         fi
-        echo "${magenta}OK${normal}"
     else
-        if [ -t 3 ]; then echo "${magenta}FAILED=$retval${normal}" >&3 ; fi
-        echo "${magenta}FAILED=$retval${normal}"
+        if [ -t 3 ]; then echo "${white}${bold}FAILED=$retval $dur${normal}" >&3 ; fi
+        echo "${white}${bold}FAILED=$retval $dur${normal}"
     fi
     return $retval
 }
+
 #######################################################################
 #
 # functions
@@ -282,29 +207,34 @@ clean_target() {
     local TARGET_OS="$1"
     log_info "Cleaning vms/${TARGET_OS}"
     cd "${OVJ_TOOLS}/vms/${TARGET_OS}" || return $?
-    vagrant destroy -f
-    return 0
+    cmdspin vagrant destroy -f
 }
 
 distclean_target() {
     local TARGET_OS="$1"
-    if [[ "${TARGET_OS}" == macos* ]]; then
-        log_warn "not discleaning ${TARGET_OS} !!! (you probaly didn't meant that)"
-        return 0
-    fi
+    local BOXNAME
+
     log_info "distcleaning vms/box_defs/${TARGET_OS}"
-    cd "${OVJ_TOOLS}/vms/box_defs/${TARGET_OS}" || log_warn "target ${TARGET_OS} missing" && return $?
+    if ! cd "${OVJ_TOOLS}/vms/box_defs/${TARGET_OS}" ; then
+        log_warn "target box def for '${TARGET_OS}' missing"
+        return 1
+    fi
     log_cmd rm -f package.box
     vagrant destroy -f
     # check if this box def already exists, if so just print message and exit
-    BOXNAME=OpenVnmrJ/${TARGET_OS}
+    BOXNAME="OpenVnmrJ/${TARGET_OS}"
     if vagrant box list | grep -q "$BOXNAME" ; then
         log_info "removing box '$BOXNAME'"
-        vagrant box remove "$BOXNAME"  || log_warn "box remove ${TARGET_OS} missing" && return $?
+        vagrant box remove "$BOXNAME"
+        retval=$?
+        if [ $retval != 0 ]; then
+            log_warn "box remove '${TARGET_OS}' failed, ignoring.."
+        fi
+        return $retval
+    else
+        log_info "didn't find existing box '$BOXNAME' for removal"
     fi
-    return 0
 }
-
 
 # validate requested developer/branch
 validate_repo() {
@@ -328,24 +258,23 @@ validate_repo() {
         log_error "INVALID branch '${OVJ_GITBRANCH}' for http://github.com/${OVJ_DEVELOPER}/ovjTools"
         exit 1
     fi
-    log_info "http://github.com/${OVJ_DEVELOPER}/ovjTool branch=${OVJT_GITBRANCH} valid"
+    log_info "http://github.com/${OVJ_DEVELOPER}/ovjTool branch=${OVJT_GITBRANCH} is valid"
 }
 
+# build a vagrant "box" for a particular OS
 build_box() {
-    # build a vagrant "box"
-    local TARGET_OS
+    local TARGET_OS="$1"
     local BOXNAME
-    TARGET_OS="$1"
 
     # the vagrant boxname
     BOXNAME="OpenVnmrJ/$TARGET_OS"
 
-    # check if this box def already exists, if so just print message and exit
+    # check if this box def already exists, if so just print message and return
     if vagrant box list | grep -q "$BOXNAME" ; then
-        log_info "found existing vagrant box '$BOXNAME'"
+        log_info "Found existing vagrant box '$BOXNAME'"
         return 0
     else
-        log_info "creating vagrant box '$BOXNAME' from ${OVJ_TOOLS}/vms/box_defs/${TARGET_OS}"
+        log_info "Creating vagrant box '$BOXNAME' from ${OVJ_TOOLS}/vms/box_defs/${TARGET_OS}"
     fi
 
     # cd to Vagrant box_def dir, 
@@ -355,7 +284,7 @@ build_box() {
     if [[ "${TARGET_OS}" == macos* ]]; then
         JAVA_DMG=(jdk-8u*-macosx-x64.dmg)
         if [ ! -f "${JAVA_DMG}" ]; then
-            log_error "please download the macOS java SDK (${JAVA_DMG}) and place it in $(pwd) before running this."
+            log_error "Please download the macOS java SDK (${JAVA_DMG}) and place it in $(pwd) before running this."
             log_error " maybe from http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html"
             exit -1
         fi
@@ -364,7 +293,7 @@ build_box() {
     # make sure no old package file laying around
     if [ -f package.box ]; then
         echo "removing old Vagrant package.box file"
-        rm package.box
+        log_cmd rm -f package.box
     fi
 
     # update any out-of-date vagrant boxes
@@ -373,10 +302,11 @@ build_box() {
     # build and setup the VM
     log_info "Creating the box VM '$BOXNAME'"
     cmdspin vagrant up || return $?
+    vagrant ssh-config > ./vagrant.ssh.config || return $?
 
     # setup environment in the VM
     case "${TARGET_OS}" in
-        centos*|ubuntu18)
+        centos*|ubuntu18|fedora*)
             vagrant ssh -c 'echo "alias more=less" >> ~/.bashrc'
             ;;
         *)
@@ -387,21 +317,22 @@ build_box() {
     # setup java sdk on macos
     if [[ "${TARGET_OS}" == macos* ]]; then
         log_info "Installing java package '${JAVA_DMG}' for macos"
-        sshpass -p vagrant scp -P 2222 "${JAVA_DMG}" vagrant@127.0.0.1:
-        vagrant ssh -c "sudo hdiutil attach ${JAVA_DMG}" || return $?
-        vagrant ssh -c 'sudo installer -pkg /Volumes/JDK*/JDK*.pkg -target /' || return $?
+        log_cmd scp -F vagrant.ssh.config "${JAVA_DMG}" default: || return $?
+        #log_cmd sshpass -p vagrant scp -P 2222 "${JAVA_DMG}" vagrant@127.0.0.1: || return $?
+        vrun "sudo hdiutil attach ${JAVA_DMG}" || return $?
+        vrun 'sudo installer -pkg /Volumes/JDK*/JDK*.pkg -target /' || return $?
         #vagrant ssh -c "sudo rm ${JAVA_DMG}"
     fi
 
     # boot-cycle the box, down-up-down, to make sure it boots ok
-    vagrant reload || return $?
+    cmdspin vagrant reload || return $?
 
     # halt, package, and name the box
-    vagrant halt
+    cmdspin vagrant halt
     cmdspin vagrant package || return $?
 
     # add it to local vagrant box library
-    vagrant box add "$BOXNAME" package.box || return $?
+    cmdspin vagrant box add "$BOXNAME" package.box || return $?
 
     # free up the space
     log_info "done.  removing package.box and destroy the vagrant box $BOXNAME ."
@@ -420,52 +351,71 @@ setup_target() {
     # then just use that.
     #
 
-    log_info "setting up target ${TARGET_OS}..."
+    log_info "Setting up target '${TARGET_OS}'..."
 
     # make sure the local dev box template is setup
-    if [ -d ${OVJ_TOOLS}/vms/box_defs/${TARGET_OS} ]; then
+    if [ -d "${OVJ_TOOLS}/vms/box_defs/${TARGET_OS}" ]; then
         build_box "${TARGET_OS}" || return $?
         # "${OVJ_TOOLS}/bin/build_box.sh" "${TARGET_OS}" || return $?
     fi
 
     # cd to dir containing TARGET_OS's Vagrantfile, fire-up the VM
     cd "${OVJ_TOOLS}/vms/${TARGET_OS}" || return $?
-    log_info "Setting up build VM in $(pwd)"
-    cmdspin vagrant halt
-    cmdspin vagrant up || return $?
+    if [ ${OVJ_KEEPRUN} = no ]; then
+        cmdspin vagrant halt
+    fi
+    log_info "Spinning up build VM in $(pwd)"
+    VMNCPU=${OVJ_VMNCPU} cmdspin vagrant up || return $?
     vagrant ssh-config > ./vagrant.ssh.config || return $?
 
     # setup environment in the VM
-    if [[ "${TARGET_OS}" == centos* ]]; then
-        vrun 'echo "export ovjBuildDir=$HOME/ovjbuild" >> ~/.bashrc'
-        vrun 'echo "export OVJ_TOOLS=$ovjBuildDir/ovjTools" >> ~/.bashrc'
-    elif [[ "${TARGET_OS}" == ubuntu* ]]; then
-        vrun 'echo "export ovjBuildDir=$HOME/ovjbuild" >> ~/.profile'
-        vrun 'echo "export OVJ_TOOLS=$ovjBuildDir/ovjTools" >> ~/.profile'
-    elif [[ "${TARGET_OS}" == macos* ]]; then
-        # case-sensitive filesystem at /Volumes/Vagrant1/
-        vrun 'echo "export ovjBuildDir=/Volumes/Vagrant1/ovjbuild" >> ~/.profile'
-        vrun 'echo "export OVJ_TOOLS=$ovjBuildDir/ovjTools" >> ~/.profile'
-        #scp -F vagrant.ssh.config "Test Developer.cer" default:
-        #vrun "sudo security -v add-trusted-cert -d -r trustRoot -p codeSign -k /Library/Keychains/System.keychain 'Test Developer.cer'"
-        #vrun "security find-identity -p codesigning"
-    fi
+    case "${TARGET_OS}" in
+        centos*|fedora*)
+            vrun 'echo "export ovjBuildDir=$HOME/ovjbuild" >> ~/.bashrc'
+            vrun 'echo "export OVJ_TOOLS=$ovjBuildDir/ovjTools" >> ~/.bashrc'
+            ;;
+        ubuntu*)
+            vrun 'echo "export ovjBuildDir=$HOME/ovjbuild" >> ~/.profile'
+            vrun 'echo "export OVJ_TOOLS=$ovjBuildDir/ovjTools" >> ~/.profile'
+            ;;
+        macos*)
+            # case-sensitive filesystem at /Volumes/Vagrant1/
+            vrun 'echo "export ovjBuildDir=/Volumes/Vagrant1/ovjbuild" >> ~/.profile'
+            vrun 'echo "export OVJ_TOOLS=$ovjBuildDir/ovjTools" >> ~/.profile'
+            #scp -F vagrant.ssh.config "Test Developer.cer" default:
+            #vrun "sudo security -v add-trusted-cert -d -r trustRoot -p codeSign -k /Library/Keychains/System.keychain 'Test Developer.cer'"
+            #vrun "security find-identity -p codesigning"
+            ;;
+        *)
+            log_error "Unknown target os '${TARGET_OS}'"
+    esac
 
     # check if setting OVJ_TOOLS in the environment works
+    vrun 'echo ovjBuildDir=$ovjBuildDir'
     vrun 'echo OVJ_TOOLS=$OVJ_TOOLS'
+    vrun 'scons -v'
     return $?
+}
+
+shutdown_target() {
+    local TARGET_OS="$1"
+
+    if [ ${OVJ_KEEPRUN} = no ]; then
+        log_info "Shutting down '${TARGET_OS}' VM"
+        vagrant halt
+    else
+        log_info "Left '${TARGET_OS}' VM running at '${OVJ_TOOLS}/vms/${TARGET_OS}'"
+    fi
 }
 
 build_target() {
     local TARGET_OS="$1"
     local retval=0
 
-    log_info "building target VM ${TARGET_OS}..."
+    log_info "Building target VM '${TARGET_OS}'..."
 
-    # cd to Vagrant dir, build the VM
+    # cd to Vagrant dir
     cd "${OVJ_TOOLS}/vms/${TARGET_OS}" || return $?
-    vagrant up || return $?
-    vagrant ssh-config > ./vagrant.ssh.config
 
     # check if setting OVJ_TOOLS in the environment works
     vrun 'echo OVJ_TOOLS=$OVJ_TOOLS'
@@ -480,31 +430,42 @@ build_target() {
     #vrun 'if [ -d ${ovjBuildDir} ]; then echo "removing build dir"; rm -rf ${ovjBuildDir} ; fi '
     vrun 'mkdir -p ${ovjBuildDir}' || return $?
 
-    # checkout the source within the VM
+    # checkout the sources within the VM
     if ! vrun "cd \$ovjBuildDir/OpenVnmrJ"; then
         log_info "checking out OpenVnmrJ 'http://github.com/${OVJ_DEVELOPER}/OpenVnmrJ.git' b=${OVJ_GITBRANCH}"
         vrun "cd \$ovjBuildDir && pwd"
-        vrun "cd \$ovjBuildDir && git clone --depth 3 --branch ${OVJ_GITBRANCH} http://github.com/${OVJ_DEVELOPER}/OpenVnmrJ.git"
+        vrun "cd \$ovjBuildDir && git clone --depth 1 --branch ${OVJ_GITBRANCH} http://github.com/${OVJ_DEVELOPER}/OpenVnmrJ.git"
+    else
+        # make sure that 'origin' points at right git remote
+        vrun "cd \$ovjBuildDir/OpenVnmrJ && git remote set-url origin http://github.com/${OVJ_DEVELOPER}/OpenVnmrJ.git"
+        vrun "cd \$ovjBuildDir/OpenVnmrJ && git fetch --depth 1 origin ${OVJ_GITBRANCH}:${OVJ_GITBRANCH}"
     fi
     if ! vrun "cd \$ovjBuildDir/ovjTools"; then
         log_info "checking out ovjTools 'http://github.com/${OVJ_DEVELOPER}/ovjTools.git' b=${OVJT_GITBRANCH}"
-        vrun "cd \$ovjBuildDir && git clone --depth 3 --branch ${OVJT_GITBRANCH} http://github.com/${OVJ_DEVELOPER}/ovjTools.git"
+        vrun "cd \$ovjBuildDir && git clone --depth 1 --branch ${OVJT_GITBRANCH} http://github.com/${OVJ_DEVELOPER}/ovjTools.git"
         # this might be unnecessary?
-        vrun 'cd ${ovjBuildDir} && cp -r ovjTools/bin . '
+        #vrun 'cd ${ovjBuildDir} &&cp -r ovjTools/bin . '
+    else
+        # make sure that 'origin' points at right git remote
+        vrun "cd \$ovjBuildDir/ovjTools && git remote set-url origin http://github.com/${OVJ_DEVELOPER}/ovjTools.git"
+        vrun "cd \$ovjBuildDir/ovjTools && git fetch --depth 1 origin ${OVJT_GITBRANCH}:${OVJT_GITBRANCH}"
     fi
 
     # verify that the checkout worked
     vrun 'ls $OVJ_TOOLS' || return $?
+    vrun "cd \$ovjBuildDir/OpenVnmrJ && git branch"
+    vrun "cd \$ovjBuildDir/OpenVnmrJ && git checkout "
 
     #
     # build & package OpenVnmrJ!
     #
     #scp -F vagrant.ssh.config "${OVJ_TOOLS}/bin/build_release.sh" default:
     #BUILD_CMD="./build_release.sh package"
-    BUILD_CMD="OVJ_VERBOSE=${OVJ_VERBOSE} \$ovjBuildDir/OpenVnmrJ/scripts/build_release.sh checkout build package"
-    BUILD_CMD=" ${BUILD_CMD} --gitname ${OVJ_DEVELOPER} --branch ${OVJ_GITBRANCH} --tbranch ${OVJT_GITBRANCH}"
+    # the -v here doubles the total log output size, but makes it available in our log file
+    BUILD_CMD="\$ovjBuildDir/OpenVnmrJ/scripts/build_release.sh -v checkout build package ${OVJ_BR_FLAGS}"
+    BUILD_CMD="${BUILD_CMD} --gitname ${OVJ_DEVELOPER} --branch ${OVJ_GITBRANCH} --tbranch ${OVJT_GITBRANCH}"
 
-    log_info "running build on VM ${TARGET_OS}"
+    log_info "running 'checkout build package' on VM ${TARGET_OS}"
     time vrun "${BUILD_CMD}"
 
     retval=$?
@@ -519,46 +480,109 @@ build_target() {
     vrun '${ovjBuildDir}/ovjTools/bin/whatsin $(ls -t ${ovjBuildDir}/logs/build* | head -1) | tail -60'
     vrun 'ls -l ${ovjBuildDir}/dvd*'
 
+    case "${TARGET_OS}" in
+        centos*|fedora*)
+            # the install script su's to vnmr1, so these need to be
+            # read/exec by vnmr1
+            vrun 'chmod a+xr ${ovjBuildDir}/..'
+            vrun 'chmod a+xr ${ovjBuildDir}'
+            vrun 'chmod a+xr ${ovjBuildDir}/dvdimageOVJ*' || return $?
+            ;;
+    esac
+
     # build done, shutdown the VM, print status
-    if [ ${OVJ_KEEPRUN} = no ]; then
-        log_info "shutting down '${TARGET_OS}' VM"
-        vagrant halt
-    fi
     if [ $retval = 0 ]; then
-        log_warn "build ${TARGET_OS} success."
+        log_msg "Build '${TARGET_OS}' success."
     else
-        log_warn "build ${TARGET_OS} failed.  Vagrant VM at ${OVJ_TOOLS}/vms/${TARGET_OS}"
+        log_error "Build '${TARGET_OS}' failed.  Vagrant VM at ${OVJ_TOOLS}/vms/${TARGET_OS}"
     fi
 
     return $retval
 }
 
+package_rpm() {
+    local TARGET_OS=$1
+    local COMMIT
+
+    # this is obviously unfinished...
+    log_info "Building RPM for '${TARGET_OS}'..."
+
+    log_info "Checking source http://github.com/${OVJ_DEVELOPER}/OpenVnmrJ ${OVJ_GITBRANCH}"
+    COMMIT=$(git ls-remote --exit-code "http://github.com/${OVJ_DEVELOPER}/OpenVnmrJ" "${OVJ_GITBRANCH}" | cut -c 1-40)
+    log_info "Found git hash: $COMMIT"
+
+    vrun 'sudo yum -y install rpm-build rpm-devel rpmlint rpmdevtools'
+    vrun 'rpmdev-setuptree'
+
+    log_cmd scp -F vagrant.ssh.config "${OVJ_TOOLS}/OpenVnmrJ.spec" default:
+
+    vrun "sed -i -e 's/COMMIT-HASH/${COMMIT}/' OpenVnmrJ.spec"
+    vrun 'sudo yum -y builddep OpenVnmrJ.spec'
+    vrun 'rpmbuild -vv -ba OpenVnmrJ.spec'
+
+}
+
+package_target() {
+    local TARGET_OS=$1
+    case "${TARGET_OS}" in
+        centos*|fedora*)
+            package_rpm "$TARGET_OS" || return $?
+            ;;
+        ubuntu*|debian*)
+            log_error "Debian .deb packaging unfinished"
+            #package_deb "$TARGET_OS" || return $?
+            ;;
+        *)
+            log_error "Dont know how to package '${TARGET_OS}'"
+            ;;
+    esac
+}
+
 install_target() {
-    local TARGET_OS="$1"
+    local TARGET_OS=$1
+    local COMMAND=$2
 
-    log_info "installing target ${TARGET_OS}..."
+    log_info "'${COMMAND}'ing target '${TARGET_OS}'..."
 
-    # cd to Vagrant dir, build the VM
+    # cd to Vagrant dir
     cd "${OVJ_TOOLS}/vms/${TARGET_OS}" || return $?
 
-    # bring up the VM in gui mode
-    VMGUI=y vagrant up || return $?
-    vagrant ssh-config > ./vagrant.ssh.config
-
-    if [[ "${TARGET_OS}" == centos* ]]; then
-        # the install script su's to vnmr1, so these need to be read/exex by vnmr1
-        vrun 'chmod a+xr ${ovjBuildDir}/..'
-        vrun 'chmod a+xr ${ovjBuildDir}'
-        vrun 'chmod a+xr ${ovjBuildDir}/dvdimageOVJ'
+    # copy the install/test script with override, if we have one 
+    if [ -f "${SCRIPTDIR}/install_test.sh" ]; then
+        log_warn "Overriding target OpenVnmrJ's install_test.sh with our version."
+        log_cmd scp -F vagrant.ssh.config "${SCRIPTDIR}/install_test.sh" default: || return $?
+        vrun 'mv install_test.sh $ovjBuildDir/OpenVnmrJ/scripts/' || return $?
     fi
 
-    # this still fails... ./load.nmr needs a gui
-    #
-    # TODO
-    #
-    vrun 'cd ${ovjBuildDir}/dvdimageOVJ && sudo ./load.nmr '
+    # get rid of any existing vjqa logs
+    if [ "$COMMAND" = test ]; then
+        vrun 'sudo rm -f ~vnmr1/vnmrsys/ovj_qa/ovjtest/reports/20*'
+    fi
 
-    return $?
+    # run the remote part
+    time vrun "cd \"\${OVJ_TOOLS}\" && sudo \$ovjBuildDir/OpenVnmrJ/scripts/install_test.sh ${OVJ_TI_FLAGS} $COMMAND"
+    retval=$?
+
+    if [ "$COMMAND" = test ]; then
+        # if testing, copy test results back to OVJ_TOOLS dir
+        local retval2
+        log_cmd scp -F vagrant.ssh.config \
+                default:~vnmr1/vnmrsys/ovj_qa/ovjtest/reports/report.txt \
+                "${OVJ_TOOLS}/vjqa-${TARGET_OS}-${DATESTRING}.txt"
+        retval2=$?
+        if [ $retval2 -ne 0 ]; then
+            log_error "Unable to fetch VJQA test result 'report.txt' from VM"
+        fi
+    fi
+
+    # test done, shutdown the VM, print status
+    if [ $retval = 0 ]; then
+        log_msg "'$COMMAND' '${TARGET_OS}' success."
+    else
+        log_error "'$COMMAND' '${TARGET_OS}' failed.  Vagrant VM at ${OVJ_TOOLS}/vms/${TARGET_OS}"
+    fi
+
+    return $retval
 }
 
 #######################################################################
@@ -566,8 +590,11 @@ install_target() {
 # Main script starts here
 #
 
-# setup the logfile
-log_setup "${OVJ_LOGFILE}"
+# make sure OVJ_TOOLS set correctly
+if [ ! -f "${OVJ_TOOLS}/OSX.md" ]; then
+    log_error 'ERROR: OVJ_TOOLS incorrect: missing OSX.md from "${OVJ_TOOLS}/"'
+    usage
+fi
 
 # make sure some target was specified
 if [ "x${TARGETS}" = x ]; then
@@ -576,26 +603,63 @@ fi
 
 # do the action on all the targets
 for TARGET in $TARGETS ; do
-    log_info " -----------------------------------------"
-    log_warn "     ACTION=${ACTION} TARGET=${TARGET}"
-    log_info " -----------------------------------------"
-    case ${ACTION} in
-        build)
-            validate_repo
-            if ! setup_target "$TARGET" ; then continue ; fi
-            if ! build_target "$TARGET" ; then continue ; fi
-            ;;
-        install)
-            if ! install_target "$TARGET" ; then continue ; fi
-            ;;
-        clean)
-            clean_target "$TARGET"
-            ;;
-        distclean)
-            clean_target "$TARGET"
-            distclean_target "$TARGET"
-            ;;
-    esac
+    # setup the logfile
+    log_setup "build_vm-${TARGET}-${DATESTRING}.log" "${OVJ_TOOLS}"
+    log_info "Target:  $TARGET"
+    log_info "Actions: $ACTIONS"
+
+    ISUP=no
+    for ACTION in $ACTIONS ; do
+        if [ $ISUP = no ]; then
+            case ${ACTION} in
+                build|package|install|test|uninstall)
+                    log_info " -----------------------------------------"
+                    log_warn "     Setup '${TARGET}'"
+                    if ! setup_target "$TARGET" ; then
+                        log_error "Unable to start '${TARGET}'"
+                        break
+                    fi
+                    ISUP=yes
+                    ;;
+            esac
+        fi
+        log_info " -----------------------------------------"
+        log_warn "     ACTION=${ACTION} TARGET=${TARGET}"
+        log_info " -----------------------------------------"
+        case ${ACTION} in
+            build)
+                validate_repo
+                if ! build_target "$TARGET" ; then log_error "$ACTION failed"; break ; fi
+                ;;
+            package)
+                if ! package_target "$TARGET" ; then log_error "$ACTION failed"; break ; fi
+                ;;
+            install)
+                if ! install_target "$TARGET" install ; then log_error "$ACTION failed"; break ; fi
+                ;;
+            test)
+                if ! install_target "$TARGET" test; then log_error "$ACTION failed"; break ; fi
+                ;;
+            uninstall)
+                if ! install_target "$TARGET" uninstall; then log_warn "$ACTION failed"; fi
+                ;;
+            clean)
+                if ! clean_target "$TARGET" ; then log_warn "clean '$TARGET' failed."; fi
+                ISUP=no
+                ;;
+            distclean)
+                if ! clean_target "$TARGET" ; then log_warn "clean '$TARGET' failed."; fi
+                if ! distclean_target "$TARGET"; then log_warn "distclean '$TARGET' failed."; break; fi
+                ISUP=no
+                ;;
+        esac
+    done
+    if [ $ISUP = yes ]; then
+        if ! shutdown_target "$TARGET" ; then log_error "Error shutting down VM '$TARGET'" ; fi
+    else
+        log_warn " Target '$TARGET' wasn't started, skipping shutdown."
+    fi
+    log_info " Finished with '${TARGET}'"
 done
 
 if [ "${ACTION}" = clean ] || [ "${ACTION}" = distclean ]; then
@@ -604,4 +668,5 @@ if [ "${ACTION}" = clean ] || [ "${ACTION}" = distclean ]; then
     exit 0
 fi
 
-log_info "$SCRIPT done."
+log_info "$SCRIPT done, ${ERRCOUNT} errors.  Logfile: $LOGFILE"
+exit ${ERRCOUNT}
