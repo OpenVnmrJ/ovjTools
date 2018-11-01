@@ -32,6 +32,7 @@
 #  mail_list      addresses to email status of the build
 #  gitURL         URL for git repo.
 #  ovjAppName     used by mac version to name /Applications/ovjAppName
+#  ovjConsole     flag to tell whether to include console software
 #  sconsJoption   helps speed up the process. Typical value is #CPUs+1
 #
 # set -x
@@ -97,6 +98,7 @@ gitBranch='master'
 doScons=yes
 buildOVJ=yes    # Build for Direct-Drive (VnmrS/DD2/ProPulse)
 buildOVJMI=yes  # Build for Mercury/Inova
+ovjConsole=yes  # include console software
 
 # Potential optional set of values
 # doGitClone=yes
@@ -107,6 +109,7 @@ buildOVJMI=yes  # Build for Mercury/Inova
 # doScons=no
 # buildOVJ=no
 # buildOVJMI=no
+# ovjConsole=no
 # ovjAppName=OpenVnmrJ.app
 # sconsJoption=5
 
@@ -117,6 +120,6 @@ then
 fi
 ovjLogFile="${ovjBuildDir}/logs/makeovj.$date"
 cd "${ovjBuildDir}"
-export ovjBuildDir workspacedir OVJ_TOOLS dvdCopyDir1 dvdCopyDir2 dvdBuildName1 dvdBuildName2 dvdCopyName1 dvdCopyName2 ovjLogFile doScons doGitClone mail_list gitURL gitSSH gitBranch ovjAppName buildOVJ buildOVJMI sconsJoption osxflags
+export ovjBuildDir workspacedir OVJ_TOOLS dvdCopyDir1 dvdCopyDir2 dvdBuildName1 dvdBuildName2 dvdCopyName1 dvdCopyName2 ovjLogFile doScons doGitClone mail_list gitURL gitSSH gitBranch ovjAppName buildOVJ buildOVJMI ovjConsole sconsJoption osxflags
 "${ovjBuildDir}/bin/makeovj" > "${ovjLogFile}" 2>&1
 
