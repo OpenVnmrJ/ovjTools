@@ -14,6 +14,9 @@
 def gui_enabled?
   !ENV.fetch('VMGUI', '').empty?
 end
+def ncpu
+  Integer(ENV.fetch('VMNCPU', '1'))
+end
 
 Vagrant.configure("2") do |config|
   config.vm.box = "OpenVnmrJ/centos6"
