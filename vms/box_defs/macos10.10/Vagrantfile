@@ -8,18 +8,20 @@
 #
 # For more information, see the LICENSE file.
 #
+def gui?; !ENV.fetch('OVJ_VM_GUI', '').empty?; end
+def ncpu; Integer(ENV.fetch('OVJ_VM_NCPU', '1')); end
+def mem; Integer(ENV.fetch('OVJ_VM_MEM', "%d" % (ncpu * 1024))); end
 
 Vagrant.configure("2") do |config|
   config.vm.box = "AndrewDryga/vagrant-box-osx"
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.provider "virtualbox" do |vb|
-    # Display the VirtualBox GUI when booting the machine
-    #vb.gui = true
-    # Customize the amount of memory on the VM:
     vb.linked_clone = true
-    vb.memory = "8192"
-    vb.cpus = 4
+    vb.gui = gui?
+    vb.memory = mem
+    vb.cpus = ncpu
   end
+  config.vm.post_up_message = "VM started with #{ncpu} cpus, #{mem} MB memory, and gui=#{gui?}"
 
   # brew runs as a user
   config.vm.provision "shell", privileged: false, inline: <<-SHELL

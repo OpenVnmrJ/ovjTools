@@ -1,0 +1,10 @@
+# emacs temp files
+*~
+
+# logfiles
+logs/*.txt
+logs/*.log
+
+# vagrant runtime files
+.vagrant/
+vagrant.ssh.config

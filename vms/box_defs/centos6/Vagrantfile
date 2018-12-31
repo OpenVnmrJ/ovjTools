@@ -8,6 +8,9 @@
 #
 # For more information, see the LICENSE file.
 #
+def gui?; !ENV.fetch('OVJ_VM_GUI', '').empty?; end
+def ncpu; Integer(ENV.fetch('OVJ_VM_NCPU', '1')); end
+def mem; Integer(ENV.fetch('OVJ_VM_MEM', "%d" % (ncpu * 1024))); end
 
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/centos-6.10"
@@ -17,10 +20,10 @@ Vagrant.configure("2") do |config|
   config.ssh.insert_key = false # only needed for vagrant 1.8.5 #7610
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.provider "virtualbox" do |vb|
-    #vb.gui = true
     vb.linked_clone = true
-    vb.memory = "8192"
-    vb.cpus = 4
+    vb.gui = gui?
+    vb.memory = mem
+    vb.cpus = ncpu
     vb.customize "pre-boot", ["storageattach", :id,
                               "--storagectl", "IDE Controller",
                               "--port", "1",
@@ -29,6 +32,7 @@ Vagrant.configure("2") do |config|
                               "--medium", "emptydrive",
                              ]
   end
+  config.vm.post_up_message = "VM started with #{ncpu} cpus, #{mem} MB memory, and gui=#{gui?}"
   config.vm.provision "shell", inline: <<-SHELL
     set -e
     yum install -y epel-release
@@ -36,7 +40,7 @@ Vagrant.configure("2") do |config|
 
     # these are needed to build
     yum install -y git scons zip unzip gcc-gfortran gcc-c++ mesa-libGL-devel \
-        mesa-libGLU-devel gsl-devel libtiff-devel
+        mesa-libGLU-devel gsl-devel
     yum install -y glibc-devel.i686 libstdc++.i686 libX11-devel.i686 \
         libXt-devel.i686 openmotif-devel.i686
 

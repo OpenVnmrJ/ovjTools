@@ -8,12 +8,9 @@
 #
 # For more information, see the LICENSE file.
 #
-
-# Returns true if `VMGUI` environment variable is set to a non-empty value.
-# Defaults to false
-def gui_enabled?
-  !ENV.fetch('VMGUI', '').empty?
-end
+def gui?; !ENV.fetch('OVJ_VM_GUI', '').empty?; end
+def ncpu; Integer(ENV.fetch('OVJ_VM_NCPU', '1')); end
+def mem; Integer(ENV.fetch('OVJ_VM_MEM', "%d" % (ncpu * 1024))); end
 
 Vagrant.configure("2") do |config|
   #config.vm.box = "AndrewDryga/vagrant-box-osx"
@@ -23,12 +20,10 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.provider "virtualbox" do |vb|
-    # Display the VirtualBox GUI when booting the machine
-    vb.gui = gui_enabled?
-    # the mac disk images are YUUUGE
     vb.linked_clone = true
-    # Customize the amount of memory on the VM:
-    #vb.memory = "4096"
+    vb.gui = gui?
+    vb.memory = mem
+    vb.cpus = ncpu
 
     unless File.exist?('tmp2.vmdk')
       vb.customize ['createhd', '--filename', 'tmp2.vmdk', '--size', 20*1024, '--format', 'vmdk' ]
@@ -42,6 +37,7 @@ Vagrant.configure("2") do |config|
                   '--medium', 'tmp2.vmdk']
 
   end
+  config.vm.post_up_message = "VM started with #{ncpu} cpus, #{mem} MB memory, and gui=#{gui?}"
 
   # create a case-sensitive filesystem on the vmdk from above
   config.vm.provision "shell", inline: <<-SHELL
@@ -53,7 +49,8 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
     set -e
     brew update
-    brew install scons postgres
+    brew install scons || brew upgrade scons
+    brew install postgres || brew upgrade postgres
   SHELL
 
 end
