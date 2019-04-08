@@ -389,7 +389,11 @@ setup_target() {
     cmdspin vagrant up ${OVJ_VM_UPFLAGS} || return $?
     vagrant ssh-config > ./vagrant.ssh.config || return $?
 
-    # setup environment in the VM
+    # boop the VM to make sure it's up and running
+    sleep 1
+    vrun 'echo hello world' || true
+
+    # setup shell environment vars in the VM
     case "${TARGET_OS}" in
         centos*|fedora*)
             vrun 'echo "export ovjBuildDir=$HOME/ovjbuild" >> ~/.bashrc'
