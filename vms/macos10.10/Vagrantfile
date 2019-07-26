@@ -16,7 +16,10 @@ Vagrant.configure("2") do |config|
   #config.vm.box = "AndrewDryga/vagrant-box-osx"
 
   config.vm.box = "OpenVnmrJ/macos10.10"
-  #config.vbguest.auto_update = false
+  if Vagrant.has_plugin?("vagrant-vbguest")
+    # only update vbguest on the box_defs/ boxes
+    #config.vbguest.auto_update = false
+  end
 
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.provider "virtualbox" do |vb|
