@@ -1,0 +1,360 @@
+ 
+ 
+Start QA testing
+Mar 27 2019 at 22:30:24
+ 
+
+OpenVnmrJ VERSION 1.1 REVISION A
+March 27, 2019
+propulse
+
+OS:
+CentOS Linux release 7.6.1810 (Core) 
+ 
+Installation tests
+   Test       : VnmrJ installation
+     ***Failed: VnmrJ installation
+ 
+Macro syntax tests
+   Test       : Macro syntax of /vnmr/autotest/maclib/
+        Passed: 309 macros
+   Test       : Macro syntax of /vnmr/biopack/BioPack.dir/BP_files/maclib/
+   Test       : Macro syntax of /vnmr/biopack/maclib/
+        Passed: 1052 macros
+   Test       : Macro syntax of /vnmr/biosolidspack/maclib/
+        Passed: 240 macros
+   Test       : Macro syntax of /vnmr/craft/maclib/
+        Passed: 193 macros
+   Test       : Macro syntax of /vnmr/gxyzshim/maclib/
+        Passed: 48 macros
+   Test       : Macro syntax of /vnmr/imaging/maclib/
+        Passed: 459 macros
+   Test       : Macro syntax of /vnmr/maclib/
+        Passed: 2363 macros
+   Test       : Macro syntax of /vnmr/openvnmrj-utils/maclib/
+        Passed: 2 macros
+   Test       : Macro syntax of /vnmr/solidspack/maclib/
+        Passed: 544 macros
+   Test       : Macro syntax of /vnmr/veripulse/maclib/
+        Passed: 168 macros
+   Test       : Tested a total of 5378 macros
+ 
+Parfile rtp tests
+   Test       : Parameter file syntax in /vnmr/biopack/parlib/
+        Passed: 367 parameter sets
+   Test       : Parameter file syntax in /vnmr/biosolidspack/parlib/
+        Passed: 5 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-10_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-11_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-12_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-13_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-14_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-15_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-1_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-2_04Oct12_01/dirinfo/parlib/
+        Passed: 2 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-3_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-4_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-5_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-6_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-7_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-8_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-10-9_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-11-10_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-11-11_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-11-12_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-11-13_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-11-14_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-11-15_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-11-1_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-11-2_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-11-3_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-11-4_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-11-7_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-11-8_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-11-9_04Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-13-10_10Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-13-11_10Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-13-14_10Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-13-15_10Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-13-16_10Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-13-1_10Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-13-2_10Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-13-3_10Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-13-4_10Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-13-5_10Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-13-6_10Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-13-7_10Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-13-8_10Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/craft/fidlib/SoyExtract/Sb15-13-9_10Oct12_01/dirinfo/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/gxyzshim/parlib/
+        Passed: 1 parameter sets
+   Test       : Parameter file syntax in /vnmr/imaging/ATP/parlib/
+        Passed: 13 parameter sets
+   Test       : Parameter file syntax in /vnmr/imaging/parlib/
+        Passed: 79 parameter sets
+   Test       : Parameter file syntax in /vnmr/parlib/
+        Passed: 242 parameter sets
+   Test       : Parameter file syntax in /vnmr/solidspack/parlib/
+        Passed: 162 parameter sets
+   Test       : Parameter file syntax in /vnmr/veripulse/parlib/
+        Passed: 10 parameter sets
+   Test       : Parameter file syntax in /vnmr/par200/stdpar/
+        Passed: 6 parameter sets
+   Test       : Parameter file syntax in /vnmr/par200/tests/
+        Passed: 21 parameter sets
+   Test       : Parameter file syntax in /vnmr/par300/stdpar/
+        Passed: 6 parameter sets
+   Test       : Parameter file syntax in /vnmr/par300/tests/
+        Passed: 20 parameter sets
+   Test       : Parameter file syntax in /vnmr/par400/stdpar/
+        Passed: 6 parameter sets
+   Test       : Parameter file syntax in /vnmr/par400/tests/
+        Passed: 20 parameter sets
+   Test       : Parameter file syntax in /vnmr/par500/stdpar/
+        Passed: 5 parameter sets
+   Test       : Parameter file syntax in /vnmr/par500/tests/
+        Passed: 25 parameter sets
+   Test       : Parameter file syntax in /vnmr/par600/stdpar/
+        Passed: 5 parameter sets
+   Test       : Parameter file syntax in /vnmr/par600/tests/
+        Passed: 24 parameter sets
+   Test       : Parameter file syntax in /vnmr/par700/stdpar/
+        Passed: 5 parameter sets
+   Test       : Parameter file syntax in /vnmr/par700/tests/
+        Passed: 24 parameter sets
+   Test       : Parameter file syntax in /vnmr/par750/stdpar/
+        Passed: 5 parameter sets
+   Test       : Parameter file syntax in /vnmr/par750/tests/
+        Passed: 17 parameter sets
+   Test       : Parameter file syntax in /vnmr/par800/stdpar/
+        Passed: 5 parameter sets
+   Test       : Parameter file syntax in /vnmr/par800/tests/
+        Passed: 20 parameter sets
+   Test       : Parameter file syntax in /vnmr/par900/stdpar/
+        Passed: 5 parameter sets
+   Test       : Parameter file syntax in /vnmr/par900/tests/
+        Passed: 20 parameter sets
+ 
+XML syntax tests
+   Test       : Xml syntax
+        Passed: 6398 xml files
+ 
+Experiment Menu tests
+   Test       : Experiment menus
+        Passed: 341 experiment menu items
+     ***Failed: 6 experiment menu items
+failed experiment menu item: editht
+failed experiment menu item: noesyHT dps  vnmrjcmd('setpage','Acquire','Quick')
+failed experiment menu item: roesyHT dps  vnmrjcmd('setpage','Acquire','Quick')
+failed experiment menu item: noesyHT dps vnmrjcmd('setpage','Acquire','Quick')
+failed experiment menu item: roesyHT dps vnmrjcmd('setpage','Acquire','Quick')
+failed experiment menu item: Inepthxdec
+        Passed: 344 experiment go('check')
+     ***Failed: 3 experiment go('check')
+go('check') failed for PROTON dn='C13' gHMBCmeAD
+go('check') failed for PROTON gc2hmbcme
+go('check') failed for PROTON gc2h2bcme
+        Passed: 268 experiment exptime
+     ***Failed: 79 experiment exptime
+exptime failed for bashdROESY ()
+exptime failed for zTOCSY1D ()
+exptime failed for ROESY1D ()
+exptime failed for stepNOESY1D ()
+exptime failed for APT ()
+exptime failed for dqcosyHT dps  vnmrjcmd('setpage','Acquire','Quick') ()
+exptime failed for noesyHT dps  vnmrjcmd('setpage','Acquire','Quick') ()
+exptime failed for roesyHT dps  vnmrjcmd('setpage','Acquire','Quick') ()
+exptime failed for dqcosyHT dps vnmrjcmd('setpage','Acquire','Quick') ()
+exptime failed for noesyHT dps vnmrjcmd('setpage','Acquire','Quick') ()
+exptime failed for roesyHT dps vnmrjcmd('setpage','Acquire','Quick') ()
+exptime failed for Hetcortancp2d ()
+exptime failed for Hetcorlgcp2d ()
+exptime failed for Hetcorlgcp2d_1 ()
+exptime failed for Wisetancp2d ()
+exptime failed for Exsy2d ()
+exptime failed for Mashmqc2d ()
+exptime failed for Masapt1d ()
+exptime failed for Mashsqc2d ()
+exptime failed for C7inad2d ()
+exptime failed for Spc5inad2d ()
+exptime failed for Cpinad2d ()
+exptime failed for R14inad2d ()
+exptime failed for Babainad2d ()
+exptime failed for Tancp2drad ()
+exptime failed for Tancp2dspc5 ()
+exptime failed for Pisema2d ()
+exptime failed for Sammy2d ()
+exptime failed for Pisematest1 ()
+exptime failed for Pisematest2 ()
+exptime failed for Lgcp2d ()
+exptime failed for Sc14inad2d ()
+exptime failed for Super2d ()
+exptime failed for Hetcorsamlgcp2d_1 ()
+exptime failed for Hetcorpmlgcp2d_1 ()
+exptime failed for Hetcordumbolgcp2d_1 ()
+exptime failed for Hh2dhdec ()
+exptime failed for IdHetcor ()
+exptime failed for IdInept ()
+exptime failed for Inepthxdec ()
+exptime failed for Tancpxhdec ()
+exptime failed for Tancpxhdeccpmg ()
+exptime failed for Jmasnca2d ()
+exptime failed for Jmasnco2d ()
+exptime failed for Jmascaco2d ()
+exptime failed for Jmascacoipap2d ()
+exptime failed for Jmascacosh2d ()
+exptime failed for Redor1tancp ()
+exptime failed for Redor2tancp ()
+exptime failed for Redor1onepul ()
+exptime failed for Redor2onepul ()
+exptime failed for Fsredor ()
+exptime failed for Dcptan3drad ()
+exptime failed for Dcp2tan3drad ()
+exptime failed for Dcptan3dspc5 ()
+exptime failed for Dcptan ()
+exptime failed for Decorcptan2d ()
+exptime failed for Ineptxyonepul ()
+exptime failed for Ineptxytancp ()
+exptime failed for Ineptxyrefonepul ()
+exptime failed for Ineptxyreftancp ()
+exptime failed for Trapdorycpx ()
+exptime failed for Mrev8 ()
+exptime failed for Mrev8q ()
+exptime failed for Wpmlg1d ()
+exptime failed for Wpmlg2d ()
+exptime failed for C7inadwpmlg2d ()
+exptime failed for Wdumbo1d ()
+exptime failed for Wdumbot1d ()
+exptime failed for C7inadwdumbot2d ()
+exptime failed for C7inadwdumbogen2d ()
+exptime failed for Spsmall ()
+exptime failed for Wpmlgxmx1d ()
+exptime failed for Wdumboxmx1d ()
+exptime failed for Wdumbogen1d ()
+exptime failed for Qcpmgsh1d ()
+exptime failed for Presto1cp ()
+exptime failed for Presto2cp ()
+exptime failed for Presto3cp ()
+ 
+Libraries for binaries tests
+   Test       : Program ldd test of /vnmr/bin/
+        Passed: 223 programs
+     ***Failed: 7 programs
+failed program: /vnmr/bin/addTables
+failed program: /vnmr/bin/calcFit
+failed program: /vnmr/bin/fidelityFit
+failed program: /vnmr/bin/fidelityPlots
+failed program: /vnmr/bin/matlabPlots
+failed program: /vnmr/bin/powerTables
+failed program: /vnmr/bin/shapeFit
+   Test       : Program ldd test of /vnmr/biopack/BioPack.dir/BP_files/bin/
+   Test       : Program ldd test of /vnmr/biopack/bin/
+        Passed: 14 programs
+   Test       : Program ldd test of /vnmr/craft/bin/
+        Passed: 4 programs
+   Test       : Program ldd test of /vnmr/dicom/bin/
+        Passed: 8 programs
+     ***Failed: 3 programs
+failed program: /vnmr/dicom/bin/echoscu
+failed program: /vnmr/dicom/bin/storescp
+failed program: /vnmr/dicom/bin/storescu
+   Test       : Program ldd test of /vnmr/openvnmrj-utils/bin/
+        Passed: 3 programs
+   Test       : Program ldd test of /vnmr/tcl/bin/
+        Passed: 13 programs
+   Test       : Program ldd test of /vnmr/user_templates/ib_initdir/math/expressions/bin/
+   Test       : Program ldd test of /vnmr/user_templates/ib_initdir/math/functions/bin/
+        Passed: 11 programs
+   Test       : Program ldd test of /vnmr/lib/
+        Passed: 27 programs
+ 
+Linux commands accessed by shell
+   Test       : Access shell commands from /vnmr/autotest/maclib/
+   Test       : Access shell commands from /vnmr/biopack/BioPack.dir/BP_files/maclib/
+   Test       : Access shell commands from /vnmr/biopack/maclib/
+   Test       : Access shell commands from /vnmr/biosolidspack/maclib/
+   Test       : Access shell commands from /vnmr/craft/maclib/
+   Test       : Access shell commands from /vnmr/gxyzshim/maclib/
+   Test       : Access shell commands from /vnmr/imaging/maclib/
+   Test       : Access shell commands from /vnmr/maclib/
+   Test       : Access shell commands from /vnmr/openvnmrj-utils/maclib/
+   Test       : Access shell commands from /vnmr/solidspack/maclib/
+   Test       : Access shell commands from /vnmr/veripulse/maclib/
+   Test       : Access shell commands from /vnmr/menujlib/
+        Passed: 116 shell commands
+     ***Failed: 3 shell commands
+command not found: pr3db
+command not found: acroread
+command not found: sw_vers
+ 
+DSSL test
+   Test       : dssl bug for multiple arrays
+        Passed: 
+ 
+DEA test
+   Test       : DEA integration and baseline correction
+        Passed:  with secondary values
+ 
+PSG tests
+   Test       : Seqgen syntax of /vnmr/autotest/psglib/ with 18 sequences
+        Passed: 18 pulse sequences
+   Test       : Seqgen syntax of /vnmr/biopack/psglib/ with 405 sequences
+        Passed: 405 pulse sequences
+   Test       : Seqgen syntax of /vnmr/biosolidspack/psglib/ with 5 sequences
+        Passed: 5 pulse sequences
+   Test       : Seqgen syntax of /vnmr/gxyzshim/psglib/ with 1 sequences
+        Passed: 1 pulse sequences
+   Test       : Seqgen syntax of /vnmr/imaging/psglib/ with 57 sequences
+        Passed: 57 pulse sequences
+   Test       : Seqgen syntax of /vnmr/psglib/ with 206 sequences
+        Passed: 206 pulse sequences
+   Test       : Seqgen syntax of /vnmr/solidspack/psglib/ with 162 sequences
+        Passed: 162 pulse sequences
+   Test       : Seqgen syntax of /vnmr/veripulse/psglib/ with 1 sequences
+        Passed: 1 pulse sequences
+   Test       : psggen
+        Passed: psggen
+   Test       : fixpsg
+        Passed: fixpsg

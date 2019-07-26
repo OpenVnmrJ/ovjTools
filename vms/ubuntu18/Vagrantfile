@@ -9,31 +9,27 @@
 #
 # For more information, see the OpenVnmrJ LICENSE file.
 #
-
-# Returns true if `VMGUI` environment variable is set to a non-empty
-# value.  Defaults to false
-def gui_enabled?
-  !ENV.fetch('VMGUI', '').empty?
-end
-def ncpu
-  Integer(ENV.fetch('VMNCPU', '1'))
-end
+def gui?; !ENV.fetch('OVJ_VM_GUI', '').empty?; end
+def ncpu; Integer(ENV.fetch('OVJ_VM_NCPU', '1')); end
+def mem; Integer(ENV.fetch('OVJ_VM_MEM', "%d" % (ncpu * 1024))); end
 
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-18.04"
+  config.vm.box_version = "201812.27.0"
   config.vm.synced_folder '.', '/vagrant', disabled: true
+  config.vm.post_up_message = "VM started with #{ncpu} cpus, #{mem} MB memory, and gui=#{gui?}"
   config.vm.provider "virtualbox" do |vb|
+    vb.gui = gui?
+    vb.memory = mem
     vb.cpus = ncpu
-    vb.memory = "%d" % (ncpu * 1024)
-    # Display the VirtualBox GUI when booting the machine?
-    vb.gui = gui_enabled?
   end
   config.vm.provision "shell", inline: <<-SHELL
     export DEBIAN_FRONTEND=noninteractive
-    set -e
+    set -ex
     dpkg --add-architecture i386
-    apt-get -qq update
-    apt-get -qq -y dist-upgrade
+    apt-get -qq -y update
+    #apt-get -qq -y dist-upgrade
+    #do-release-upgrade
 
     # these are needed to build
     apt-get install -y git scons g++ gfortran gdm3 gnome-session \
@@ -52,7 +48,8 @@ Vagrant.configure("2") do |config|
     # these are needed to build
     # apt-get uninstalls these if an amd64 version is installed for something else >:(
     # so install them last...
-    apt-get install -y libmotif-dev:i386 libx11-dev:i386 libxt-dev:i386 libxft-dev:i386
+    apt-get install -y libmotif-dev:i386 libx11-dev:i386 libxt-dev:i386 \
+            libxft-dev:i386
 
     echo "dash dash/sh boolean false" | debconf-set-selections
     dpkg-reconfigure dash

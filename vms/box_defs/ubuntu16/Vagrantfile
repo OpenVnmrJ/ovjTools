@@ -8,6 +8,9 @@
 #
 # For more information, see the LICENSE file.
 #
+def gui?; !ENV.fetch('OVJ_VM_GUI', '').empty?; end
+def ncpu; Integer(ENV.fetch('OVJ_VM_NCPU', '1')); end
+def mem; Integer(ENV.fetch('OVJ_VM_MEM', "%d" % (ncpu * 1024))); end
 
 Vagrant.configure("2") do |config|
   #config.vm.box = "ubuntu/xenial64"
@@ -15,10 +18,12 @@ Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-16.04"
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.provider "virtualbox" do |vb|
-    #vb.gui = true
-    vb.cpus = 3
-    vb.memory = "%d" % (1024 * 3)
+    vb.linked_clone = true
+    vb.gui = gui?
+    vb.memory = mem
+    vb.cpus = ncpu
   end
+  config.vm.post_up_message = "VM started with #{ncpu} cpus, #{mem} MB memory, and gui=#{gui?}"
   config.vm.provision "shell", inline: <<-SHELL
     export DEBIAN_FRONTEND=noninteractive
     set -e
@@ -35,10 +40,12 @@ Vagrant.configure("2") do |config|
     # these are needed to install
     #apt-get install -y openjdk-8-jre
     apt-get install -y csh expect bc rsh-server tftpd mutt sharutils \
-            gnome-power-manager k3b kdiff3 rarpd
+            gnome-power-manager gnome-terminal k3b kdiff3 rarpd \
+            ghostscript imagemagick postgresql dos2unix zip cups \
+            gnuplot enscript
     #debconf-set-selections <<< "postfix postfix/mailname string your.hostname.com"
     #debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
-    apt-get install -y ghostscript imagemagick postgresql sendmail-cf
+    apt-get install -y sendmail-cf
 
     chmod a+rw /var/run/postgresql
 

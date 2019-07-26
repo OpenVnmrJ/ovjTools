@@ -8,6 +8,9 @@
 #
 # For more information, see the LICENSE file.
 #
+def gui?; !ENV.fetch('OVJ_VM_GUI', '').empty?; end
+def ncpu; Integer(ENV.fetch('OVJ_VM_NCPU', '1')); end
+def mem; Integer(ENV.fetch('OVJ_VM_MEM', "%d" % (ncpu * 1024))); end
 
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/trusty64"
@@ -15,11 +18,12 @@ Vagrant.configure("2") do |config|
   #config.vm.box = "chad-thompson/ubuntu-trusty64-gui"
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.provider "virtualbox" do |vb|
-    #vb.gui = true
     vb.linked_clone = true
-    vb.memory = "8192"
-    vb.cpus = 4
+    vb.gui = gui?
+    vb.memory = mem
+    vb.cpus = ncpu
   end
+  config.vm.post_up_message = "VM started with #{ncpu} cpus, #{mem} MB memory, and gui=#{gui?}"
   config.vm.provision "shell", inline: <<-SHELL
     export DEBIAN_FRONTEND=noninteractive
     set -e

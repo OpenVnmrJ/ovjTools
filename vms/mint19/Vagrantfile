@@ -1,0 +1,63 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+#
+# Copyright (C) 2018  Michael Tesch
+#
+# This file is a part of the OpenVnmrJ project.  You may distribute it
+# under the terms of either the GNU General Public License or the
+# Apache 2.0 License, as specified in the LICENSE file.
+#
+# For more information, see the OpenVnmrJ LICENSE file.
+#
+def gui?; !ENV.fetch('OVJ_VM_GUI', '').empty?; end
+def ncpu; Integer(ENV.fetch('OVJ_VM_NCPU', '1')); end
+def mem; Integer(ENV.fetch('OVJ_VM_MEM', "%d" % (ncpu * 1024))); end
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ajxb/mint-19.0"
+  config.vm.box_version = "1.0.2"
+  #config.vm.box = "mrlesmithjr/linuxmint19-desktop"
+  #config.vm.synced_folder '.', '/vagrant', disabled: true
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = gui?
+    vb.memory = mem
+    vb.cpus = ncpu
+    if (/darwin/ =~ RUBY_PLATFORM) != nil
+      vb.default_nic_type = "virtio"
+    end
+  end
+  config.vm.network "private_network", ip: "192.168.50.4", nic_type: "virtio"
+  config.vm.post_up_message = "VM started with #{ncpu} cpus, #{mem} MB memory, and gui=#{gui?}"
+  config.vm.provision "shell", inline: <<-SHELL
+    export DEBIAN_FRONTEND=noninteractive
+    set -e
+    dpkg --add-architecture i386
+    apt-get -qq update
+    apt-get -qq -y dist-upgrade
+
+    # these are needed to build
+    apt-get install -y git scons g++ gfortran gdm3 gnome-session \
+      lib32stdc++-7-dev libc6-dev-i386 libglu1-mesa-dev
+
+    # these are needed to install
+    #apt-get install -y openjdk-8-jre
+    apt-get install -y csh expect bc rsh-server tftpd \
+      mutt sharutils gnome-power-manager k3b kdiff3 rarpd \
+      ghostscript imagemagick postgresql sendmail-cf \
+      gedit dos2unix zip cups gnuplot gnome-terminal enscript
+    #debconf-set-selections <<< "postfix postfix/mailname string your.hostname.com"
+    #debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
+    chmod a+rw /var/run/postgresql
+
+    # these are needed to build
+    # apt-get uninstalls these if an amd64 version is installed for something else >:(
+    # so install them last...
+    apt-get install -y libmotif-dev:i386 libx11-dev:i386 libxt-dev:i386 libxft-dev:i386
+
+    echo "dash dash/sh boolean false" | debconf-set-selections
+    dpkg-reconfigure dash
+
+    # dpkg-reconfigure gdm
+    # echo "127.0.0.1 $(hostname)" >> /etc/hosts
+  SHELL
+end

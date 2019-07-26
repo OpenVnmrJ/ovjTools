@@ -95,11 +95,22 @@ log_msg   () { log_msg_ 1 "$*" ; }
 log_warn  () { log_msg_ 2 "$*" ; }
 log_info  () { log_msg_ 3 "$*" ; }
 log_debug () { log_msg_ 4 "$*" ; }
-log_cmd   () { log_info "\$ $*" ; "$@" ; }
+log_cmd   () { log_info "\$ $*" ; eval "$@" ; }
+
+# convert seconds to a readable HH:MM:SS string
+printsec () {
+    local SECS=$1
+    if date --date "@1" +%H:%M:%S >/dev/null 2>&1 ; then
+        # gnu date
+        date -u --date "@$SECS" +%H:%M:%S
+    else
+        # bsd date
+        date -u -r "$SECS" +%H:%M:%S
+    fi
+}
+
+# Run a command, spin a wheelie while it's running
 cmdspin () {
-    #
-    # Run a command, spin a wheelie while it's running
-    #
     local start=$SECONDS
     log_info "Cmd started $(date)"
     log_info "\$ $*"
@@ -122,7 +133,7 @@ cmdspin () {
     trap " " EXIT
     if [ -t 3 ]; then printf '\b.\n' >&3 ; fi
     local dur=$(( $SECONDS - $start ))
-    log_info "Cmd returned: $retval, duration: $(TZ=UTC0 printf '%(%H:%M:%S)T\n' "$dur")"
+    log_info "Cmd returned: $retval, duration: $(printsec "$dur")"
     return $retval
 }
 

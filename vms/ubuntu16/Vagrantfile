@@ -8,27 +8,21 @@
 #
 # For more information, see the LICENSE file.
 #
-
-# Returns true if `VMGUI` environment variable is set to a non-empty value.
-# Defaults to false
-def gui_enabled?
-  !ENV.fetch('VMGUI', '').empty?
-end
-def ncpu
-  Integer(ENV.fetch('VMNCPU', '1'))
-end
+def gui?; !ENV.fetch('OVJ_VM_GUI', '').empty?; end
+def ncpu; Integer(ENV.fetch('OVJ_VM_NCPU', '1')); end
+def mem; Integer(ENV.fetch('OVJ_VM_MEM', "%d" % (ncpu * 1024))); end
 
 Vagrant.configure("2") do |config|
   config.vm.box = "OpenVnmrJ/ubuntu16"
   # only update vbguest on the box_defs/ boxes
   config.vbguest.auto_update = false
   config.vm.provider "virtualbox" do |vb|
-    # Display the VirtualBox GUI when booting the machine
-    vb.gui = gui_enabled?
     vb.linked_clone = true
-    vb.memory = "%d" % (ncpu * 1024)
+    vb.gui = gui?
+    vb.memory = mem
     vb.cpus = ncpu
   end
+  config.vm.post_up_message = "VM started with #{ncpu} cpus, #{mem} MB memory, and gui=#{gui?}"
   config.vm.provision "shell", inline: <<-SHELL
     set -e
     echo "do nothing"
