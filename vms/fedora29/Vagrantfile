@@ -16,7 +16,10 @@ Vagrant.configure("2") do |config|
   config.vm.box = "bento/fedora-29"
   config.vm.box_version = "201812.27.0"
   #config.ssh.insert_key = false # only needed for vagrant 1.8.5 #7610
-  #config.vbguest.auto_update = false
+  if Vagrant.has_plugin?("vagrant-vbguest")
+    # only update vbguest on the box_defs/ boxes
+    #config.vbguest.auto_update = false
+  end
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.provider "virtualbox" do |vb|
     vb.linked_clone = true
