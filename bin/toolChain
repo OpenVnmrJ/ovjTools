@@ -1,0 +1,238 @@
+#! /bin/bash
+#
+# Copyright (C) 2018  University of Oregon
+# 
+# You may distribute under the terms of either the GNU General Public
+# License or the Apache License, as specified in the LICENSE file.
+# 
+# For more information, see the LICENSE file.
+# 
+#
+# set -x
+
+userId=$(/usr/bin/id | awk 'BEGIN { FS = " " } { print $1 }')
+if [ $userId != "uid=0(root)" ]; then
+  echo
+  s=1
+  t=3
+  while [[ $s = 1 ]] && [[ ! $t = 0 ]]; do
+    if [ -x /usr/bin/dpkg ]; then
+      echo "If requested, enter the admin (sudo) password"
+      sudo $0 $* ;
+    else
+      echo "Please enter this system's root user password"
+      su root -c "$0 $*";
+    fi
+    s=$?
+    t=$((t-1))
+    echo " "
+  done
+  if [ $t = 0 ]; then
+    echo "Access denied. Type cntrl-C to exit this window."
+    echo "Type $0 to start again"
+    echo ""
+  fi
+  exit
+fi
+
+noPing=0
+for arg in "$@"
+do
+  if [[ "x$arg" = "xnoPing" ]]; then
+    noPing=1
+  fi
+done
+
+if [[ $ovjRepo -eq 0 ]] && [[ $noPing -eq 0 ]]
+then
+  ping -W 1 -c 1 google.com > /dev/null 2>&1
+  if [ $? -ne 0 ]
+  then
+    echo "Must be connected to the internet for $0 to function"
+    echo "This is tested by doing \"ping google.com\". The ping"
+    echo "command may also fail due to a firewall blocking it."
+    echo "If you are sure the system is connected to the internet"
+    echo "and want to bypass this \"ping\" test, use"
+    echo "./load.nmr noPing"
+    echo "or"
+    echo "$0 noPing"
+    echo ""
+    exit 2
+  fi
+fi
+
+if [ ! -x /usr/bin/dpkg ]; then
+  if [ -f /etc/centos-release ]; then
+    rel=centos-release
+  elif [ -f /etc/redhat-release ]; then
+    rel=redhat-release
+  else
+    echo "$0 can only be used for CentOS or RedHat systems"
+    exit 1
+  fi
+# remove all characters up to the first digit
+  version=$(cat /etc/$rel | sed -E 's/[^0-9]+//')
+# remove all characters from end including first dot
+  version=${version%%.*}
+
+  if [ $version -lt 7 ]; then
+#  Add older motif package
+    packageList="openmotif $item68List $commonList $bit32List $pipeList"
+  else
+    packageList="$item68List $commonList $pipeList"
+  fi
+
+
+#  The PackageKit script often holds a yum lock.
+#  This prevents this script from executing
+#  On CentOS 7, the systemctl command should stop the PackageKit
+  if [ $version -ge 7 ]; then
+    systemctl --now --runtime mask packagekit > /dev/null 2>&1
+  fi
+  npids=$(ps -ef  | grep PackageKit | grep -v grep |
+	   awk '{ printf("%d ",$2) }')
+  for prog_pid in $npids
+  do
+    kill $prog_pid
+    sleep 2
+  done
+#  Try a second time
+  npids=$(ps -ef  | grep PackageKit | grep -v grep |
+           awk '{ printf("%d ",$2) }')
+  for prog_pid in $npids
+  do
+    kill $prog_pid
+  done
+#  If it will not die, exit
+  npids=$(ps -ef  | grep PackageKit | grep -v grep |
+	   awk '{ printf("%d ",$2) }')
+  if [ ! -z $npids ]
+  then
+    echo "CentOS / RedHat PackageKit is preventing installation"
+    echo "Please try again in 5-10 minutes,"
+    echo "after this tool completes its task."
+    exit 1
+  fi
+
+  toolList=' 
+    make
+    gcc
+    gcc-c++
+    gcc-gfortran
+    git
+    libgfortran
+    gsl-devel
+    libXt-devel
+    motif-devel
+    libglvnd-devel
+    mesa-libGLU-devel
+   '
+  i686List=' 
+    libstdc++
+    libstdc++-devel
+    glibc
+    glibc-devel
+    libX11-devel
+   '
+
+  if [ $version -ge 8 ]; then
+     yum -y --enablerepo=PowerTools install python3-scons
+     toolList="$toolList libnsl"
+     i686List="$i686List libtirpc-devel"
+  else
+     yum -y install epel-release
+     yum -y install scons
+     yum -y erase epel-release
+  fi
+  i686=''
+  for xpack in $i686List
+  do
+    i686="$i686 ${xpack}.i686"
+  done
+  yum -y install $toolList $i686List
+  yum -y install $i686
+  if [ $version -ge 7 ]; then
+    systemctl unmask packagekit >& /dev/null
+  fi
+    echo "CentOS / RedHat package installation complete"
+  echo " "
+else
+  . /etc/lsb-release
+  distmajor=${DISTRIB_RELEASE:0:2}
+  if [ $distmajor -lt 14 ] ; then
+    echo "Only Ubuntu 14 or newer is supported"
+    echo " "
+    exit 1
+  fi
+
+# The unattended-upgrade script often holds a yum lock.
+# This prevents this script from executing
+  if [[ -x /bin/systemctl ]]; then
+    systemctl --now --runtime mask unattended-upgrades > /dev/null 2>&1
+  fi
+  npids=$(ps -ef  | grep unattended-upgrade | grep -v grep |
+	  awk '{ printf("%d ",$2) }')
+  for prog_pid in $npids
+  do
+    kill -s 2 $prog_pid
+    sleep 2
+  done
+# Try a second time
+  npids=$(ps -ef  | grep unattended-upgrade | grep -v grep |
+	  awk '{ printf("%d ",$2) }')
+  for prog_pid in $npids
+  do
+    kill -s 2 $prog_pid
+  done
+# If it will not die, exit
+  npids=$(ps -ef  | grep unattended-upgrade | grep -v grep |
+	  awk '{ printf("%d ",$2) }')
+  if [ ! -z $npids ]
+  then
+    echo "Ubuntu unattended-update is preventing installation"
+    echo "Please try again in 5-10 minutes, after this tool completes its task."
+    exit 1
+  fi
+  dpkg --add-architecture i386
+  apt-get -qq update
+# apt-get -qq -y dist-upgrade
+# Prevent packages from presenting an interactive popup
+  export DEBIAN_FRONTEND=noninteractive
+	  
+  toolList=' 
+    g++
+    gcc
+    gfortran
+    git
+    libmotif-dev
+    libx11-dev
+    libx11-6
+    libx11-6:i386
+    gcc-multilib
+    g++-multilib
+    libxt-dev
+    libglu1-mesa-dev
+    libgsl-dev
+    make
+    scons
+   '
+
+  sudo apt update
+  . /etc/lsb-release
+  distmajor=${DISTRIB_RELEASE:0:2}
+  if [ $distmajor -gt 18 ] ; then
+    sudo apt install -y $toolList libstdc++-8-dev libc6-dev
+
+  else
+    sudo apt install -y $toolList libstdc++-7-dev libc6-dev-i386
+  fi
+  unset DEBIAN_FRONTEND
+  echo "dash dash/sh boolean false" | debconf-set-selections
+  dpkg-reconfigure -u dash
+  if [[ -x /bin/systemctl ]]; then
+    systemctl unmask unattended-upgrades > /dev/null 2>&1
+  fi
+  echo "Ubuntu package installation complete"
+  echo " "
+fi
+exit 0

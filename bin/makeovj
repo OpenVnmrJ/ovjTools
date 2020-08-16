@@ -81,7 +81,14 @@ then
   status="OK"
   SCONSFLAGS='--warn=no-duplicate-environment'
   export SCONSFLAGS
-  scons -j $sconsJoption 
+  if [[ -x /usr/bin/scons ]]; then
+     scons -j $sconsJoption 
+  elif [[ -x /usr/bin/scons-3 ]]; then
+     scons-3 -j $sconsJoption 
+  else
+     echo "scons not installed"
+  fi
+
   # save the exit value
   result=$?
   echo "scons returned: $result"
