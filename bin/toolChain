@@ -123,8 +123,6 @@ if [ ! -x /usr/bin/dpkg ]; then
     libgfortran
     gsl-devel
     libXt-devel
-    motif-devel
-    libglvnd-devel
     mesa-libGLU-devel
    '
   i686List=' 
@@ -137,12 +135,15 @@ if [ ! -x /usr/bin/dpkg ]; then
 
   if [ $version -ge 8 ]; then
      yum -y --enablerepo=PowerTools install python3-scons
-     toolList="$toolList libnsl"
+     toolList="$toolList libnsl motif-devel libglvnd-devel"
      i686List="$i686List libtirpc-devel"
-  else
+  elif [ $version -ge 7 ]; then
      yum -y install epel-release
      yum -y install scons
      yum -y erase epel-release
+     toolList="$toolList motif-devel libglvnd-devel"
+  else
+     toolList="$toolList openmotif-devel scons"
   fi
   i686=''
   for xpack in $i686List

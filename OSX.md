@@ -2,12 +2,6 @@
 
 Follow these instructions for building OpenVnmrJ on OS X. If you just want to use OpenVnmrJ on OS X, just download a [release](https://github.com/OpenVnmrJ/OpenVnmrJ/releases).  
 
-*Important: the source code must be downloaded to a __case sensitive__ file system.* The default OS X HFS+ is case insensitive.   
-- C++ files are designated using .C and will conflict with some C files (ending in .c)
-- Some pulse sequences and macros only differ in case  
-
-Use the Disk Utility to make a new "Blank Image" about 2 GB in size or use a USB stick, formatting case sensitive journaled HFS+.  
-
 ## Download and install
 
 You will need to download and install:  
@@ -94,11 +88,10 @@ make -j2
 make install
 ```
 
-## gcc v clang; 32 v 64 bit
+## gcc v clang;
 
-The build has been tested with a 32-bit build using clang, gcc, and gfortran.  
+The build has been tested with a 64-bit build using clang, gcc, and gfortran.  
 
-If you can build using 64-bit gcc or clang; please file a bug report and make a pull request! Note that all components will need to built 64-bits.  
 
 ## Java 8
 
@@ -117,9 +110,5 @@ OS X is a data station only and cannot control a spectrometer host.
 - There are no example FIDs in the OpenVnmrJ distribution
    - You need to get them from VnmrJ 4.2
    - They may be available from the University of Oregon in the future.  
-- NMRPipe and ChemPack are not included in this distribution
- - ChemPack can be downloaded from [Spinsights](https://spinsights.chem.agilent.com/docs/DOC-12566)
- - NMRPipe can be downloaded from [Spinsights](https://spinsights.chem.agilent.com/docs/DOC-6044)
-- Craft is not available (talk to Krish?)
+- NMRPipe is not included in this distribution but can be downloaded with the ovjGetpipe script
  
- These packages have not been tested with OpenVnmrJ on OS X.

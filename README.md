@@ -1,22 +1,12 @@
 # ovjTools
 Tools and libraries to build [OpenVnmrJ](http://openvnmrj.org).
 
-## Java
-
-### Ubuntu and RHEL/CentOS
-The only tested version is the Java SE Development Kit 6u39. If you want to use Java 8, please try building and **testing** on a spectrometer.   
-
-If you've tested and there are no problems with a newer Java, please file an [issue](https://github.com/OpenVnmrJ/ovjTools/issues).
-
-### OS X
-The OS X build ignores the java link and uses the system Java. Java 8u92 was found to work.  
-Download and install the Java JDK from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)  
-See [OSX.md](OSX.md) for more information.
-
 ## BUILD REQUIREMENTS
 
-Currently, OpenVnmrJ builds as a 32-bit executable, thus needs several i686 libraries installed.  
-*A 64-bit build needs to be tested. All components should be built 64-bit and tested.*  
+OpenVnmrJ has been built on CentOS 6, 7, and 8 and on Ubuntu 18 and 20
+and on MacOS 10.10 (Yosemite). The CentOS and Ubuntu builds make a
+combination of 32-bit and 64-bit executables. The MacOS build makes only 64-bit
+executables. To build on MacOS, see the [OSX.md](https://github.com/OpenVnmrJ/ovjTools/blob/master/OSX.md) document.
 
 ### Virtual Machine Container
 
@@ -26,39 +16,6 @@ The only requirement to build in a VM is to have the free tools
 This will save you the trouble of installing and configuring an
 operating system.  Build instructions for VM containers are
 [below](#in-a-virtual-machine).
-
-### EL6 (RHEL/CentOS 6)
-
-The minimum package requirement for EL6 assumes that your system was installed with the
-"Software Development Workstation" package selection as required by VnmrJ.  This build
-configuration has been tested on CentOS 6.7 but should work for any RHEL or CentOS 6.x.  
-```sh
-yum install compat-gcc-34-g77 glibc-devel.i686 libstdc++.i686 libX11-devel.i686 libXt-devel.i686 openmotif-devel.i686 scons
-```
-Optionally, you can also install gsl-devel and libtiff-devel if you wish to compile using the GNU
-scientific library.
-
-### Ubuntu Trusty Tahr 14.04 LTS
-
-The minimum package requirement for Ubuntu Trusty Tahr 14.04 LTS assumes that you have
-installed the standard desktop edition of Ubuntu.  A minimal install may require additional
-packages including but not limited to make, unzip and zip.  This build configuration has been
-tested on Ubuntu but should work for any *buntu Trusty Tahr 14.04 LTS distribution.  
-
-```sh
-sudo apt-get install fort77 g++ lib32stdc++-4.8-dev libc6-dev-i386 libglu1-mesa-dev libmotif-dev:i386 libx11-dev:i386 libxt-dev:i386 scons
-```
-
-Optionally, you can also install libgsl0-dev and libtiff5-dev if you wish to compile 
-components using the GNU scientific library.  Code compiled with the GSL will be subject
-to license restrictions.  
-
-Full package requirements including dependent packages are listed in the appendix of
-this document.  
-
-### OS X
-
-[See OSX.md](OSX.md)
 
 ## BUILDING
 
@@ -131,13 +88,12 @@ cd $ovjBuildDir/dvdimageOVJ_.../
 
 These instructions work for Ubuntu and CentOS (RHEL).  
 
-Make a directory. Lets call it ovjbuild and change into that directory.
+Make a directory. Let us call it ovjbuild and change into that directory.
 Check out the ovjTools repository from GitHub with  
+
 ```
 mkdir ovjbuild && cd ovjbuild
 git clone https://github.com/OpenVnmrJ/ovjTools.git
-export ovjBuildDir=`pwd`
-export OVJ_TOOLS=$ovjBuildDir/ovjTools
 ```
 or Download it from the GitHub web site. If you download it, move it to the ovjbuild directory
 and unzip it with the commands
@@ -147,26 +103,6 @@ unzip ovjTools-master.zip
 rm ovjTools-master.zip
 ```
 
-The ovjTools directory contains the following diretories and files.   
-```
-bin            Scripts to build the OpenVnmrJ package
-fftw           Used by xrecon (imaging program)
-fftw_mac       Used by xrecon MacOS version (imaging program)
-gsllibs        Used by programs in bin_image
-java           Used by all java programs. It is a soft link to the java jdk.
-JavaPackages   Used by vjmol and vnmrj
-jdk1.6.0_39_64 Java jdk.
-JMF-2.1.1e     Used by vnmrj (simplemovie.jar)
-junit          Used by apt, probeid, and vjclient
-NDDS           Used by nvlocki, nvexpproc, nvinfoproc, nvrecvproc, nvsendproc
-pgsql          Postgress / Locator code
-tcl            This contains headers and libraries for compiling programs that
-               require tcl (Roboproc)
-```
-
-We compile VnmrJ java programs with jdk1.6.0_39_64. The java in ovjTools should be a soft link
-to the actual java JDK. (On Linux).   
-
 At the same level as the ovjTools directory, do the following  
 
 ```
@@ -174,44 +110,75 @@ cp -r ovjTools/bin .
 cd bin
 ```
 
-The bin directory contains three scripts. The buildovj script controls the overall build
-process. By default, it should work correctly. However, if you wish to customize the build
-process, edit this script.  For example, you may decide not to build the Mercury / Inova
+The bin directory contains several scripts.
+
+The toolChain script installs all the Linux packages required to build
+OpenVnmrJ. This includes things like the gcc compiler and assorted libraries and
+development header files. You need network access in order to run this script.
+The toolChain script only needs to be executed once.
+
+The buildovj script controls the overall build process. By default, it should
+work correctly. However, if you wish to customize the build process, edit
+this script.  For example, you may decide not to build the Mercury / Inova
 version. Or you may decide to move the ovjTools directory to a different location.
-The buildovj script is commented to descibe various options.
+The buildovj script is commented to describe various options.
 
 Other options are described in that file but the defaults should be okay. The buildovj
 script collects all the options and the makeovj script does all the work. In general,
 the makeovj script does three things. The first is to update or clone OpenVnmrJ from git.
-The second part compiles everything (doScons=yes). The third part collects files into the DVD images
-(buildOVJ=yes).  
+The second part compiles everything (doScons=yes). The third part collects files
+into the DVD images (buildOVJ=yes).  
 
-The OpenVnmrJ directory contains the following directories and files.
-These files are open-sourced, read the LICENSE file.  
-
+If this is the first time you are building OpenVnmrJ on this PC, run the command
 ```
-SConstruct   This is the definition file used by scons. It is similar to Makefile used by
-             the make command.
-scripts      This contains tools used by scons.
-src          This contains the source code for OpenVnmrJ. Some of these directories also
-             contain a SConstruct file that is used to build / compile that specific
-             program.
+./toolChain
 ```
-
-Run the command
-
+To build OpenVnmrJ, run the command
 ```
 ./buildovj
 ```
 
-This command will compile the entire OVJ package. It will use the OpenVnmrJ/SConstruct file
+During the build, a log file is kept in the ovjbuid/logs directory. You can use a command
+such as
+```
+   tail -f ~/ovjbuild/logs/makeovj.<DATE>
+```
+to monitor the build.  The whatsin script scans the log file and gives a summary of
+the build process.  It identifies any errors that may have occurred.
+
+You can also build  specific programs in the OpenVnmrJ package. For example, to build the
+Vnmrbg program, assuming ovjbuild is in your home directory, you can use the following commands
+```
+cd ~/ovjbuild/OpenVnmrJ/src/vnmrbg
+scons
+```
+Note that on newer operating systems, such as CentOS 8, the scons command may be called scons-3
+
+To compile the java programs, the OVJ_TOOLS env parameter must be set
+to point to the ovjTools directory. In a bash shell, the command would be  
+```
+export OVJ_TOOLS=<path>
+```
+In a csh, the command would be  
+```
+setenv OVJ_TOOLS <path>
+```
+Then, to build vnmrj.jar, use the commands
+```
+cd ~/ovjbuild/OpenVnmrJ/src/vnmrj
+scons
+```
+
+### Build artifacts
+
+The buildovj script will compile the entire OVJ package. It will use the OpenVnmrJ/SConstruct file
 to  compile the programs in src and place the results in directories at the same level
 as the OpenVnmrJ level. The console directory will contain console-specific files.
 The vnmr directory will contain files that are generic. The options directory contains
 optional software and code that may be optionally installed.  If the buildOVJ and / or
 buildOVJMI parameters are set to yes in the buildovj script, additional directories will
-be build that are an image of the DVD installer. A log of the build process will be
-placed in a logs direcory.  The script whatsin in the bin directory will produce a
+be built that are an image of the DVD installer. A log of the build process will be
+placed in a logs directory.  The script whatsin in the bin directory will produce a
 summary of the content of the build log file.
 
 In summary, before running the buildovj script, your build directory will have bin
@@ -222,50 +189,66 @@ and dvdimageOVJMI may also be present.
 When the buildovj script is executed, one of the first things it does is remove any
 preexisting console, options, vnmr, and dvd image directories.  
 
-You can also change into specific directories in src and run scons. That will build that
-specific program. To compile the java programs, the OVJ_TOOLS env parameter must be set
-to point to the ovjTools directory. In a bash shell, the command would be  
-```
-export OVJ_TOOLS=<path>
-```
-In a csh, the command would be  
-```
-setenv OVJ_TOOLS <path>
-```
-
-Then, for example,  
-```
-cd OpenVnmrJ/src/vnmrbg
-scons
-```
-will build only the Vnmrbg program.  
-
 
 ## INSTALLATION
 
-
-#### For Linux systems:  
 Once the buildovj script is complete, and you had selected the buildOVJ and / or buildOVJMI
 parameters, you can `cd dvdimageOVJ` or `cd dvdimageOVJMI` and run `./load.nmr` to install a complete
-OpenVnmrJ package. If a prior VJ42 install is present (/vnmr is a symbolic link to the VJ42
-installation), then the OpenVnmrJ installation will collect various files from the VJ42 install
-so that the OpenVnmrJ install should be complete.  See the src/scripts/update_OpenVnmrJ.sh
-script. Assuming the VJ42 directory was available, this installed OVJ should be a complete
-system capable of data acquisition. After installation, the only thing that should be needed
-is "su acqproc" to start the OVJ version of the procs.  
+OpenVnmrJ package. For complete details see the [OpenVnmrJ/Install.md](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master/Install.md) file.
 
-#### For MacOS systems:  
-Once the buildovj script is complete, and you had selected the buildOVJ parameter, you 
-will have a dvd image that is constructed so that the MacOS utility PackageMaker can be
-used to build a MacOS installer. Instructions for building the installer are 
-[OpenVnmrJ/src/macos/readme_packagemaker](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master/src/macos/readme_packagemaker).
-If a prior VJ42 install is present (/vnmr is a symbolic link to the VJ42 installation), then the
-OpenVnmrJ installation will collect various files from the VJ42 install so that the OpenVnmrJ
-install should be complete.  *TODO: A single draggable VnmrJ.app.*  
 
 ## CODE ORGANIZATION
 
-#### Directories
+#### ovjTools Directories
+
+The ovjTools directory contains the following directories and files.   
+
+```
+bin            Scripts to build the OpenVnmrJ package
+console        programs for spectrometer control
+dicom3tools    Used by imaging
+fftw           Used by xrecon (imaging program)
+fftw_mac       Used by xrecon MacOS version (imaging program)
+gsllibs        Used by programs in bin_image
+java           Used by all java programs. It is a soft link to the java jdk.
+JavaPackages   Used by vjmol and vnmrj
+jdk1.6.0_39_64 Java jdk.
+JMF-2.1.1e     Used by vnmrj (simplemovie.jar)
+junit          Used by apt, probeid, and vjclient
+kermit_8.0.211 The kermit program used for field mapping
+LICENSE        The Apache II license used by OpenVnmrJ
+linux          Some Linux rpm packages
+logs           Directory used by VM builds to save log files
+NDDS           Used by nvlocki, nvexpproc, nvinfoproc, nvrecvproc, nvsendproc
+OSX.md         Build instructions for MacOS
+pgsql          Postgress / Locator code
+pgsql.osx      Postgress / Locator code for MacOS
+tcl            This contains headers and libraries for compiling programs that
+               require tcl (Roboproc)
+wkhtmltopdf    Used by vnmrj
+```
+
+
+#### OpenVnmrJ Directories
+
+The OpenVnmrJ directory contains the following directories and files.
+These files are open-sourced under the Apache II license.
+
+```
+Install.md   Installation instructions for OpenVnmrJ
+LICENSE      A copy of the Apache II license, under which OpenVnmrJ is licensed.
+Notes.txt    Release notes for OpenVnmrJ
+README.md    A description of the OpenVnmrJ project
+RELEASE.md   A Document describing OpenVnmrJ releases
+SConstruct   This is the definition file used by scons. It is similar to Makefile used by
+             the make command.
+scripts      This contains tools used by scons.
+site_scons   Some MacOS specific tools.
+src          This contains the source code for OpenVnmrJ. Some of these directories also
+             contain a SConstruct file that is used to build / compile that specific
+             program.
+```
+
 The [OpenVnmrJ/src](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master/src) directory has a
 number of subdirectories. In general, each subdirectory corresponds
 to one or more programs that need to be compiled. Some of the subdirectories contain code
@@ -277,7 +260,9 @@ some of the macros.  The SConstuct must explicitly execute the sconsPostAction. 
 [OpenVnmrJ/SConstruct](https://github.com/OpenVnmrJ/OpenVnmrJ/blob/master/OpenVnmrJ/SConstruct)
 file for an example.   
 
-The src directory contains the following subdirectories.  
+The src directory contains the following subdirectories. Note that the CRAFT included here is
+version 1 and is obsolete. See a description of the [new CRAFT here](https://www.openvnmrj.com).
+
 
 ```
 3D          Code for compressfid, ft3d, getplane
@@ -286,6 +271,7 @@ admin       VnmrJ installer java program
 aip         Shared files used by vnmrbg. (aip -> advanced image processing)
 ampfit      Tools for amplifier linearization (DDR systems)
 apt         Auto ProTune java program
+apt_32_MMI  Auto ProTune java program for Mercury and Inova systems
 aslmirtime  Imaging program (requires GPL license)
 Asp         Shared files used by vnmrbg. (Asp -> advanced spectral processing)
 atproc      Code for Atproc
@@ -297,12 +283,13 @@ biopack     Biopack appdir
 biosolidspack Biosolidspack appdir
 bootpd.rh51 Bootp program for Inova and Mercury
 cgl         Imaging library libcgl.so
-common      This contains text files that do not need further processing / compiling,
-            including CRAFT.
+common      This contains text files that do not need further processing / compiling
+craft       CRAFT version 1.
 cryo        Cryobay communications java program
 cryomon     Cryo monitor communications java program
 ddl         Shared files
 ddr         Protocols for DDR
+dialog      java dialog program
 dicom_store Imaging DICOM tool
 DOSY        DOSY files
 expproc     Expproc for Inova and Mercury
@@ -318,6 +305,7 @@ jaccount    Accounting program
 jplot       jplot program
 kpsg        PSG for Mercury
 kpsglib     Pulse sequences for Mercury
+kvwacq      Example code for Mercury console programs
 languages   Support for Chinese and Japanese
 layouts     layout XML files
 LCNMR       LC-NMR files
@@ -330,7 +318,7 @@ mercury     Files to support Mercury
 nacqi       Shared files
 nautoproc   Autoproc
 ncomm       Shared files and acqproc and ncomm libraries.
-nvacq       Shared files with DDR console software
+nvacq       Shared files with DDR console software and example programs
 nvexpproc   Expproc for DDR systems
 nvinfoproc  Infoproc for DDR systems
 nvpsg       PSG for DDR systems
@@ -338,6 +326,7 @@ nvpsglib    DDR specific pulse sequences
 nvrecvproc  Recvproc for DDR systems
 nvsendproc  Sendproc for DDR systems
 p11         Files for Part 11 option
+passwd      java passwd program
 patch       Tools used to make patches
 probeid     probeid communications programPlease
 procproc    Procproc
@@ -361,177 +350,10 @@ vnmrbg      Code for Vnmrbg
 vnmrj       vnmrj java program (requires GPL license)
 vobj        Shared files
 vwacq       Shared files with Inova console software
+vwauto      Example code for Inova automation board
 web         Programs to support tablet
 xracq       Shared files with VXR console software
 xrecon      Imaging reconstruction program (requires GPL license)
 yacc        Original yacc tool for helping to make Magical (no longer used)
-```
-
-## APPENDIX
-### EL6 (RHEL/CentOS 6)
-
-Full list of required packages for EL 6 starting from a "Software Development Workstation"  
-configuration:  
-```
-compat-gcc-34
-compat-gcc-34-g77
-compat-libf2c-34
-expat.i686
-fontconfig.i686
-freetype.i686
-glibc.i686
-glibc-devel.i686
-libgcc.i686
-libICE.i686
-libjpeg-turbo.i686
-libpng.i686
-libstdc++.i686
-libSM.i686
-libuuid.i686
-libX11.i686
-libX11-devel.i686
-libXau.i686
-libxcb.i686
-libXext.i686
-libXft.i686
-libXmu.i686
-libXp.i686
-libXrender.i686
-libXt.i686
-libXt-devel.i686
-nss-softokn-freebl.i686
-openmotif.i686
-openmotif-devel.i686
-scons
-zlib.i686  
-```
-And optionally: (Read LICENSE above) 
-```
-gsl
-gsl-devel
-libtiff-devel
-```
-### Ubuntu Trusty Tahr 14.04 LTS
-Full list of required packages for Ubuntu Trusty Tahr 14.04 LTS starting from a standard
-desktop edition installation:  
-```
-f2c
-fort77
-g++
-g++-4.8
-gcc-4.8-multilib
-gcc-4.9-base:i386
-gcc-multilib
-lib32asan0
-lib32atomic1
-lib32gcc-4.8-dev
-lib32gcc1
-lib32gomp1
-lib32itm1
-lib32quadmath0
-lib32stdc++-4.8-dev
-lib32stdc++6Please
-libc6-dev-i386
-libc6-dev-x32
-libc6-i386
-libc6-x32
-libc6:i386
-libdrm-dev
-libexpat1:i386
-libf2c2
-libf2c2-dev
-libfontconfig1:i386
-libfreetype6:i386
-libgcc1:i386
-libgl1-mesa-dev
-libglu1-mesa-dev
-libice-dev:i386
-libice6:i386
-libjpeg-turbo8:i386
-libjpeg8:i386
-libmotif-common
-libmotif-dev:i386
-libmrm4
-libmrm4:i386
-libpng12-0:i386
-libpthread-stubs0-dev
-libpthread-stubs0-dev:i386
-libsm-dev:i386
-libsm6:i386
-libstdc++-4.8-dev
-libuil4
-libuil4:i386
-libuuid1:i386
-libx11-6:i386
-libx11-dev
-libx11-dev:i386
-libx11-doc
-libx11-xcb-dev
-libx32asan0
-libx32atomic1
-libx32gcc-4.8-dev
-libx32gcc1
-libx32gomp1
-libx32itm1
-libx32quadmath0
-libxau-dev
-libxau-dev:i386
-libxau6:i386
-libxcb-dri2-0-dev
-libxcb-dri3-dev
-libxcb-glx0-dev
-libxcb-present-dev
-libxcb-randr0-dev
-libxcb-render0-dev
-libxcb-shape0-dev
-libxcb-sync-dev
-libxcb-xfixes0-dev
-libxcb1-dev
-libxcb1-dev:i386
-libxcb1:i386
-libxdamage-dev
-libxdmcp-dev
-libxdmcp-dev:i386
-libxdmcp6:i386
-libxext-dev
-libxext6:i386
-libxfixes-dev
-libxft2:i386
-libxm4
-libxm4:i386
-libxmu6:i386
-libxrender1:i386
-libxshmfence-dev
-libxt-dev:i386
-libxt6:i386
-libxxf86vm-dev
-mesa-common-dev
-scons
-uil
-x11proto-core-dev
-x11proto-damage-dev
-x11proto-dri2-dev
-x11proto-fixes-dev
-x11proto-gl-dev
-x11proto-input-dev
-x11proto-kb-dev
-x11proto-xext-dev
-x11proto-xf86vidmode-dev
-xorg-sgml-doctools
-xtrans-dev
-zlib1g:i386
-```
-And optionally (Read LICENSE above):  
-```
-libgsl0-dev
-libgsl0ldbl
-libjbig-dev
-libjpeg-dev
-libjpeg-turbo8-dev
-libjpeg8-dev
-liblzma-dev
-libtiff5-dev
-libtiffxx5
-zlib1g-dev
 ```
 
