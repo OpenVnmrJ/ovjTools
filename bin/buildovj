@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 #
 #  Script to build an OVJ release.
 #  Typically, one would make a directory, e.g., at $HOME/ovjbuild. Put the
@@ -116,6 +116,8 @@ then
    mkdir -p "${ovjBuildDir}/logs"
 fi
 ovjLogFile="${ovjBuildDir}/logs/makeovj.$date"
+rm -f "${ovjBuildDir}/logs/makeovjlog"
+(cd ${ovjBuildDir}/logs && ln -s makeovj.$date makeovjlog)
 cd "${ovjBuildDir}"
 export ovjBuildDir workspacedir OVJ_TOOLS dvdCopyDir1 dvdCopyDir2 dvdBuildName1 dvdBuildName2 dvdCopyName1 dvdCopyName2 ovjLogFile doScons doGitClone mail_list gitURL gitSSH gitBranch buildOVJ buildOVJMI ovjConsole sconsJoption osxflags
 "${ovjBuildDir}/bin/makeovj" > "${ovjLogFile}" 2>&1
