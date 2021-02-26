@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 #
 #  Script to build an OVJ release.
 #  Typically, one would make a directory, e.g., at $HOME/ovjbuild. Put the
@@ -31,6 +31,7 @@
 #  doGitClone=no      to leave the current repo alone
 #  mail_list      addresses to email status of the build
 #  gitURL         URL for git repo.
+#  ovjAppName     used by mac version to name /Applications/ovjAppName
 #  ovjConsole     flag to tell whether to include console software
 #  sconsJoption   helps speed up the process. Typical value is #CPUs+1
 #
@@ -64,6 +65,7 @@ dvdBuildName1=dvdimageOVJ
 dvdBuildName2=dvdimageOVJMI
 dvdCopyName1=OVJ_$shortDate
 dvdCopyName2=OVJ_MI_$shortDate
+ovjAppName=OpenVnmrJ_1.1.app
 if [ "$(uname -s)" = "Darwin" ]; then
   nprocs=$(sysctl -n hw.ncpu)
 elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; then
@@ -108,6 +110,7 @@ ovjConsole=yes  # include console software
 # buildOVJ=no
 # buildOVJMI=no
 # ovjConsole=no
+# ovjAppName=OpenVnmrJ.app
 # sconsJoption=5
 
 date=`date +%F_%T`
@@ -116,7 +119,9 @@ then
    mkdir -p "${ovjBuildDir}/logs"
 fi
 ovjLogFile="${ovjBuildDir}/logs/makeovj.$date"
+rm -f "${ovjBuildDir}/logs/makeovjlog"
+(cd ${ovjBuildDir}/logs && ln -s makeovj.$date makeovjlog)
 cd "${ovjBuildDir}"
-export ovjBuildDir workspacedir OVJ_TOOLS dvdCopyDir1 dvdCopyDir2 dvdBuildName1 dvdBuildName2 dvdCopyName1 dvdCopyName2 ovjLogFile doScons doGitClone mail_list gitURL gitSSH gitBranch buildOVJ buildOVJMI ovjConsole sconsJoption osxflags
+export ovjBuildDir workspacedir OVJ_TOOLS dvdCopyDir1 dvdCopyDir2 dvdBuildName1 dvdBuildName2 dvdCopyName1 dvdCopyName2 ovjLogFile doScons doGitClone mail_list gitURL gitSSH gitBranch ovjAppName buildOVJ buildOVJMI ovjConsole sconsJoption osxflags
 "${ovjBuildDir}/bin/makeovj" > "${ovjLogFile}" 2>&1
 
