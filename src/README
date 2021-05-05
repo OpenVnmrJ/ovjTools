@@ -1,0 +1,33 @@
+
+pgsql was downloaded from  https://www.postgresql.org/ftp/source/v9.6.21/
+kermit was downloaded from https://www.kermitproject.org/archive.html
+
+To build postgres
+rm -rf /vnmr/pgsql
+mkdir /vnmr/pgsql
+
+if Linux 
+   zcat postgresql-9.6.21.tar.gz | tar xvf -
+if MacOS
+   gunzip postgresql-9.6.21.tar.gz
+   tar xvf postgresql-9.6.21.tar
+
+cd postgresql-9.6.21
+./configure --prefix=/vnmr/pgsql
+make
+make install
+cp COPYRIGHT /vnmr/pgsql
+mv /vnmr/pgsql/bin /vnmr/pgsql/bin_ver9
+rm -rf /vnmr/pgsql/include
+rm -rf /vnmr/pgsql/share/doc
+rm -rf /vnmr/pgsql/share/man
+Use /vnmr/pgsql directory
+Use zip to preserve the soft links
+
+To build kermit
+mkdir kermit
+zcat cku211.tar.gz | ( cd kermit ; tar xvf - )
+cd kermit
+make linux
+copy wermit as kermit
+
