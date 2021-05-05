@@ -1,5 +1,22 @@
 -- Language-specific snowball dictionaries
--- $PostgreSQL: pgsql/src/backend/snowball/snowball_func.sql.in,v 1.2 2007/09/03 02:30:43 tgl Exp $$
+/*
+ * Create underlying C functions for Snowball stemmers
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball_func.sql.in
+ *
+ * This file is combined with multiple instances of snowball.sql.in to
+ * build snowball_create.sql, which is executed during initdb.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
 SET search_path = pg_catalog;
 
@@ -16,10 +33,25 @@ CREATE TEXT SEARCH TEMPLATE snowball
 	LEXIZE = dsnowball_lexize);
 
 COMMENT ON TEXT SEARCH TEMPLATE snowball IS 'snowball stemmer';
+/*
+ * text search configuration for danish language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * danish and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for danish language
 CREATE TEXT SEARCH DICTIONARY danish_stem
 	(TEMPLATE = snowball, Language = danish , StopWords=danish);
 
@@ -43,10 +75,25 @@ ALTER TEXT SEARCH CONFIGURATION danish ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION danish ADD MAPPING
     FOR word, hword_part, hword
 	WITH danish_stem;
+/*
+ * text search configuration for dutch language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * dutch and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for dutch language
 CREATE TEXT SEARCH DICTIONARY dutch_stem
 	(TEMPLATE = snowball, Language = dutch , StopWords=dutch);
 
@@ -70,10 +117,25 @@ ALTER TEXT SEARCH CONFIGURATION dutch ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION dutch ADD MAPPING
     FOR word, hword_part, hword
 	WITH dutch_stem;
+/*
+ * text search configuration for english language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * english and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for english language
 CREATE TEXT SEARCH DICTIONARY english_stem
 	(TEMPLATE = snowball, Language = english , StopWords=english);
 
@@ -97,10 +159,25 @@ ALTER TEXT SEARCH CONFIGURATION english ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION english ADD MAPPING
     FOR word, hword_part, hword
 	WITH english_stem;
+/*
+ * text search configuration for finnish language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * finnish and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for finnish language
 CREATE TEXT SEARCH DICTIONARY finnish_stem
 	(TEMPLATE = snowball, Language = finnish , StopWords=finnish);
 
@@ -124,10 +201,25 @@ ALTER TEXT SEARCH CONFIGURATION finnish ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION finnish ADD MAPPING
     FOR word, hword_part, hword
 	WITH finnish_stem;
+/*
+ * text search configuration for french language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * french and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for french language
 CREATE TEXT SEARCH DICTIONARY french_stem
 	(TEMPLATE = snowball, Language = french , StopWords=french);
 
@@ -151,10 +243,25 @@ ALTER TEXT SEARCH CONFIGURATION french ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION french ADD MAPPING
     FOR word, hword_part, hword
 	WITH french_stem;
+/*
+ * text search configuration for german language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * german and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for german language
 CREATE TEXT SEARCH DICTIONARY german_stem
 	(TEMPLATE = snowball, Language = german , StopWords=german);
 
@@ -178,10 +285,25 @@ ALTER TEXT SEARCH CONFIGURATION german ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION german ADD MAPPING
     FOR word, hword_part, hword
 	WITH german_stem;
+/*
+ * text search configuration for hungarian language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * hungarian and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for hungarian language
 CREATE TEXT SEARCH DICTIONARY hungarian_stem
 	(TEMPLATE = snowball, Language = hungarian , StopWords=hungarian);
 
@@ -205,10 +327,25 @@ ALTER TEXT SEARCH CONFIGURATION hungarian ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION hungarian ADD MAPPING
     FOR word, hword_part, hword
 	WITH hungarian_stem;
+/*
+ * text search configuration for italian language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * italian and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for italian language
 CREATE TEXT SEARCH DICTIONARY italian_stem
 	(TEMPLATE = snowball, Language = italian , StopWords=italian);
 
@@ -232,10 +369,25 @@ ALTER TEXT SEARCH CONFIGURATION italian ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION italian ADD MAPPING
     FOR word, hword_part, hword
 	WITH italian_stem;
+/*
+ * text search configuration for norwegian language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * norwegian and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for norwegian language
 CREATE TEXT SEARCH DICTIONARY norwegian_stem
 	(TEMPLATE = snowball, Language = norwegian , StopWords=norwegian);
 
@@ -259,10 +411,25 @@ ALTER TEXT SEARCH CONFIGURATION norwegian ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION norwegian ADD MAPPING
     FOR word, hword_part, hword
 	WITH norwegian_stem;
+/*
+ * text search configuration for portuguese language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * portuguese and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for portuguese language
 CREATE TEXT SEARCH DICTIONARY portuguese_stem
 	(TEMPLATE = snowball, Language = portuguese , StopWords=portuguese);
 
@@ -286,10 +453,25 @@ ALTER TEXT SEARCH CONFIGURATION portuguese ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION portuguese ADD MAPPING
     FOR word, hword_part, hword
 	WITH portuguese_stem;
+/*
+ * text search configuration for romanian language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * romanian and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for romanian language
 CREATE TEXT SEARCH DICTIONARY romanian_stem
 	(TEMPLATE = snowball, Language = romanian );
 
@@ -313,10 +495,25 @@ ALTER TEXT SEARCH CONFIGURATION romanian ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION romanian ADD MAPPING
     FOR word, hword_part, hword
 	WITH romanian_stem;
+/*
+ * text search configuration for russian language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * russian and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for russian language
 CREATE TEXT SEARCH DICTIONARY russian_stem
 	(TEMPLATE = snowball, Language = russian , StopWords=russian);
 
@@ -340,10 +537,25 @@ ALTER TEXT SEARCH CONFIGURATION russian ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION russian ADD MAPPING
     FOR word, hword_part, hword
 	WITH russian_stem;
+/*
+ * text search configuration for spanish language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * spanish and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for spanish language
 CREATE TEXT SEARCH DICTIONARY spanish_stem
 	(TEMPLATE = snowball, Language = spanish , StopWords=spanish);
 
@@ -367,10 +579,25 @@ ALTER TEXT SEARCH CONFIGURATION spanish ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION spanish ADD MAPPING
     FOR word, hword_part, hword
 	WITH spanish_stem;
+/*
+ * text search configuration for swedish language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * swedish and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for swedish language
 CREATE TEXT SEARCH DICTIONARY swedish_stem
 	(TEMPLATE = snowball, Language = swedish , StopWords=swedish);
 
@@ -394,10 +621,25 @@ ALTER TEXT SEARCH CONFIGURATION swedish ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION swedish ADD MAPPING
     FOR word, hword_part, hword
 	WITH swedish_stem;
+/*
+ * text search configuration for turkish language
+ *
+ * Copyright (c) 2007-2016, PostgreSQL Global Development Group
+ *
+ * src/backend/snowball/snowball.sql.in
+ *
+ * turkish and certain other macros are replaced for each language;
+ * see the Makefile for details.
+ *
+ * Note: this file is read in single-user -j mode, which means that the
+ * command terminator is semicolon-newline-newline; whenever the backend
+ * sees that, it stops and executes what it's got.  If you write a lot of
+ * statements without empty lines between, they'll all get quoted to you
+ * in any error message about one of them, so don't do that.  Also, you
+ * cannot write a semicolon immediately followed by an empty line in a
+ * string literal (including a function body!) or a multiline comment.
+ */
 
--- $PostgreSQL: pgsql/src/backend/snowball/snowball.sql.in,v 1.6 2007/10/27 16:01:08 tgl Exp $$
-
--- text search configuration for turkish language
 CREATE TEXT SEARCH DICTIONARY turkish_stem
 	(TEMPLATE = snowball, Language = turkish , StopWords=turkish);
 
@@ -421,4 +663,3 @@ ALTER TEXT SEARCH CONFIGURATION turkish ADD MAPPING
 ALTER TEXT SEARCH CONFIGURATION turkish ADD MAPPING
     FOR word, hword_part, hword
 	WITH turkish_stem;
-
