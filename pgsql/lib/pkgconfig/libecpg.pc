@@ -1,0 +1,9 @@
+Name: libecpg
+Description: PostgreSQL libecpg library
+Url: http://www.postgresql.org/
+Version: 9.6.21
+Requires: 
+Requires.private: libpq libpgtypes
+Cflags: -I/vnmr/pgsql/include
+Libs: -L/vnmr/pgsql/lib -lecpg
+Libs.private:  -lm
