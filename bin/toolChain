@@ -134,7 +134,8 @@ if [ ! -x /usr/bin/dpkg ]; then
    '
 
   if [ $version -ge 8 ]; then
-     yum -y --enablerepo=PowerTools install python3-scons
+     # Capitalization of PowerTools causes problems with 8.3
+     yum -y --enablerepo=?ower?ools install python3-scons
      toolList="$toolList libnsl motif-devel libglvnd-devel"
      i686List="$i686List libtirpc-devel"
   elif [ $version -ge 7 ]; then
