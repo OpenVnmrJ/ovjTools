@@ -59,8 +59,8 @@ endif
 endif
 else # not PGXS
 vpath_build = no
-abs_top_builddir = /home/vnmr1/ovjbuild/ovjTools/tmp/postgresql-9.6.21
-abs_top_srcdir = /home/vnmr1/ovjbuild/ovjTools/tmp/postgresql-9.6.21
+abs_top_builddir = /home/vnmr1/ovjbuild/ovjTools/src/postgresql-9.6.21
+abs_top_srcdir = /home/vnmr1/ovjbuild/ovjTools/src/postgresql-9.6.21
 
 ifneq ($(vpath_build),yes)
 top_srcdir = $(top_builddir)
@@ -75,7 +75,7 @@ endif # not PGXS
 vpathsearch = `for f in $(addsuffix /$(1),$(subst :, ,. $(VPATH))); do test -r $$f && echo $$f && break; done`
 
 # Saved arguments from configure
-configure_args =  '--prefix=/vnmr/pgsql'
+configure_args =  '--prefix=/vnmr/pgsql' '--without-readline'
 
 
 ##########################################################################
@@ -260,7 +260,7 @@ ZIC =
 AR = ar
 DLLTOOL = 
 DLLWRAP = 
-LIBS = -lz -lreadline -lrt -lcrypt -ldl -lm 
+LIBS = -lz -lrt -lcrypt -ldl -lm 
 LDAP_LIBS_FE = 
 LDAP_LIBS_BE = 
 UUID_LIBS = 

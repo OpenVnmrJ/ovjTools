@@ -13,7 +13,7 @@ if MacOS
    tar xvf postgresql-9.6.21.tar
 
 cd postgresql-9.6.21
-./configure --prefix=/vnmr/pgsql
+./configure --prefix=/vnmr/pgsql --without-readline
 make
 make install
 cp COPYRIGHT /vnmr/pgsql
