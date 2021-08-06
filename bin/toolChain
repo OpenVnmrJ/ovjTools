@@ -139,9 +139,13 @@ if [ ! -x /usr/bin/dpkg ]; then
      toolList="$toolList libnsl motif-devel libglvnd-devel"
      i686List="$i686List libtirpc-devel"
   elif [ $version -ge 7 ]; then
-     yum -y install epel-release
-     yum -y install scons
-     yum -y erase epel-release
+     if [ "$(rpm -q scons |
+       grep 'not installed' > /dev/null;echo $?)" = "0" ]
+     then
+       yum -y install epel-release
+       yum -y install scons
+       yum -y erase epel-release
+     fi
      toolList="$toolList motif-devel libglvnd-devel"
   else
      toolList="$toolList openmotif-devel scons"
@@ -161,8 +165,8 @@ if [ ! -x /usr/bin/dpkg ]; then
 else
   . /etc/lsb-release
   distmajor=${DISTRIB_RELEASE:0:2}
-  if [ $distmajor -lt 14 ] ; then
-    echo "Only Ubuntu 14 or newer is supported"
+  if [ $distmajor -lt 18 ] ; then
+    echo "Only Ubuntu 18 or newer is supported"
     echo " "
     exit 1
   fi
