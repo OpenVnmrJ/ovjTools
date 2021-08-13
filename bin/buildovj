@@ -50,6 +50,9 @@ if [ "$(uname -s)" = "Darwin" ]; then
       echo "Case insensitive file system. Watch out for biosolidspack experiments"
     fi
   fi
+  export osxflags=" -mmacosx-version-min=10.14"
+  export MACOSX_DEPLOYMENT_TARGET=10.14
+  export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 else
   ovjBuildDir=`dirname "$(readlink -f $0))"`
 fi
@@ -72,8 +75,6 @@ elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; then
   nprocs=$(nproc)   
 fi
 sconsJoption=$(( nprocs + 1 ))
-osxSDK='/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk'
-osxflags="-mmacosx-version-min=10.9 -isysroot ${osxSDK}"
 
 doGitClone=pull
 if [ ! -d "${ovjBuildDir}/OpenVnmrJ" ]
