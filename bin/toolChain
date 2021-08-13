@@ -124,13 +124,13 @@ if [ ! -x /usr/bin/dpkg ]; then
     gsl-devel
     libXt-devel
     mesa-libGLU-devel
+    libX11-devel
    '
   i686List=' 
     libstdc++
     libstdc++-devel
     glibc
     glibc-devel
-    libX11-devel
    '
 
   if [ $version -ge 8 ]; then
