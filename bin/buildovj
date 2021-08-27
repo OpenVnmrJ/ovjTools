@@ -50,8 +50,8 @@ if [ "$(uname -s)" = "Darwin" ]; then
       echo "Case insensitive file system. Watch out for biosolidspack experiments"
     fi
   fi
-  export osxflags=" -mmacosx-version-min=10.14"
-  export MACOSX_DEPLOYMENT_TARGET=10.14
+  export osxflags=" -mmacosx-version-min=10.13"
+  export MACOSX_DEPLOYMENT_TARGET=10.13
   export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 else
   ovjBuildDir=`dirname "$(readlink -f $0))"`
