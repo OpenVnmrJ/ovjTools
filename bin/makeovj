@@ -36,7 +36,7 @@ then
   rm -rf $dvdBuildName1 $dvdBuildName2 options vnmr console
 
 
-  # Step 2. Clone the git-repo
+  # Step 2. Update OpenVnmrJ
   if [ x$doGitClone = "xyes" ]
   then
     date=`date`
@@ -45,34 +45,62 @@ then
     if [ x$gitSSH = "x" ]
     then
        echo "===>>> $date Clone OpenVnmrJ (https) <<<==="
-       git clone ${gitURL}
+       git clone ${gitURL}/OpenVnmrj.git
     else
        echo "===>>> $date Clone OpenVnmrJ (ssh) <<<==="
-       git clone ${gitSSH}
+       git clone ${gitSSH}/OpenVnmrj.git
     fi
-    if [ x$gitBranch != "x" -a x$gitBranch != "xmaster" ]
-    then
-       cd $buildDir/OpenVnmrJ
-       git checkout $gitBranch
-    fi
+    cd $buildDir/OpenVnmrJ
+    git checkout $gitRelease
   fi
   if [ x$doGitClone = "xpull" ]
   then
     cd $buildDir/OpenVnmrJ
-    rm -rf src/* # src is mixed with copied files and build artifacts
+# src is mixed with copied files and build artifacts
+    rm -rf src
     git checkout src
     git pull 
-#   git fetch origin master
-#    git checkout origin/master -- src
-#    git pull origin master # on CentOS's older git above doesn't work
+    git checkout $gitRelease
   fi
   if [ x$doGitClone = "xrebuild" ]
   then
     cd $buildDir/OpenVnmrJ
-    rm -rf src/*
-    echo "git checkout -- src"
-    #git checkout src
-    git checkout -- src
+    rm -rf src
+    git checkout src
+    git checkout $gitRelease
+  fi
+
+  # Step 3. Update ovjTools
+  if [ x$doGitToolsClone = "xyes" ]
+  then
+    date=`date`
+    echo "===>>> $date Removing old ovjTools <<<==="
+    rm -rf ovjTools
+    if [ x$gitSSH = "x" ]
+    then
+       echo "===>>> $date Clone ovjTools (https) <<<==="
+       git clone ${gitURL}/ovjTools.git
+    else
+       echo "===>>> $date Clone ovjTools (ssh) <<<==="
+       git clone ${gitSSH}/ovjTools.git
+    fi
+    cd $buildDir/ovjTools
+    git checkout $gitRelease
+  fi
+  if [ x$doGitToolsClone = "xpull" ]
+  then
+    cd $buildDir/ovjTools
+    rm -rf src
+    git checkout src
+    git pull 
+    git checkout $gitRelease
+  fi
+  if [ x$doGitToolsClone = "xrebuild" ]
+  then
+    cd $buildDir/ovjTools
+    rm -rf src
+    git checkout src
+    git checkout $gitRelease
   fi
 
   echo "===>>> $date Executing 'scons' <<<==="
