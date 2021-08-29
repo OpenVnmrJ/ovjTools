@@ -25,15 +25,21 @@
 #  doScons=no     to not run scons. This also avoids removing directories
 #                 and does not change the git repo.
 #                 Use this if you are just making a DVD from pre-built files
-#  doGitClone=yes     to get a new repo.
-#  doGitClone=rebuild to do a new checkout of "src"
-#  doGitClone=pull    to pull recent changes to the repo and do a new checkout of "src"
-#  doGitClone=no      to leave the current repo alone
+#  doGitClone=yes     to get a new OpenVnmrJ repo.
+#  doGitClone=rebuild to do a new checkout of OpenVnmrJ "src"
+#  doGitClone=pull    to pull recent changes to the OpenVnmrJ repo and
+#                     do a new checkout of "src"
+#  doGitClone=no      to leave the current ovjTools repo alone
+#  doGitToolsClone=yes     to get a new ovjTools repo.
+#  doGitToolsClone=rebuild to do a new checkout of "src"
+#  doGitToolsClone=pull    to pull recent changes to the ovjTools repo and
+#                          do a new checkout of "src"
+#  doGitToolsClone=no      to leave the current ovjTools repo alone
 #  mail_list      addresses to email status of the build
 #  gitURL         URL for git repo.
-#  ovjAppName     used by mac version to name /Applications/ovjAppName
 #  ovjConsole     flag to tell whether to include console software
 #  sconsJoption   helps speed up the process. Typical value is #CPUs+1
+#  gitRelease      Specify what to build
 #
 # set -x
 
@@ -68,7 +74,6 @@ dvdBuildName1=dvdimageOVJ
 dvdBuildName2=dvdimageOVJMI
 dvdCopyName1=OVJ_$shortDate
 dvdCopyName2=OVJ_MI_$shortDate
-ovjAppName=OpenVnmrJ_1.1.app
 if [ "$(uname -s)" = "Darwin" ]; then
   nprocs=$(sysctl -n hw.ncpu)
 elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; then
@@ -81,9 +86,14 @@ if [ ! -d "${ovjBuildDir}/OpenVnmrJ" ]
 then
    doGitClone=yes
 fi
+doGitToolsClone=pull
+if [ ! -d "${ovjBuildDir}/ovjTools" ]
+then
+   doGitToolsClone=yes
+fi
 
-gitURL='https://github.com/OpenVnmrJ/OpenVnmrJ.git'
-gitSSH='ssh://git@github.com/userName/OpenVnmrJ.git'
+gitURL='https://github.com/OpenVnmrJ'
+gitSSH='ssh://git@github.com/userName'
 gitSSH=''
 # If gitSSH is an empty string, the gitURL is used
 # If you plan to commit changes to the OpenVnmrJ project,
@@ -91,10 +101,12 @@ gitSSH=''
 # Replace the userName string in gitSSH with your github account name
 # and comment out the second gitSSH line (gitSSH='')
 
-gitBranch='master'
-# If you plan to commit changes, you should commit them to the development branch.
-# If you just want to build the latest official release, build from the master branch.
-# gitBranch='development'
+gitRelease='master'
+# Uncomment one of the following to build a specific release
+# OpenVnmrJ 1.1A and 2.1A require CentOS 6 with scons version 2
+# gitRelease='OpenVnmrJ_1.1A' 
+# gitRelease='OpenVnmrJ_2.1A'
+# gitRelease='OpenVnmrJ_3.1A'
 
 doScons=yes
 buildOVJ=yes    # Build for Direct-Drive (VnmrS/DD2/ProPulse)
@@ -106,12 +118,15 @@ ovjConsole=yes  # include console software
 # doGitClone=rebuild
 # doGitClone=pull
 # doGitClone=no
+# doGitToolsClone=yes
+# doGitToolsClone=rebuild
+# doGitToolsClone=pull
+# doGitToolsClone=no
 # mail_list=""
 # doScons=no
 # buildOVJ=no
 # buildOVJMI=no
 # ovjConsole=no
-# ovjAppName=OpenVnmrJ.app
 # sconsJoption=5
 
 date=`date +%F_%T`
@@ -123,6 +138,6 @@ ovjLogFile="${ovjBuildDir}/logs/makeovj.$date"
 rm -f "${ovjBuildDir}/logs/makeovjlog"
 (cd ${ovjBuildDir}/logs && ln -s makeovj.$date makeovjlog)
 cd "${ovjBuildDir}"
-export ovjBuildDir workspacedir OVJ_TOOLS dvdCopyDir1 dvdCopyDir2 dvdBuildName1 dvdBuildName2 dvdCopyName1 dvdCopyName2 ovjLogFile doScons doGitClone mail_list gitURL gitSSH gitBranch ovjAppName buildOVJ buildOVJMI ovjConsole sconsJoption osxflags
+export ovjBuildDir workspacedir OVJ_TOOLS dvdCopyDir1 dvdCopyDir2 dvdBuildName1 dvdBuildName2 dvdCopyName1 dvdCopyName2 ovjLogFile doScons doGitClone mail_list gitURL gitSSH gitRelease buildOVJ buildOVJMI ovjConsole sconsJoption osxflags doGitToolsClone
 "${ovjBuildDir}/bin/makeovj" > "${ovjLogFile}" 2>&1
 
