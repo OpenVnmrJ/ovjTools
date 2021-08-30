@@ -45,10 +45,10 @@ then
     if [ x$gitSSH = "x" ]
     then
        echo "===>>> $date Clone OpenVnmrJ (https) <<<==="
-       git clone ${gitURL}/OpenVnmrj.git
+       git clone ${gitURL}/OpenVnmrJ.git
     else
        echo "===>>> $date Clone OpenVnmrJ (ssh) <<<==="
-       git clone ${gitSSH}/OpenVnmrj.git
+       git clone ${gitSSH}/OpenVnmrJ.git
     fi
     cd $buildDir/OpenVnmrJ
     git checkout $gitRelease
