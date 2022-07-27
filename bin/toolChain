@@ -139,7 +139,7 @@ if [ ! -x /usr/bin/dpkg ]; then
 	if [[ $(subscription-manager repos --list-enabled |
 		grep -i codeready > /dev/null; echo $?) != 0 ]]; then
           ARCH=$(/bin/arch)
-          subscription-manager repos --enable "codeready-builder-for-rhel-8-${ARCH}-rpms" &>> $logfile
+          subscription-manager repos --enable "codeready-builder-for-rhel-8-${ARCH}-rpms" &> /dev/null
         fi
         toolList="$toolList python3-scons"
     else
