@@ -133,7 +133,16 @@ if [ ! -x /usr/bin/dpkg ]; then
     glibc-devel
    '
 
-  if [ $version -ge 8 ]; then
+  if [[ $version -ge 9 ]] &&
+     [[ -z $(type -t subscription-manager) ]]; then
+     toolList="$toolList libnsl motif-devel libglvnd-devel"
+     if [[ -z $(type -t scons) ]]; then
+        yum -y install epel-release
+        yum -y install python3-scons
+        yum -y erase epel-release
+     fi
+     yum --enablerepo=crb -y install libtirpc-devel.i686
+  elif [ $version -ge 8 ]; then
     if [[ ! -z $(type -t subscription-manager) ]] &&
        [[ $rel = "redhat-release" ]]; then
 	if [[ $(subscription-manager repos --list-enabled |
