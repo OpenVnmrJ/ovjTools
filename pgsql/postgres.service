@@ -1,0 +1,14 @@
+[Unit]
+Description=PostgreSQL database server
+After=syslog.target
+After=network-online.target
+
+[Service]
+Type=forking
+
+User=vnmr1
+ExecStart=/vnmr/bin/S99pgsql start
+ExecStop=/vnmr/bin/S99pgsql stop
+
+[Install]
+WantedBy=multi-user.target
