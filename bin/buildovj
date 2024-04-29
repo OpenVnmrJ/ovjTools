@@ -56,7 +56,7 @@ if [ "$(uname -s)" = "Darwin" ]; then
       echo "Case insensitive file system. Watch out for biosolidspack experiments"
     fi
   fi
-  export osxflags=" -mmacosx-version-min=10.13"
+  export osxflags=" -mmacosx-version-min=10.13 -Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=incompatible-function-pointer-types -Wno-error=int-conversion"
   export MACOSX_DEPLOYMENT_TARGET=10.13
   export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 else
@@ -136,7 +136,7 @@ then
 fi
 ovjLogFile="${ovjBuildDir}/logs/makeovj.$date"
 rm -f "${ovjBuildDir}/logs/makeovjlog"
-(cd ${ovjBuildDir}/logs && ln -s makeovj.$date makeovjlog)
+(cd "${ovjBuildDir}/logs" && ln -s makeovj.$date makeovjlog)
 cd "${ovjBuildDir}"
 export ovjBuildDir workspacedir OVJ_TOOLS dvdCopyDir1 dvdCopyDir2 dvdBuildName1 dvdBuildName2 dvdCopyName1 dvdCopyName2 ovjLogFile doScons doGitClone mail_list gitURL gitSSH gitRelease buildOVJ buildOVJMI ovjConsole sconsJoption osxflags doGitToolsClone
 "${ovjBuildDir}/bin/makeovj" > "${ovjLogFile}" 2>&1
