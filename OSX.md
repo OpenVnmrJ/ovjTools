@@ -1,6 +1,6 @@
-# Building OpenVnmrJ on OS X
+# Building OpenVnmrJ on MacOS
 
-Follow these instructions for building OpenVnmrJ on OS X. If you just want to use OpenVnmrJ on OS X, just download a [release](https://github.com/OpenVnmrJ/OpenVnmrJ/releases).  
+Follow these instructions for building OpenVnmrJ on MacOS. If you just want to use OpenVnmrJ on MacOS, just download a [release](https://github.com/OpenVnmrJ/OpenVnmrJ/releases).  
 
 ## Download and install
 
@@ -20,6 +20,15 @@ You will need to download and install:
   After brew is installed, run
 ```
       brew install scons
+```
+
+- X-Window support. Two packages are required. The XQuartz package can be downloaded from
+  https://www.xquartz.org. The package name is XQuartz-2.8.5.pkg. The OpenMotif package
+  can be installed with brew. Installation of brew is described above for installing scons.
+  Run the command
+
+```
+      brew install openmotif
 ```
 
 - The java development environment. The open-source version of java for MacOS may be obtained from https://jdk.java.net.
@@ -43,7 +52,6 @@ You will need to download and install:
 ```
     sudo mv jdk-22.0.1.jdk /Library/Java/JavaVirtualMachines  
 ```
- 
 
 - On MacOS, OpenVnmrJ is installed via a .pkg file. A third-party tool, Packages.dmg, is used to construct this .pkg
   file. Using the Finder, navigate to ovjTools and double-click on Packages.dmg. Follow the instructions to install it.
@@ -86,7 +94,7 @@ the build process.  It identifies any errors that may have occurred.
 
 ### Data station only
 
-OS X is a data station only and cannot control a spectrometer host.  
+MacOS version  of OpenVnmrJ is a data station only and cannot control a spectrometer host.  
 
 ### Not included
 
