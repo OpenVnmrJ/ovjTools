@@ -53,9 +53,6 @@ You will need to download and install:
     sudo mv jdk-22.0.1.jdk /Library/Java/JavaVirtualMachines  
 ```
 
-- On MacOS, OpenVnmrJ is installed via a .pkg file. A third-party tool, Packages.dmg, is used to construct this .pkg
-  file. Using the Finder, navigate to ovjTools and double-click on Packages.dmg. Follow the instructions to install it.
-
 
 ## Build on MacOS
 
@@ -66,6 +63,10 @@ Check out the ovjTools repository from GitHub with
 mkdir ovjbuild && cd ovjbuild
 git clone https://github.com/OpenVnmrJ/ovjTools.git
 ```
+
+On MacOS, OpenVnmrJ is installed via a .pkg file. A third-party tool, Packages.dmg, is used to construct this .pkg
+  file. Using the Finder, navigate to ovjTools and double-click on Packages.dmg. Follow the instructions to install it.
+
 At the same level as the ovjTools directory, do the following  
 
 ```
@@ -90,6 +91,8 @@ such as
 to monitor the build.  The whatsin script scans the log file and gives a summary of
 the build process.  It identifies any errors that may have occurred.
 
+Note: If installing OpenVnmrJ for the first time, you may need to reboot the Mac before
+OpenVnmrJ will function.
 
 
 ### Data station only
