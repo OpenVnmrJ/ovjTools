@@ -1,3 +1,4 @@
+
 # Building OpenVnmrJ on MacOS
 
 Follow these instructions for building OpenVnmrJ on MacOS. If you just want to use OpenVnmrJ on MacOS, just download a [release](https://github.com/OpenVnmrJ/OpenVnmrJ/releases).  
@@ -57,6 +58,10 @@ You will need to download and install:
 ## Build on MacOS
 
 Make a directory. Let us call it ovjbuild and change into that directory.
+Note that the ovjbuild directory should not be a subdirectory of a "Documents"
+directory. Apple has instituted some security features on "Documents" directories
+that cause the OpenVnmrJ build to fail.
+
 Check out the ovjTools repository from GitHub with  
 
 ```
@@ -89,7 +94,8 @@ such as
    tail -f ~/ovjbuild/logs/makeovjlog
 ```
 to monitor the build.  The whatsin script scans the log file and gives a summary of
-the build process.  It identifies any errors that may have occurred.
+the build process.  It identifies any errors that may have occurred. The OpenVnmrJ
+installer will be at ovjbuild/dvdimageOVJ/OpenVnmrJ.pkg
 
 Note: If installing OpenVnmrJ for the first time, you may need to reboot the Mac before
 OpenVnmrJ will function.
