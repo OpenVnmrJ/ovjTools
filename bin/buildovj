@@ -13,6 +13,7 @@
 #                 git-repo directory, although that may be a convenient place.
 #  dvdBuildName1  name of the DDR / DD2 image
 #  dvdBuildName2  name of the MI image
+#  dvdBuildName3  name of the Data station image
 #  dvdCopyDir1    where a copy of the OpenVnmrJ DDR / DD2 DVD image will be put.
 #  dvdCopyDir2    where a copy of the OpenVnmrJ MI DVD image will be put.
 #  set dvdCopyDir1 and / or dvdCopyDir2 to null string to avoid the final copy
@@ -20,6 +21,7 @@
 #  dvdCopyName2   name of the OVJ MI copy
 #  buildOVJ       whether the OVJ DDR / DD2 DVD image will be made
 #  buildOVJMI     whether the OVJMI DVD image will be made
+#  buildOVJDS     whether the OVJ data station DVD image will be made
 #
 #  doScons=yes    to run scons
 #  doScons=no     to not run scons. This also avoids removing directories
@@ -72,6 +74,7 @@ dvdCopyDir2=
 shortDate=`date +%F`
 dvdBuildName1=dvdimageOVJ
 dvdBuildName2=dvdimageOVJMI
+dvdBuildName3=dvdimageOVJDS
 dvdCopyName1=OVJ_$shortDate
 dvdCopyName2=OVJ_MI_$shortDate
 if [ "$(uname -s)" = "Darwin" ]; then
@@ -111,7 +114,17 @@ gitRelease='master'
 doScons=yes
 buildOVJ=yes    # Build for Direct-Drive (VnmrS/DD2/ProPulse)
 buildOVJMI=yes  # Build for Mercury/Inova
+buildOVJDS=no  # Build for Data station
 ovjConsole=yes  # include console software
+
+if [[ $# = 1 ]] ; then
+   if [[ $1 = "ds" ]] || [[ $1 = "DS" ]] ; then
+      buildOVJ=no    # Build for Direct-Drive (VnmrS/DD2/ProPulse)
+      buildOVJMI=no  # Build for Mercury/Inova
+      buildOVJDS=yes  # Build for Data station
+      ovjConsole=no  # include console software
+   fi
+fi
 
 # Potential optional set of values
 # doGitClone=yes
@@ -138,6 +151,6 @@ ovjLogFile="${ovjBuildDir}/logs/makeovj.$date"
 rm -f "${ovjBuildDir}/logs/makeovjlog"
 (cd "${ovjBuildDir}/logs" && ln -s makeovj.$date makeovjlog)
 cd "${ovjBuildDir}"
-export ovjBuildDir workspacedir OVJ_TOOLS dvdCopyDir1 dvdCopyDir2 dvdBuildName1 dvdBuildName2 dvdCopyName1 dvdCopyName2 ovjLogFile doScons doGitClone mail_list gitURL gitSSH gitRelease buildOVJ buildOVJMI ovjConsole sconsJoption osxflags doGitToolsClone
+export ovjBuildDir workspacedir OVJ_TOOLS dvdCopyDir1 dvdCopyDir2 dvdBuildName1 dvdBuildName2 dvdBuildName3 dvdCopyName1 dvdCopyName2 ovjLogFile doScons doGitClone mail_list gitURL gitSSH gitRelease buildOVJ buildOVJMI buildOVJDS ovjConsole sconsJoption osxflags doGitToolsClone
 "${ovjBuildDir}/bin/makeovj" > "${ovjLogFile}" 2>&1
 
