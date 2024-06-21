@@ -21,6 +21,7 @@
 # obvious something else but for now I can't seem to find out what it is.
 # e.g. vj2 email works but can't get vj3 email to work.      GMB  8/23/2010
 #
+# set -x
 
 date=`date`
 buildDir=$ovjBuildDir
@@ -32,8 +33,8 @@ cwd=`pwd`
 if [ x$doScons = "xyes" ]
 then
   # Step 1. Remove all previous files
-  echo "===>>> $date Removing $dvdBuildName1 $dvdBuildName2 options vnmr console <<<==="
-  rm -rf $dvdBuildName1 $dvdBuildName2 options vnmr console
+  echo "===>>> $date Removing $dvdBuildName1 $dvdBuildName2 $dvdBuildName3 options vnmr console <<<==="
+  rm -rf $dvdBuildName1 $dvdBuildName2 $dvdBuildName3 options vnmr console
 
 
   # Step 2. Update OpenVnmrJ
@@ -105,6 +106,11 @@ then
 
   echo "===>>> $date Executing 'scons' <<<==="
   cd $buildDir/OpenVnmrJ
+  if [[ x$buildOVJDS = "xyes" ]] ; then
+    touch src/datastation
+  else
+    rm -f src/datastation
+  fi
   # build status
   status="OK"
   SCONSFLAGS='--warn=no-duplicate-environment'
@@ -199,6 +205,21 @@ then
       else
         echo "Skipping copy of OpenVnmrJ MI DVD Image to Destination Place" | tee -a $log_file
       fi
+   )
+ fi
+fi
+
+if [ x$buildOVJDS = "xyes" ]
+then
+ if [ x`uname -s` != "xDarwin" ]
+ then
+# Step 4. Tar and build vnmrj-cd
+   date=`date`
+   rm -rf $buildDir/$dvdBuildName3
+   echo "===>>> $date Building OpenVnmrJ Data Station DVD <<<==="
+   (cd $buildDir/bin;       \
+      chmod +x $buildDir/OpenVnmrJ/src/scripts/ovjdsout.sh
+      $buildDir/OpenVnmrJ/src/scripts/ovjdsout.sh
    )
  fi
 fi
