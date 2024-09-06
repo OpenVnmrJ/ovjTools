@@ -24,10 +24,15 @@ You will need to download and install:
 ```
 
 - X-Window support. Two packages are required. The XQuartz package can be downloaded from
-  https://www.xquartz.org. The package name is XQuartz-2.8.5.pkg. The OpenMotif package
-  can be installed with brew. Installation of brew is described above for installing scons.
-  Run the command
+  https://www.xquartz.org. The package name is XQuartz-2.8.5.pkg. Alternatively, the XQuartz
+  package can be installed with brew. Installation of brew is described above for instaling
+  scons.  Run the command
+```
+      brew install --cask xquartz
+```
 
+  The OpenMotif package can be installed with brew. Installation of brew is described above
+  for installing scons.  Run the command
 ```
       brew install openmotif
 ```
