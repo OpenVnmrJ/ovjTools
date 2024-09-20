@@ -110,6 +110,7 @@ gitRelease='master'
 # gitRelease='OpenVnmrJ_1.1A' 
 # gitRelease='OpenVnmrJ_2.1A'
 # gitRelease='OpenVnmrJ_3.1A'
+# gitRelease='OpenVnmrJ_3.2A'
 
 doScons=yes
 buildOVJ=yes    # Build for Direct-Drive (VnmrS/DD2/ProPulse)
