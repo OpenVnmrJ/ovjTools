@@ -141,7 +141,6 @@ if [ ! -x /usr/bin/dpkg ]; then
         yum -y install python3-scons
         yum -y erase epel-release
      fi
-     yum --enablerepo=crb -y install libtirpc-devel.i686
   elif [ $version -ge 8 ]; then
     if [[ ! -z $(type -t subscription-manager) ]] &&
        [[ $rel = "redhat-release" ]]; then
@@ -156,7 +155,6 @@ if [ ! -x /usr/bin/dpkg ]; then
      yum -y --enablerepo=?ower?ools install python3-scons
     fi
      toolList="$toolList libnsl motif-devel libglvnd-devel"
-     i686List="$i686List libtirpc-devel"
   elif [ $version -ge 7 ]; then
      if [ "$(rpm -q scons |
        grep 'not installed' > /dev/null;echo $?)" = "0" ]
@@ -247,7 +245,7 @@ else
   distmajor=${DISTRIB_RELEASE:0:2}
   if [ $distmajor -gt 18 ] ; then
     if [ $distmajor -gt 20 ] ; then
-        sudo apt install -y $toolList libtirpc-dev:i386 libc6-dev
+        sudo apt install -y $toolList libc6-dev
     else
         sudo apt install -y $toolList libstdc++-8-dev libc6-dev
     fi
