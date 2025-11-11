@@ -91,16 +91,16 @@ then
   if [ x$doGitToolsClone = "xpull" ]
   then
     cd $buildDir/ovjTools
-    rm -rf src
-    git checkout src
+    rm -rf *
+    git checkout .
     git pull 
     git checkout $gitRelease
   fi
   if [ x$doGitToolsClone = "xrebuild" ]
   then
     cd $buildDir/ovjTools
-    rm -rf src
-    git checkout src
+    rm -rf *
+    git checkout .
     git checkout $gitRelease
   fi
 

@@ -33,9 +33,8 @@
 #                     do a new checkout of "src"
 #  doGitClone=no      to leave the current ovjTools repo alone
 #  doGitToolsClone=yes     to get a new ovjTools repo.
-#  doGitToolsClone=rebuild to do a new checkout of "src"
-#  doGitToolsClone=pull    to pull recent changes to the ovjTools repo and
-#                          do a new checkout of "src"
+#  doGitToolsClone=rebuild to do a new checkout
+#  doGitToolsClone=pull    to do a new checkout and to pull recent changes
 #  doGitToolsClone=no      to leave the current ovjTools repo alone
 #  mail_list      addresses to email status of the build
 #  gitURL         URL for git repo.
