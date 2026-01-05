@@ -82,6 +82,9 @@ elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; then
   nprocs=$(nproc)   
 fi
 sconsJoption=$(( nprocs + 1 ))
+if [[ $sconsJoption -gt 5 ]]; then
+   sconsJoption=5
+fi
 
 doGitClone=pull
 if [ ! -d "${ovjBuildDir}/OpenVnmrJ" ]
