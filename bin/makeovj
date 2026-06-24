@@ -51,12 +51,12 @@ then
        echo "===>>> $date Clone OpenVnmrJ (ssh) <<<==="
        git clone ${gitSSH}/OpenVnmrJ.git
     fi
-    cd $buildDir/OpenVnmrJ
+    cd "$buildDir/OpenVnmrJ"
     git checkout $gitRelease
   fi
   if [ x$doGitClone = "xpull" ]
   then
-    cd $buildDir/OpenVnmrJ
+    cd "$buildDir/OpenVnmrJ"
 # src is mixed with copied files and build artifacts
     rm -rf src
     git checkout src
@@ -65,7 +65,7 @@ then
   fi
   if [ x$doGitClone = "xrebuild" ]
   then
-    cd $buildDir/OpenVnmrJ
+    cd "$buildDir/OpenVnmrJ"
     rm -rf src
     git checkout src
     git checkout $gitRelease
@@ -85,12 +85,12 @@ then
        echo "===>>> $date Clone ovjTools (ssh) <<<==="
        git clone ${gitSSH}/ovjTools.git
     fi
-    cd $buildDir/ovjTools
+    cd "$buildDir/ovjTools"
     git checkout $gitRelease
   fi
   if [ x$doGitToolsClone = "xpull" ]
   then
-    cd $buildDir/ovjTools
+    cd "$buildDir/ovjTools"
     rm -rf *
     git checkout .
     git pull 
@@ -98,14 +98,14 @@ then
   fi
   if [ x$doGitToolsClone = "xrebuild" ]
   then
-    cd $buildDir/ovjTools
+    cd "$buildDir/ovjTools"
     rm -rf *
     git checkout .
     git checkout $gitRelease
   fi
 
   echo "===>>> $date Executing 'scons' <<<==="
-  cd $buildDir/OpenVnmrJ
+  cd "$buildDir/OpenVnmrJ"
   if [[ x$buildOVJDS = "xyes" ]] ; then
     touch src/datastation
   else
@@ -116,8 +116,12 @@ then
   SCONSFLAGS='--warn=no-duplicate-environment'
   export SCONSFLAGS
   if hash scons 2> /dev/null; then
+     cd src/ncomm; scons -j $sconsJoption
+     cd ../..
      scons -j $sconsJoption 
   elif hash scons-3 2> /dev/null; then
+     cd src/ncomm; scons-3 -j $sconsJoption
+     cd ../..
      scons-3 -j $sconsJoption 
   else
      echo "scons not installed"
@@ -147,16 +151,16 @@ if [ x$buildOVJ = "xyes" ]
 then
 # Step 4. Tar and build vnmrj-cd
    date=`date`
-   rm -rf $buildDir/$dvdBuildName1
+   rm -rf "$buildDir/$dvdBuildName1"
    echo "===>>> $date Building OpenVnmrJ DVD <<<==="
-   (cd $buildDir/bin;       \
+   (cd "$buildDir/bin";       \
       if [ x`uname -s` = "xDarwin" ]
       then
          outFile=ovjmacout
       else
          outFile=ovjddrout
       fi
-      cp $buildDir/OpenVnmrJ/src/scripts/$outFile.sh .
+      cp "$buildDir/OpenVnmrJ/src/scripts/$outFile.sh" .
       make $outFile
       ./$outFile
       if [ x$dvdCopyDir1 != "x" -a x$dvdCopyName1 != "x" ]
@@ -169,7 +173,7 @@ then
         else
            mkdir $fini_dir
         fi
-        cd $buildDir/$dvdBuildName1
+        cd "$buildDir/$dvdBuildName1"
         tar -cf - . | (cd $fini_dir; tar xfBp -)
       else
         echo "Skipping copy of OpenVnmrJ DVD Image to Destination Place" | tee -a $log_file
@@ -183,11 +187,11 @@ then
  then
 # Step 4. Tar and build vnmrj-cd
    date=`date`
-   rm -rf $buildDir/$dvdCopyName2
+   rm -rf "$buildDir/$dvdCopyName2"
    echo "===>>> $date Building OpenVnmrJ MI DVD <<<==="
-   (cd $buildDir/bin;       \
+   (cd "$buildDir/bin";       \
       outFile=ovjmiout
-      cp $buildDir/OpenVnmrJ/src/scripts/$outFile.sh .
+      cp "$buildDir/OpenVnmrJ/src/scripts/$outFile.sh" .
       make $outFile
       ./$outFile
       if [ x$dvdCopyDir2 != "x" -a x$dvdCopyName2 != "x" ]
@@ -200,7 +204,7 @@ then
         else
            mkdir $fini_dir
         fi
-        cd $buildDir/$dvdBuildName2
+        cd "$buildDir/$dvdBuildName2"
         tar -cf - . | (cd $fini_dir; tar xfBp -)
       else
         echo "Skipping copy of OpenVnmrJ MI DVD Image to Destination Place" | tee -a $log_file
@@ -215,11 +219,11 @@ then
  then
 # Step 4. Tar and build vnmrj-cd
    date=`date`
-   rm -rf $buildDir/$dvdBuildName3
+   rm -rf "$buildDir/$dvdBuildName3"
    echo "===>>> $date Building OpenVnmrJ Data Station DVD <<<==="
-   (cd $buildDir/bin;       \
-      chmod +x $buildDir/OpenVnmrJ/src/scripts/ovjdsout.sh
-      $buildDir/OpenVnmrJ/src/scripts/ovjdsout.sh
+   (cd "$buildDir/bin";       \
+      chmod +x "$buildDir/OpenVnmrJ/src/scripts/ovjdsout.sh"
+      "$buildDir/OpenVnmrJ/src/scripts/ovjdsout.sh"
    )
  fi
 fi
