@@ -37,6 +37,7 @@ if test ! -f $logdir
         grep -s "acomp failed" ${logdir}
         grep -s "cannot access" ${logdir}
         grep -s "cannot find" ${logdir}
+        grep -s "not found" ${logdir}
         grep -s "No such file" ${logdir}
         grep -s "syntax error" ${logdir}
         grep -s "undefined reference" ${logdir}
@@ -57,6 +58,7 @@ if test ! -f $logdir
         echo "             `grep -c \"acomp failed\" ${logdir}`  acomp failed ."
         echo "             `grep -c \"cannot access\" ${logdir}`  cannot access ."
         echo "             `grep -c \"cannot find\" ${logdir}`  cannot find ."
+        echo "             `grep -c \"not found\" ${logdir}`  not found ."
         echo "             `grep -c \"No such file\" ${logdir}`  No such file ."
         echo "             `grep -c \"syntax error\" ${logdir}`  syntax error ."
         echo "             `grep -c \"undefined reference\" ${logdir}`  undefined reference ."
