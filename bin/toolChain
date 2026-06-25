@@ -64,10 +64,12 @@ fi
 if [ ! -x /usr/bin/dpkg ]; then
   if [ -f /etc/centos-release ]; then
     rel=centos-release
+  elif [ -f /etc/almalinux-release ]; then
+    rel=almalinux-release
   elif [ -f /etc/redhat-release ]; then
     rel=redhat-release
   else
-    echo "$0 can only be used for CentOS or RedHat systems"
+    echo "$0 can only be used for CentOS / RedHat or AlmaLinux systems"
     exit 1
   fi
 # remove all characters up to the first digit
@@ -76,10 +78,8 @@ if [ ! -x /usr/bin/dpkg ]; then
   version=${version%%.*}
 
   if [ $version -lt 7 ]; then
-#  Add older motif package
-    packageList="openmotif $item68List $commonList $bit32List $pipeList"
-  else
-    packageList="$item68List $commonList $pipeList"
+    echo "$0 can only be used for OS version 7 or newer"
+    exit 1
   fi
 
 
@@ -121,7 +121,6 @@ if [ ! -x /usr/bin/dpkg ]; then
     gcc-gfortran
     git
     libgfortran
-    gsl-devel
     libXt-devel
     mesa-libGLU-devel
    '
@@ -133,14 +132,34 @@ if [ ! -x /usr/bin/dpkg ]; then
     glibc-devel
    '
 
-  if [[ $version -ge 9 ]] &&
+  if [[ $version -ge 10 ]] &&
      [[ -z $(type -t subscription-manager) ]]; then
-     toolList="$toolList libnsl motif-devel libglvnd-devel"
+     toolList="$toolList libnsl libglvnd-devel"
+     yum -y install epel-release
+     yum -y install python3-scons motif-devel gsl-devel
+     yum -y erase epel-release
+  elif [[ $version -ge 10 ]]; then
+     ARCH=$(/bin/arch)
+     yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-${version}.noarch.rpm
+     subscription-manager repos --enable "codeready-builder-for-rhel-${version}-${ARCH}-rpms"
+     toolList="$toolList libnsl libglvnd-devel"
+     yum -y install python3-scons motif-devel gsl-devel
+     yum -y erase epel-release
+  elif [[ $version -ge 9 ]] &&
+     [[ -z $(type -t subscription-manager) ]]; then
+     toolList="$toolList libnsl motif-devel gsl-devel libglvnd-devel"
      if [[ -z $(type -t scons) ]]; then
         yum -y install epel-release
         yum -y install python3-scons
         yum -y erase epel-release
      fi
+  elif [[ $version -ge 9 ]]; then
+       ARCH=$(/bin/arch)
+       yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-${version}.noarch.rpm
+       subscription-manager repos --enable "codeready-builder-for-rhel-${version}-${ARCH}-rpms"
+     toolList="$toolList libnsl motif-devel gsl-devel libglvnd-devel"
+     yum -y install python3-scons
+     yum -y erase epel-release
   elif [ $version -ge 8 ]; then
     if [[ ! -z $(type -t subscription-manager) ]] &&
        [[ $rel = "redhat-release" ]]; then
@@ -154,7 +173,7 @@ if [ ! -x /usr/bin/dpkg ]; then
      # Capitalization of PowerTools causes problems with 8.3
      yum -y --enablerepo=?ower?ools install python3-scons
     fi
-     toolList="$toolList libnsl motif-devel libglvnd-devel"
+     toolList="$toolList libnsl motif-devel gsl-devel libglvnd-devel"
   elif [ $version -ge 7 ]; then
      if [ "$(rpm -q scons |
        grep 'not installed' > /dev/null;echo $?)" = "0" ]
@@ -163,25 +182,33 @@ if [ ! -x /usr/bin/dpkg ]; then
        yum -y install scons
        yum -y erase epel-release
      fi
-     toolList="$toolList motif-devel libglvnd-devel"
+     toolList="$toolList motif-devel gsl-devel libglvnd-devel"
   else
      toolList="$toolList openmotif-devel scons"
   fi
-  i686=''
-  for xpack in $i686List
-  do
-    i686="$i686 ${xpack}.i686"
-  done
   yum -y install $toolList $i686List
-  yum -y install $i686
   if [ $version -ge 7 ]; then
     systemctl unmask packagekit >& /dev/null
   fi
-    echo "CentOS / RedHat package installation complete"
+    echo "CentOS / RedHat / AlmaLinux package installation complete"
   echo " "
 else
-  . /etc/lsb-release
-  distmajor=${DISTRIB_RELEASE:0:2}
+  distmajor=18
+  file="/etc/upstream-release/lsb-release"
+  if [[ ! -f $file ]]; then
+     file="/etc/lsb-release"
+  fi
+  if [[ -f $file ]]; then
+     . $file
+     distmajor=${DISTRIB_RELEASE:0:2}
+  elif [[ -f /etc/os-release ]]; then
+     . /etc/os-release
+     distmajor=${VERSION_ID:0:2}
+  elif [[ ! -z $(type -t hostnamectl) ]]; then
+     ver=$(hostnamectl | grep "Operating" | cut -d " " -f 4)
+     distmajor=${ver:0:2}
+  fi
+
   if [ $distmajor -lt 18 ] ; then
     echo "Only Ubuntu 18 or newer is supported"
     echo " "
@@ -216,7 +243,6 @@ else
     echo "Please try again in 5-10 minutes, after this tool completes its task."
     exit 1
   fi
-  dpkg --add-architecture i386
   apt-get -qq update
 # apt-get -qq -y dist-upgrade
 # Prevent packages from presenting an interactive popup
@@ -230,9 +256,6 @@ else
     libmotif-dev
     libx11-dev
     libx11-6
-    libx11-6:i386
-    gcc-multilib
-    g++-multilib
     libxt-dev
     libglu1-mesa-dev
     libgsl-dev
@@ -241,8 +264,6 @@ else
    '
 
   sudo apt update
-  . /etc/lsb-release
-  distmajor=${DISTRIB_RELEASE:0:2}
   if [ $distmajor -gt 18 ] ; then
     if [ $distmajor -gt 20 ] ; then
         sudo apt install -y $toolList libc6-dev
@@ -251,7 +272,7 @@ else
     fi
 
   else
-    sudo apt install -y $toolList libstdc++-7-dev libc6-dev-i386
+    sudo apt install -y $toolList libstdc++-7-dev
   fi
   unset DEBIAN_FRONTEND
   echo "dash dash/sh boolean false" | debconf-set-selections
